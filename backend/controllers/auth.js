@@ -9,7 +9,6 @@ const cookie = require('cookie');
 const mailSender = require('../utils/mailSender');
 const otpTemplate = require('../mail/templates/emailVerificationTemplate');
 const { passwordUpdated } = require("../mail/templates/passwordUpdate");
-
 exports.sendOTP = async (req, res) => {
     try {
 
