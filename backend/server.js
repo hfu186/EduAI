@@ -1,19 +1,12 @@
 const express = require("express");
 const app = express();
-
 require("dotenv").config();
-
-// packages
 const fileUpload = require("express-fileupload");
-
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
-// connections
 const { connectDB } = require("./config/database");
 const { cloudinaryConnect } = require("./config/cloudinary");
-
-// routes
+const { globalLimiter, aiServiceLimiter, authLimiter } = require("./middleware/rateLimit.js");
 const userRoutes = require("./routes/user");
 const profileRoutes = require("./routes/profile");
 const paymentRoutes = require("./routes/payments");
@@ -35,7 +28,6 @@ app.use(
   },
   express.static("uploads")
 );
-// middleware
 
 app.use(
   express.json({
@@ -49,7 +41,7 @@ app.use(cookieParser());
 app.use(
   cors()
 );
-
+app.use("/api", globalLimiter);
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -57,15 +49,15 @@ app.use(
   })
 );
 
-app.use("/api/v1/auth", userRoutes);
-app.use("/api/v1/profile", profileRoutes);
+app.use("/api/v1/auth", authLimiter, userRoutes);
+app.use("/api/v1/profile", authLimiter, profileRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/submission", submissionRoutes); 
 app.use("/api/v1/section", sectionRoutes);
 app.use("/api/v1/subsection", subSectionRoutes);
 app.use("/api/v1/quiz", quizRoutes);
 app.use("/api/v1/course", courseRoutes);
-app.use("/api/v1/chatbot", chatbotRoutes);
+app.use("/api/v1/chatbot", aiServiceLimiter,chatbotRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.get("/", (req, res) => {
   res.send("LMS Backend is running");
