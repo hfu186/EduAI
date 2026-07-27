@@ -11,7 +11,7 @@ export const payos = new PayOS({
 
 (async () => {
   try {
-    const webhookUrl = "https://unproportional-angelica-photometrically.ngrok-free.dev/api/v1/payment/payos/webhook";
+    const webhookUrl = "https://unproportional-angelica-photometrically.ngrok-free.dev//payment/payos/webhook";
     const response = await payos.webhooks.confirm(webhookUrl);
     console.log("PayOS webhook confirmed:", response);
     console.log("INIT PAYOS KEY:", process.env.PAYOS_CHECKSUM_KEY);

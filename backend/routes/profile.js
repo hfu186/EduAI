@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { auth, isInstructor } = require("../middleware/auth");
-const{getInstructorCourses} = require("../controllers/course");
+const{getInstructorCourses} = require("../controllers/course/course");
 const {
     updateProfile,
     updateUserProfileImage,
@@ -12,7 +12,7 @@ const {
     getAllInstructors,
     getInstructorPublicProfile,
     instructorDashboard
-} = require('../controllers/profile');
+} = require('../controllers/user/profile');
 
 router.delete('/deleteProfile', auth, deleteAccount);
 router.put('/updateProfile', auth, updateProfile);

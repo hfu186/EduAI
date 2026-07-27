@@ -17,7 +17,7 @@ const {
     getAverageOrderValue,
   
 } = require("../../controllers/Admin/admin.controller");
-const { createCategory, updateCategory, deleteCategory } = require("../../controllers/category")
+const { createCategory, updateCategory, deleteCategory } = require("../../controllers/course/category")
 router.post("/create-category", auth, isAdmin, createCategory);
 router.put("/update-category/:categoryId", auth, isAdmin, updateCategory);
 router.delete("/delete-category/:categoryId", auth, isAdmin, deleteCategory);

@@ -14,17 +14,17 @@ const {
   getFullCourseDetails,      
   getSectionDetails,         
   getSubSectionDetails,
-} = require("../controllers/course");
-const { updateCourseProgress } = require("../controllers/courseProgress");
+} = require("../controllers/course/course");
+const { updateCourseProgress } = require("../controllers/course/courseProgress");
 const {
   showAllCategories,
   getCategoryPageDetails, 
-} = require("../controllers/category");
+} = require("../controllers/course/category");
 const {
   createRating,
   getAverageRating,
   getAllRatingReview,
-} = require("../controllers/RatingAndReview");
+} = require("../controllers/course/RatingAndReview");
 
 router.patch("/publish/:courseId", auth, isInstructor, publishCourse);
 router.post("/", auth, isInstructor, createCourse);

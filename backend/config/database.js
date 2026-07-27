@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 
 exports.connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE_URL, {
+    const uri = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/eduspace";
+
+    await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

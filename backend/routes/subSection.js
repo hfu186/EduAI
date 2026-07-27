@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const { auth, isInstructor, isStudent } = require("../middleware/auth");
-const { createSubSection, updateSubSection, deleteSubSection } = require("../controllers/subSection");
-const { submitQuiz } = require("../controllers/quiz");
-const { uploadSlide } = require("../controllers/slide");
+const { createSubSection, updateSubSection, deleteSubSection } = require("../controllers/components/subSection");
+const { submitQuiz } = require("../controllers/ai/quiz");
+const { uploadSlide } = require("../controllers/components/slide");
 const upload = require("../middleware/uploadSlide");
 
 router.post(

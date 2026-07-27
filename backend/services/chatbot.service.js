@@ -20,11 +20,7 @@ const EMBEDDING_MODEL = "models/gemini-embedding-001";
 const VISION_MODEL = "gemini-2.0-flash";
 const TMP_DIR = "/tmp/pdf2pic_slides";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/**
- * Bước 1A: Extract text thông thường từ PDF (dùng pdf2json)
- */
 const extractTextLegacy = (filePath) =>
   new Promise((resolve, reject) => {
     const pdfParser = new PDFParser(null, 1);

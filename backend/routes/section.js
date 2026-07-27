@@ -6,7 +6,7 @@ const {
   createSection,
   updateSection,
   deleteSection,
-} = require("../controllers/section");
+} = require("../controllers/components/section");
 
 router.post("/", auth, isInstructor, createSection);
 router.post("/update", auth, isInstructor, updateSection);

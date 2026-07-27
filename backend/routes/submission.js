@@ -7,7 +7,7 @@ const {
   gradeAssignment,
   deleteSubmission,
   checkStudentSubmission
-} = require("../controllers/submission");
+} = require("../controllers/components/submission");
 
 
 router.post("/submit-assignment", auth, submitAssignment);

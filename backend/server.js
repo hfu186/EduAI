@@ -49,16 +49,16 @@ app.use(
   })
 );
 
-app.use("/api/v1/auth", authLimiter, userRoutes);
-app.use("/api/v1/profile", authLimiter, profileRoutes);
-app.use("/api/v1/payment", paymentRoutes);
-app.use("/api/v1/submission", submissionRoutes); 
-app.use("/api/v1/section", sectionRoutes);
-app.use("/api/v1/subsection", subSectionRoutes);
-app.use("/api/v1/quiz", quizRoutes);
-app.use("/api/v1/course", courseRoutes);
-app.use("/api/v1/chatbot", aiServiceLimiter,chatbotRoutes);
-app.use("/api/v1/admin", adminRoutes);
+app.use("/auth", authLimiter, userRoutes);
+app.use("/profile", authLimiter, profileRoutes);
+app.use("/payment", paymentRoutes);
+app.use("/submission", submissionRoutes); 
+app.use("/section", sectionRoutes);
+app.use("/subsection", subSectionRoutes);
+app.use("/quiz", quizRoutes);
+app.use("/course", courseRoutes);
+app.use("/chatbot", aiServiceLimiter,chatbotRoutes);
+app.use("/admin", adminRoutes);
 app.get("/", (req, res) => {
   res.send("LMS Backend is running");
 });

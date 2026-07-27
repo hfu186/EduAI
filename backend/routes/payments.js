@@ -6,7 +6,7 @@ const {
   payosWebhook,
   enrollFreeCourse,
   checkPaymentStatus,
-} = require("../controllers/payments");
+} = require("../controllers/course/payments");
 const { auth, isStudent } = require("../middleware/auth");
 
 router.post("/create-payment", auth, isStudent, createPayment);
