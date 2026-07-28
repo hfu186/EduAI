@@ -228,7 +228,6 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
-/* ================= GET COURSE BY ID ================= */
 export const getCourseById = async (req, res) => {
   try {
     const { courseId } = req.params
@@ -269,7 +268,6 @@ export const getCourseById = async (req, res) => {
   }
 }
 
-/* ================= COURSE LEARNING DATA ================= */
 export const getCourseLearningData = async (req, res) => {
   const { courseId } = req.params
 
@@ -287,7 +285,6 @@ export const getCourseLearningData = async (req, res) => {
   })
 }
 
-/* ================= DELETE COURSE ================= */
 export const deleteCourse = async (req, res) => {
   try {
     const { courseId } = req.params
@@ -348,7 +345,6 @@ export const updateCourse = async (req, res) => {
       })
     }
 
-    /* ================= UPDATE THUMBNAIL ================= */
     if (req.files && req.files.thumbnailImage) {
       const thumbnail = req.files.thumbnailImage
 
@@ -357,7 +353,6 @@ export const updateCourse = async (req, res) => {
       course.thumbnail = uploadedImage.secure_url
     }
 
-    /* ================= UPDATE FIELDS ================= */
     for (const key in updates) {
       if (Object.hasOwn(updates, key)) {
         if (key === "tag" || key === "instructions") {
@@ -518,7 +513,6 @@ export const getFullCourseDetails = async (req, res) => {
 };
 
 
-/* ================= GET SECTION WITH SUBSECTIONS ================= */
 export const getSectionDetails = async (req, res) => {
   try {
     const { sectionId } = req.params;
@@ -545,7 +539,6 @@ export const getSectionDetails = async (req, res) => {
   }
 };
 
-/* ================= GET SUBSECTION DETAILS ================= */
 export const getSubSectionDetails = async (req, res) => {
   try {
     const { subsectionId } = req.params;

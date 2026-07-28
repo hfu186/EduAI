@@ -17,6 +17,7 @@ const subSectionRoutes = require("./routes/subSection");
 const submissionRoutes = require("./routes/submission");
 const chatbotRoutes = require("./routes/chatbot");
 const adminRoutes = require("./routes/Admin/admin.route");
+const notificationRoutes = require("./routes/notifications");
 const path = require("path");
 app.use(
   "/uploads",
@@ -59,6 +60,7 @@ app.use("/quiz", quizRoutes);
 app.use("/course", courseRoutes);
 app.use("/chatbot", aiServiceLimiter,chatbotRoutes);
 app.use("/admin", adminRoutes);
+app.use("/notifications", notificationRoutes);
 app.get("/", (req, res) => {
   res.send("LMS Backend is running");
 });

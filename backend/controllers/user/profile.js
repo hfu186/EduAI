@@ -5,6 +5,7 @@ const Course = require('../../models/course')
 
 const fs = require('fs');
 const { convertSecondsToDuration } = require('../../utils/secToDuration')
+const { createNotification } = require('../../utils/notification')
 
 
 
@@ -120,6 +121,59 @@ exports.deleteAccount = async (req, res) => {
 
 
 // ================ get details of user ================
+exports.requestInstructor = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (user.accountType === 'Instructor') {
+      return res.status(400).json({ success: false, message: 'Bạn đã là giảng viên rồi' });
+    }
+
+    if (user.instructorRequestStatus === 'pending') {
+      return res.status(400).json({ success: false, message: 'Yêu cầu của bạn đang chờ admin duyệt' });
+    }
+
+    user.instructorRequestStatus = 'pending';
+    await user.save();
+
+    const admins = await User.find({ accountType: 'Admin' }).select('_id');
+    for (const admin of admins) {
+      await createNotification({
+        recipient: admin._id,
+        type: 'course_approved',
+        title: 'Yêu cầu trở thành giảng viên mới',
+        message: `${user.firstName} ${user.lastName} muốn trở thành giảng viên.`,
+        link: '/admin',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Yêu cầu trở thành giảng viên đã được gửi',
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getInstructorRequestStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('instructorRequestStatus accountType');
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 exports.getUserDetails = async (req, res) => {
   try {
     // extract userId

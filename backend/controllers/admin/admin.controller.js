@@ -3,6 +3,7 @@ const Course = require("../../models/course");
 const mailSender = require("../../utils/mailSender");
 const { courseStatusTemplate } = require("../../mail/templates/reviewCourse");
 const Orders = require("../../models/order");
+const { createNotification } = require("../../utils/notification");
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find({})
@@ -50,8 +51,34 @@ exports.promoteUserToInstructor = async (req, res) => {
         }
 
         user.accountType = "Instructor";
+        user.instructorRequestStatus = "approved";
         await user.save();
 
+        await mailSender(
+            user.email,
+            "Congratulations! You are now an Instructor on EduSpace",
+            `
+    <div style="font-family: Arial, sans-serif; line-height:1.6">
+        <h2>Congratulations!</h2>
+
+        <p>Dear ${user.firstName},</p>
+
+        <p>We are pleased to inform you that your account has been approved as an <strong>Instructor</strong> on EduSpace.</p>
+
+        <p>You can now:</p>
+        <ul>
+            <li>Create new courses</li>
+            <li>Manage your courses</li>
+            <li>Upload lectures and learning materials</li>
+            <li>Interact with your students</li>
+        </ul>
+
+        <p>Log in to your account to get started.</p>
+
+        <p>Best regards,<br><strong>EduSpace Team</strong></p>
+    </div>
+    `
+        );
         const updatedUser = await User.findById(userId)
             .populate("additionalDetails")
             .select("-password -token -resetPasswordToken -resetPasswordExpires");
@@ -90,6 +117,17 @@ exports.approveCourse = async (req, res) => {
 
         if (!updatedCourse) {
             return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        if (status === "Published" && updatedCourse?.instructor) {
+            await createNotification({
+                recipient: updatedCourse.instructor._id || updatedCourse.instructor,
+                type: "course_approved",
+                title: "Khóa học đã được duyệt",
+                message: `Khóa học "${updatedCourse.courseName}" của bạn đã được admin duyệt và công khai.`,
+                link: `/course/${updatedCourse._id}`,
+                relatedCourse: updatedCourse._id,
+            });
         }
 
         res.status(200).json({

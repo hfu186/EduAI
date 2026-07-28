@@ -5,6 +5,7 @@ const CourseProgress = require("../../models/courseProgress");
 const fs = require("fs");
 const path = require("path");
 const { processSlideForAI } = require("../../services/chatbot.service");
+const { createNotification } = require("../../utils/notification");
 const parseJsonSafe = (data) => {
   if (typeof data !== "string") return data;
   try {

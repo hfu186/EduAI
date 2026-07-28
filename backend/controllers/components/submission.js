@@ -4,6 +4,7 @@ const SubSection = require("../../models/subSection");
 const path = require("path");
 const fs = require("fs");
 const mailSender = require("../../utils/mailSender");
+const { createNotification } = require("../../utils/notification");
 
 exports.submitAssignment = async (req, res) => {
   try {
@@ -50,6 +51,8 @@ exports.submitAssignment = async (req, res) => {
     }
 
 
+    const course = await require("../../models/course").findById(courseId);
+
     let courseProgress = await CourseProgress.findOne({
       courseID: courseId,
       userId: studentId,
@@ -66,6 +69,18 @@ exports.submitAssignment = async (req, res) => {
     if (!courseProgress.completedSubSections.includes(subSectionId)) {
       courseProgress.completedSubSections.push(subSectionId);
       await courseProgress.save();
+    }
+
+    if (course?.instructor) {
+      await createNotification({
+        recipient: course.instructor,
+        type: "assignment_submitted",
+        title: "Có bài nộp bài tập mới",
+        message: `Học viên vừa nộp bài cho bài tập "${submission._id}" trong khóa học "${course.courseName}".`,
+        link: `/course/${course._id}`,
+        relatedCourse: course._id,
+        relatedSubmission: submission._id,
+      });
     }
 
     return res.status(200).json({
@@ -152,6 +167,16 @@ exports.gradeAssignment = async (req, res) => {
       Vui lòng đăng nhập vào hệ thống để xem chi tiết.
       Cảm ơn bạn đã nộp bài!`
     );
+
+    await createNotification({
+      recipient: updatedSubmission.studentId._id,
+      type: "assignment_graded",
+      title: "Bài tập đã được chấm điểm",
+      message: `Bài tập của bạn đã được chấm với điểm số ${grade}. ${feedback ? `Phản hồi: ${feedback}` : ""}`.trim(),
+      link: "/dashboard/my-courses",
+      relatedSubmission: updatedSubmission._id,
+    });
+
     return res.status(200).json({
       success: true,
       message: "Đã chấm điểm thành công",

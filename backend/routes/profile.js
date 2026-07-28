@@ -11,7 +11,9 @@ const {
     deleteAccount,
     getAllInstructors,
     getInstructorPublicProfile,
-    instructorDashboard
+    instructorDashboard,
+    requestInstructor,
+    getInstructorRequestStatus
 } = require('../controllers/user/profile');
 
 router.delete('/deleteProfile', auth, deleteAccount);
@@ -23,6 +25,8 @@ router.get('/getEnrolledCourses', auth, getEnrolledCourses);
 router.put('/updateUserProfileImage', auth, updateUserProfileImage);
 
 router.get('/instructorDashboard', auth, isInstructor, instructorDashboard);
+router.post('/request-instructor', auth, requestInstructor);
+router.get('/instructor-request-status', auth, getInstructorRequestStatus);
 router.get("/all-instructors", getAllInstructors);
 router.get("/instructor/:instructorId", getInstructorPublicProfile);
 router.get("/instructorCourses", auth, isInstructor, getInstructorCourses);
