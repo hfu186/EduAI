@@ -79,7 +79,7 @@ export default function CourseContent() {
         </div>
 
         {/* Right: Quick Stats & Actions */}
-        <div className="flex flex-col items-end gap-y-6 font-boogaloo">
+        <div className="flex flex-col items-end gap-y-6 ">
             <IconBtn 
                 text="Edit Course"
                 onclick={() => navigate(`/dashboard/edit-course/${courseId}`)}

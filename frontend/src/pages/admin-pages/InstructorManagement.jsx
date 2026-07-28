@@ -47,7 +47,7 @@ export default function InstructorList() {
   return (
     <div className="space-y-6">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h2 className="text-xl font-semibold text-richblack-5">  Instructor Request Management
+        <h2 className="text-3xl font-bold text-richblack-5">  Instructor Request Management
         </h2>
         <p className="text-sm text-richblack-300 mt-1">
           Review user profiles and approve or reject instructor applications.

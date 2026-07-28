@@ -115,7 +115,7 @@ const AdminCategoryManager = () => {
   return (
     <div className="space-y-6">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h1 className="text-2xl font-semibold text-richblack-5">Category Management</h1>
+        <h1 className="text-3xl font-semibold text-richblack-5">Category Management</h1>
         <p className="text-sm text-richblack-300 mt-1">
           Add, edit, and delete categories for course organization.
         </p>

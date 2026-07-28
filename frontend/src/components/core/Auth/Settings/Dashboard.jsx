@@ -38,7 +38,7 @@ export default function EnrolledCoursesStats() {
   return (
     <div className="text-white pb-10">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-medium text-richblack-5 font-boogaloo">Learning Dashboard</h1>
+        <h1 className="text-3xl font-medium text-richblack-5 ">Learning Dashboard</h1>
         <div className="hidden md:flex items-center gap-2 bg-orange-600/10 border border-orange-500/30 px-4 py-2 rounded-full">
           <HiFire className="text-orange-500 animate-pulse" size={20} />
           <span className="text-orange-200 font-bold">{user?.studyStreak || 0} Day Streak</span>

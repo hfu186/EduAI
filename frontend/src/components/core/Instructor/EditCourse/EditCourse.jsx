@@ -49,7 +49,7 @@ export default function EditCourse() {
 
   return (
     <div>
-       <h1 className="mb-14 text-3xl font-medium text-richblack-5  text-center lg:text-left font-boogaloo">
+       <h1 className="mb-14 text-3xl font-medium text-richblack-5  text-center lg:text-left ">
           Edit Course
         </h1>
     

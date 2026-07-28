@@ -47,7 +47,7 @@ function UpdatePassword() {
           </h1>
 
           <p className="my-4 text-[1.125rem] leading-[1.625rem] text-richblack-100">
-            Almost done. Enter your new password and you're all set.
+            Almost done. Enter your new password and you are all set.
           </p>
 
           <form onSubmit={handleOnSubmit}>

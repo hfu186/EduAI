@@ -13,7 +13,7 @@ export default function AddCourse() {
     <div className="flex w-full items-start gap-x-6 mt-10">
 
       <div className="flex flex-1 flex-col">
-        <h1 className="mb-14 text-3xl font-medium text-richblack-5  text-center lg:text-left font-boogaloo">
+        <h1 className="mb-14 text-3xl font-bold text-richblack-5  text-center lg:text-left ">
           Add Course
         </h1>
 

@@ -41,14 +41,13 @@ import AdminCategoryManager from "@/pages/admin-pages/CategoryManagement";
 import AssignmentSubmit from "@/components/core/Instructor/InstructorCourses/AssignmentSubmit";
 import CourseContent from "@/components/core/Instructor/InstructorCourses/CourseContent";
 import InstructorRequest from "@/components/core/Auth/InstructorRequest";
-
 function AppRoutes() {
   const { user } = useSelector((state) => state.profile);
 
   return (
+  
     <Routes>
       <Route path="/" element={<Home />} />
-
       <Route path="/contact" element={<Contact />} />
       <Route path="/about" element={<About />} />
       <Route path="/catalog/:catalogName" element={<Catalog />} />

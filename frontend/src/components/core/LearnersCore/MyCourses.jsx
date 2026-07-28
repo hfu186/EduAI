@@ -60,7 +60,7 @@ export default function MyCourses() {
   return (
     <div>
       <div className="mb-14 flex justify-between items-center mt-10">
-        <h1 className="text-4xl font-medium text-richblack-5  text-center lg:text-left font-boogaloo">
+        <h1 className="text-3xl font-bold text-richblack-5  text-center lg:text-left ">
           My Courses
         </h1>
         <IconBtn

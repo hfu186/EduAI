@@ -133,7 +133,7 @@ export default function CourseApproval() {
     <div className="space-y-8 animate-fadeIn">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-richblack-800 p-6 rounded-2xl border border-richblack-700">
         <div>
-          <h2 className="text-xl font-bold text-richblack-5">
+          <h2 className="text-3xl font-bold text-richblack-5">
             Moderation Portal
           </h2>
           <p className="text-sm text-richblack-400">
