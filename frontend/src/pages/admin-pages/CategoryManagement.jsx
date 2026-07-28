@@ -5,7 +5,7 @@ import {
   fetchAllCategories,
   updateCategory,
   deleteCategory,
-} from "../../../../services/operations/adminAPI";
+} from "@/services/operations/adminAPI";
 import { toast } from "react-hot-toast";
 
 const AdminCategoryManager = () => {

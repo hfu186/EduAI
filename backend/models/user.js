@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
             enum: ['none', 'pending', 'approved', 'rejected'],
             default: 'none',
         },
+        instructorRequestDetails: {
+            type: Object,
+            default: null,
+        },
         additionalDetails: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Profile',

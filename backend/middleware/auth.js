@@ -83,7 +83,6 @@ exports.isInstructor = (req, res, next) => {
         })
     }
 }
-// ================ IS ADMIN ================
 exports.isAdmin = (req, res, next) => {
     try {
         // console.log('User data -> ', req.user)

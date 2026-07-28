@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { ACCOUNT_TYPE } from "../../../utils/constants";
+import { ACCOUNT_TYPE } from "../../utils/constants";
 
+// eslint-disable-next-line react/prop-types
 function AdminRoute({ children }) {
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.profile);

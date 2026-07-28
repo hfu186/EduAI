@@ -18,7 +18,6 @@ export default function Instructor() {
   const [courses, setCourses] = useState([])
 
 
-  // get Instructor Data
   useEffect(() => {
      (async () => {
       setLoading(true)

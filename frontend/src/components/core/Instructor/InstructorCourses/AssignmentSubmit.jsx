@@ -15,8 +15,8 @@ export default function AssignmentSubmissions() {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // State cho Modal Chấm điểm
-  const [selectedSubmission, setSelectedSubmission] = useState(null); // Lưu bài đang chấm
+  // State for grading modal
+  const [selectedSubmission, setSelectedSubmission] = useState(null); // Current submission being graded
   const [grade, setGrade] = useState("");
   const [feedback, setFeedback] = useState("");
   const [gradingLoading, setGradingLoading] = useState(false);
@@ -44,27 +44,27 @@ export default function AssignmentSubmissions() {
     fetchSubmissions();
   }, [assignmentId, token]);
 
-  // Mở Modal chấm điểm
+  // Open grading modal
   const openGradeModal = (submission) => {
     setSelectedSubmission(submission);
-    // Nếu đã chấm rồi thì hiện lại điểm cũ, chưa thì để trống
+    // If already graded, restore previous grade; otherwise leave blank
     setGrade(submission.grade || "");
     setFeedback(submission.feedback || "");
   };
 
-  // Đóng Modal
+  // Close modal
   const closeGradeModal = () => {
     setSelectedSubmission(null);
     setGrade("");
     setFeedback("");
   };
 
-  // Xử lý gọi API chấm điểm
+  // Handle grading API call
   const handleGradeSubmission = async (e) => {
     e.preventDefault();
 
     if (!grade) {
-      toast.error("Vui lòng nhập điểm số");
+      toast.error("Please enter a grade");
       return;
     }
 
@@ -82,7 +82,7 @@ export default function AssignmentSubmissions() {
       );
 
       if (response?.data?.success) {
-        toast.success("Đã chấm điểm thành công!");
+        toast.success("Grade submitted successfully!");
 
         const updatedSubmissions = submissions.map((sub) =>
           sub._id === selectedSubmission._id
@@ -94,7 +94,7 @@ export default function AssignmentSubmissions() {
       }
     } catch (error) {
       console.error("Grading error:", error);
-      toast.error("Lỗi khi chấm điểm");
+      toast.error("Failed to submit grade");
     } finally {
       setGradingLoading(false);
     }
@@ -106,10 +106,10 @@ export default function AssignmentSubmissions() {
         onClick={() => navigate(`/dashboard/course/${courseId}`)}
         className="flex items-center gap-x-2 text-richblack-300 mb-6 hover:text-white transition-colors"
       >
-        <IoIosArrowBack /> Quay lại chi tiết khóa học
+        <IoIosArrowBack /> Back to course details
       </button>
 
-      <h1 className="text-2xl font-bold mb-6">Chấm điểm bài tập</h1>
+      <h1 className="text-2xl font-bold mb-6">Grade Assignments</h1>
 
       {loading ? (
         <div>Loading...</div>
@@ -117,7 +117,7 @@ export default function AssignmentSubmissions() {
         <div className="flex flex-col gap-y-4">
           {submissions.length === 0 ? (
             <div className="p-4 bg-richblack-800 rounded-md text-center text-richblack-300">
-              Chưa có học viên nào nộp bài.
+              No submissions yet.
             </div>
           ) : (
             submissions.map((sub) => (
@@ -149,10 +149,10 @@ export default function AssignmentSubmissions() {
                     rel="noreferrer"
                     className="text-yellow-50 underline mt-3 block text-sm hover:text-yellow-200"
                   >
-                    📄 Xem bài nộp: {sub.fileName}
+                    📄 View submission: {sub.fileName}
                   </a>
                   <p className="text-xs text-richblack-400 mt-1">
-                    Nộp lúc: {new Date(sub.submittedAt).toLocaleString("vi-VN")}
+                    Submitted at: {new Date(sub.submittedAt).toLocaleString("en-US")}
                   </p>
                 </div>
 
@@ -163,8 +163,8 @@ export default function AssignmentSubmissions() {
                                         ${sub.status === "Graded" ? "bg-caribbeangreen-900 text-caribbeangreen-50" : "bg-yellow-900 text-yellow-50"}`}
                   >
                     {sub.status === "Graded"
-                      ? `Đã chấm: ${sub.grade} điểm`
-                      : "Chờ chấm"}
+                      ? `Graded: ${sub.grade}`
+                      : "Pending review"}
                   </span>
 
                   <button
@@ -172,7 +172,7 @@ export default function AssignmentSubmissions() {
                     className="flex items-center gap-x-2 bg-yellow-50 text-black px-4 py-2 rounded-md font-bold hover:scale-105 transition-transform"
                   >
                     <BiTask />{" "}
-                    {sub.status === "Graded" ? "Sửa điểm" : "Chấm điểm"}
+                    {sub.status === "Graded" ? "Edit grade" : "Grade"}
                   </button>
                 </div>
               </div>
@@ -188,7 +188,7 @@ export default function AssignmentSubmissions() {
             {/* Header Modal */}
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-richblack-5">
-                Chấm bài cho {selectedSubmission.studentId.firstName}
+                Grade submission for {selectedSubmission.studentId.firstName}
               </h3>
               <button onClick={closeGradeModal}>
                 <IoMdClose className="text-2xl text-richblack-5 hover:text-pink-200" />
@@ -202,11 +202,11 @@ export default function AssignmentSubmissions() {
             >
               <div>
                 <label className="mb-1 block text-sm text-richblack-5">
-                  Điểm số (0-100) <sup className="text-pink-200">*</sup>
+                  Grade (0-100) <sup className="text-pink-200">*</sup>
                 </label>
                 <input
                   type="number"
-                  placeholder="Nhập điểm..."
+                  placeholder="Enter grade..."
                   className="w-full rounded-lg bg-richblack-700 p-3 text-richblack-5 outline-none border-b border-richblack-600 focus:border-yellow-50"
                   value={grade}
                   onChange={(e) => setGrade(e.target.value)}
@@ -218,11 +218,11 @@ export default function AssignmentSubmissions() {
 
               <div>
                 <label className="mb-1 block text-sm text-richblack-5">
-                  Nhận xét / Feedback
+                  Feedback
                 </label>
                 <textarea
                   rows={4}
-                  placeholder="Nhập lời nhận xét cho học viên..."
+                  placeholder="Enter feedback for the student..."
                   className="w-full rounded-lg bg-richblack-700 p-3 text-richblack-5 outline-none border-b border-richblack-600 focus:border-yellow-50"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
@@ -236,14 +236,14 @@ export default function AssignmentSubmissions() {
                   className="rounded-md bg-richblack-700 px-5 py-2 font-semibold text-richblack-50 hover:bg-richblack-600"
                   disabled={gradingLoading}
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="rounded-md bg-yellow-50 px-5 py-2 font-semibold text-black hover:scale-105 transition-all"
                   disabled={gradingLoading}
                 >
-                  {gradingLoading ? "Đang lưu..." : "Xác nhận chấm"}
+                  {gradingLoading ? "Saving..." : "Submit grade"}
                 </button>
               </div>
             </form>

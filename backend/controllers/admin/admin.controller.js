@@ -158,6 +158,60 @@ exports.approveCourse = async (req, res) => {
     }
 };
 
+exports.getInstructorRequests = async (req, res) => {
+    try {
+        const requests = await User.find({ instructorRequestStatus: "pending" })
+            .populate("additionalDetails")
+            .select("-password -token -resetPasswordToken -resetPasswordExpires")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({ success: true, data: requests });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.reviewInstructorRequest = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { decision } = req.body;
+
+        if (!['approved', 'rejected'].includes(decision)) {
+            return res.status(400).json({ success: false, message: 'Đề xuất không hợp lệ' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+        }
+
+        if (decision === 'approved') {
+            user.accountType = 'Instructor';
+            user.instructorRequestStatus = 'approved';
+            await user.save();
+
+            await mailSender(
+                user.email,
+                'Yêu cầu làm giảng viên đã được duyệt',
+                `Chúc mừng ${user.firstName}! Yêu cầu trở thành giảng viên của bạn đã được duyệt.`
+            );
+        } else {
+            user.instructorRequestStatus = 'rejected';
+            await user.save();
+
+            await mailSender(
+                user.email,
+                'Yêu cầu làm giảng viên bị từ chối',
+                `Xin chào ${user.firstName}, yêu cầu trở thành giảng viên của bạn chưa được duyệt.`
+            );
+        }
+
+        return res.status(200).json({ success: true, message: decision === 'approved' ? 'Đã duyệt yêu cầu' : 'Đã từ chối yêu cầu' });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 exports.getInstructors = async (req, res) => {
     try {
         const instructors = await User.find({ accountType: "Instructor" }).populate("courses");

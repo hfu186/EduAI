@@ -72,6 +72,36 @@ export const approveCourse = async (courseId, status, token) => {
     }
 };
 
+export const getInstructorRequests = async (token) => {
+    try {
+        const response = await apiConnector("GET", adminEndpoints.GET_INSTRUCTOR_REQUESTS, null, {
+            Authorization: `Bearer ${token}`,
+        });
+        return response.data.data;
+    } catch (error) {
+        console.log("GET_INSTRUCTOR_REQUESTS_ERROR...", error);
+        return [];
+    }
+};
+
+export const reviewInstructorRequest = async (userId, decision, token) => {
+    const toastId = toast.loading("Đang xử lý yêu cầu...");
+    try {
+        const response = await apiConnector(
+            "PATCH",
+            `${adminEndpoints.REVIEW_INSTRUCTOR_REQUEST}/${userId}`,
+            { decision },
+            { Authorization: `Bearer ${token}` }
+        );
+        return response.data;
+    } catch (error) {
+        console.log("REVIEW_INSTRUCTOR_REQUEST_ERROR...", error);
+        toast.error(error?.response?.data?.message || "Không thể xử lý yêu cầu");
+    } finally {
+        toast.dismiss(toastId);
+    }
+};
+
 export const getInstructors = async (token) => {
     try {
         const response = await apiConnector("GET", adminEndpoints.GET_ALL_INSTRUCTORS, null, {

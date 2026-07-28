@@ -16,7 +16,6 @@ const AllCourses = () => {
   const location = useLocation();
 
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,14 +27,12 @@ const AllCourses = () => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      setLoading(true);
       try {
         const result = await getAllCourses();
         if (result) setCourses(result);
       } catch (error) {
         console.log("Error fetching courses", error);
       }
-      setLoading(false);
     };
 
     const params = new URLSearchParams(location.search);
@@ -222,17 +219,7 @@ const AllCourses = () => {
               courses
             </p>
           </div>
-
-          {loading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 animate-pulse">
-              {[...Array(6)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-[300px] bg-richblack-800 rounded-2xl"
-                />
-              ))}
-            </div>
-          )}
+         
           {filteredCourses.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {currentCourses.map((course) => (

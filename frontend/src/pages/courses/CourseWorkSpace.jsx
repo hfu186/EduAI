@@ -6,15 +6,15 @@ import confetti from "canvas-confetti";
 import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content'; 
 
-import { getFullCourseDetails } from "../../services/operations/courseDetailsAPI";
-import { setCompletedLectures, setTotalNoOfLectures } from "../../slices/viewCourseSlice";
+import { getFullCourseDetails } from "@/services/operations/courseDetailsAPI";
+import { setCompletedLectures, setTotalNoOfLectures } from "@/slices/viewCourseSlice";
 
-import CourseSidebar from "../../components/core/ViewCourse/CourseSideBar";
-import SlideTab from "../../components/core/ViewCourse/tabs/SlideTab";
-import QuizTab from "../../components/core/ViewCourse/tabs/QuizTab";
-import AssignmentTab from "../../components/core/ViewCourse/tabs/AssignmentTab";
-import AIChatbot from "../../components/core/ViewCourse/tabs/Chatbox";
-import CertificateTemplate from "../../components/core/Dashboard/Settings/Certificates";
+import CourseSidebar from "@/components/core/LearnersCore/ViewCourse/CourseSideBar";
+import SlideTab from "@/components/core/LearnersCore/ViewCourse/tabs/SlideTab";
+import QuizTab from "@/components/core/LearnersCore/ViewCourse/tabs/QuizTab";
+import AssignmentTab from "@/components/core/LearnersCore/ViewCourse/tabs/AssignmentTab";
+import AIChatbot from "@/components/core/LearnersCore/ViewCourse/tabs/Chatbox";
+import CertificateTemplate from "@/components/core/Auth/Settings/Certificates";
 
 const MySwal = withReactContent(Swal);
 

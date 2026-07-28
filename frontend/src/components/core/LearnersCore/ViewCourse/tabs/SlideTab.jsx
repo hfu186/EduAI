@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCompletedLectures } from "../../../../slices/viewCourseSlice";
-import { apiConnector } from "../../../../services/apiConnector";
-import { courseEndpoints } from "../../../../services/apis";
-import { generateAIQuiz } from "../../../../services/operations/courseDetailsAPI";
+import { updateCompletedLectures } from "@/slices/viewCourseSlice";
+import { apiConnector } from "@/services/apiConnector";
+import { courseEndpoints } from "@/services/apis";
+import { generateAIQuiz } from "@/services/operations/courseDetailsAPI";
 import { toast } from "react-hot-toast";
 import { MdAutoAwesome, MdClose,  } from "react-icons/md";
 import PDFViewer from "./pdfViewer";

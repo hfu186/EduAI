@@ -254,7 +254,7 @@ export default function InstructorChart({ courses }) {
                 <span className="value">
                   {currChart === "students" 
                     ? totalStudents.toLocaleString() 
-                    : `${totalIncome.toLocaleString()} đ`
+                    : `${totalIncome.toLocaleString()} VND`
                   }
                 </span>
                 <span className="label">Total {currChart}</span>

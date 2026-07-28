@@ -1,11 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import Footer from "../../components/common/Footer";
-import Course_Card from "../../components/core/Catalog/Course_Card";
-import Course_Slider from "../../components/core/Catalog/Course_Slider";
-import Loading from "../../components/common/Loading";
-import { getCatalogPageData } from "../../services/operations/pageAndComponentData";
-import { fetchCourseCategories } from "../../services/operations/courseDetailsAPI";
+import Footer from "@/components/common/Layout/Footer";
+import Course_Card from "@/components/core/Catalog/Course_Card";
+import Course_Slider from "@/components/core/Catalog/Course_Slider";
+import Loading from "@/components/common/Loading";
+import { getCatalogPageData } from "@/services/operations/pageAndComponentData";
+import { fetchCourseCategories } from "@/services/operations/courseDetailsAPI";
 import { FiAlertCircle, FiBookOpen } from "react-icons/fi";
 
 function Catalog() {

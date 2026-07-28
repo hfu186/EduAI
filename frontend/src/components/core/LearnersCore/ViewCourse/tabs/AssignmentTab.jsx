@@ -14,9 +14,9 @@ import {
   MdDownload,
 } from "react-icons/md";
 import { toast } from "react-hot-toast";
-import { updateCompletedLectures } from "../../../../slices/viewCourseSlice";
-import { apiConnector } from "../../../../services/apiConnector";
-import { courseEndpoints } from "../../../../services/apis";
+import { updateCompletedLectures } from "@/slices/viewCourseSlice";
+import { apiConnector } from "@/services/apiConnector";
+import { courseEndpoints } from "@/services/apis";
 
 export default function AssignmentTab({ assignment, courseId, subSectionId }) {
   const { token } = useSelector((state) => state.auth);

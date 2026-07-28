@@ -12,7 +12,7 @@ import { ACCOUNT_TYPE } from '../../utils/constants'
 import { addToCart } from "../../slices/cartSlice"
 
 import ConfirmationModal from "../../components/common/ConfirmationModal"
-import Footer from "../../components/common/Footer"
+import Footer from "../../components/common/Layout/Footer"
 import RatingStars from "../../components/common/RatingStars"
 import CourseAccordionBar from "../../components/core/Course/CourseAccordionBar"
 import Img from "../../components/common/Img"

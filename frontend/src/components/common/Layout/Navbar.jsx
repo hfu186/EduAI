@@ -4,16 +4,20 @@ import { useSelector } from "react-redux";
 import { FiSearch, FiX, FiBell } from "react-icons/fi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "../../services/operations/notificationAPI";
+import {
+  getNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+} from "../../../services/operations/notificationAPI";
 
-import { NavbarLinks } from "../../../data/navbar-links";
+import { NavbarLinks } from "../../../../data/navbar-links";
 import EduSpaceLogo from "@/assets/Logo/Logo-Full-Light.png";
 import {
   fetchCourseCategories,
   getAllCourses,
-} from "./../../services/operations/courseDetailsAPI";
-import ProfileDropDown from "../core/Auth/ProfileDropDown";
-import MobileProfileDropDown from "../core/Auth/MobileProfileDropDown";
+} from "../../../services/operations/courseDetailsAPI";
+import ProfileDropDown from "../../core/Auth/ProfileDropDown";
+import MobileProfileDropDown from "../../core/Auth/MobileProfileDropDown";
 
 const Navbar = () => {
   const { token } = useSelector((state) => state.auth);
@@ -382,12 +386,12 @@ const Navbar = () => {
               {showNotifications && (
                 <div className="absolute right-0 top-[calc(100%+10px)] w-[320px] rounded-2xl border border-richblack-700 bg-richblack-800 shadow-2xl overflow-hidden">
                   <div className="flex items-center justify-between border-b border-richblack-700 px-4 py-3">
-                    <p className="text-sm font-semibold text-richblack-5">Thông báo</p>
+                    <p className="text-sm font-semibold text-richblack-5">Notifications</p>
                     <button
                       onClick={handleMarkAllNotificationsRead}
                       className="text-xs text-[#12D8FA] hover:underline"
                     >
-                      Đánh dấu tất cả
+                      Mark all as read
                     </button>
                   </div>
                   <div className="max-h-[320px] overflow-y-auto">
@@ -403,7 +407,7 @@ const Navbar = () => {
                         </button>
                       ))
                     ) : (
-                      <p className="px-4 py-6 text-center text-sm text-richblack-400">Không có thông báo nào</p>
+                      <p className="px-4 py-6 text-center text-sm text-richblack-400">No notifications yet</p>
                     )}
                   </div>
                 </div>

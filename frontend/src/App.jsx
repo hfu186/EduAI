@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import Navbar from "./components/common/Navbar";
+import Navbar from "./components/common/Layout/Navbar";
 import { HiArrowNarrowUp } from "react-icons/hi";
 import AppRoutes from "./routes/AppRoutes";
 function App() {

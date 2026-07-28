@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { connectDB } = require("./config/database");
 const { cloudinaryConnect } = require("./config/cloudinary");
-const { globalLimiter, aiServiceLimiter, authLimiter } = require("./middleware/rateLimit.js");
+const { globalLimiter, aiServiceLimiter } = require("./middleware/rateLimit.js");
 const userRoutes = require("./routes/user");
 const profileRoutes = require("./routes/profile");
 const paymentRoutes = require("./routes/payments");
@@ -50,8 +50,8 @@ app.use(
   })
 );
 
-app.use("/auth", authLimiter, userRoutes);
-app.use("/profile", authLimiter, profileRoutes);
+app.use("/auth", userRoutes);
+app.use("/profile",  profileRoutes);
 app.use("/payment", paymentRoutes);
 app.use("/submission", submissionRoutes); 
 app.use("/section", sectionRoutes);

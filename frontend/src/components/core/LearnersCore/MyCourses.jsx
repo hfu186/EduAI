@@ -2,9 +2,9 @@ import { useEffect, useState } from "react"
 import { VscAdd } from "react-icons/vsc"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { fetchInstructorCourses } from "../../../services/operations/courseDetailsAPI"
+import { fetchInstructorCourses } from "@/services/operations/courseDetailsAPI"
 import IconBtn from "../../common/IconBtn"
-import CoursesTable from "./InstructorCourses/CoursesTable"
+import CoursesTable from "@/components/core/Instructor/InstructorCourses/CoursesTable"
 
 export default function MyCourses() {
   const { token } = useSelector((state) => state.auth)

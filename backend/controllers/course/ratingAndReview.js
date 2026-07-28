@@ -3,7 +3,6 @@ const Course = require('../../models/course')
 const ratingAndReviews = require('../../models/ratingAndReview')
 const mongoose = require('mongoose');
 
-// ================ Create Rating ================
 exports.createRating = async (req, res) => {
     try {
         const { rating, review, courseId } = req.body;
@@ -31,7 +30,7 @@ exports.createRating = async (req, res) => {
 
 
         const alreadyReviewd = await ratingAndReviews.findOne(
-            { course:courseId, user:userId }
+            { course: courseId, user: userId }
         );
 
         if (alreadyReviewd) {
@@ -41,13 +40,10 @@ exports.createRating = async (req, res) => {
             });
         }
 
-        // create entry in DB
         const ratingReview = await ratingAndReviews.create({
-            user:userId, course:courseId, rating, review
+            user: userId, course: courseId, rating, review
         });
 
-
-        // link this rating to course 
         const updatedCourseDetails = await Course.findByIdAndUpdate({ _id: courseId },
             {
                 $push: {
@@ -56,12 +52,9 @@ exports.createRating = async (req, res) => {
             },
             { new: true })
 
-
-        // console.log(updatedCourseDetails);
-        //return response
         return res.status(200).json({
             success: true,
-            data:ratingReview,
+            data: ratingReview,
             message: "Rating and Review created Successfully",
         })
     }
@@ -78,50 +71,43 @@ exports.createRating = async (req, res) => {
 
 
 
-
-// ================ Get Average Rating ================
 exports.getAverageRating = async (req, res) => {
     try {
-            //get course ID
-            const courseId = req.body.courseId;
-            //calculate avg rating
-
-            const result = await ratingAndReviews.aggregate([
-                {
-                    $match:{
-                        course: new mongoose.Types.ObjectId(courseId),
-                    },
+        const courseId = req.body.courseId;
+        const result = await ratingAndReviews.aggregate([
+            {
+                $match: {
+                    course: new mongoose.Types.ObjectId(courseId),
                 },
-                {
-                    $group:{
-                        _id:null,
-                        averageRating: { $avg: "$rating"},
-                    }
+            },
+            {
+                $group: {
+                    _id: null,
+                    averageRating: { $avg: "$rating" },
                 }
-            ])
-
-            //return rating
-            if(result.length > 0) {
-
-                return res.status(200).json({
-                    success:true,
-                    averageRating: result[0].averageRating,
-                })
-
             }
-            
-            //if no rating/Review exist
+        ])
+
+        if (result.length > 0) {
+
             return res.status(200).json({
-                success:true,
-                message:'Average Rating is 0, no ratings given till now',
-                averageRating:0,
+                success: true,
+                averageRating: result[0].averageRating,
             })
+
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Average Rating is 0, no ratings given till now',
+            averageRating: 0,
+        })
     }
-    catch(error) {
+    catch (error) {
         console.log(error);
         return res.status(500).json({
-            success:false,
-            message:error.message,
+            success: false,
+            message: error.message,
         })
     }
 }
@@ -129,29 +115,27 @@ exports.getAverageRating = async (req, res) => {
 
 
 
-
-// ================ Get All Rating And Reviews ================
-exports.getAllRatingReview = async(req, res)=>{
-    try{
+exports.getAllRatingReview = async (req, res) => {
+    try {
         const allReviews = await ratingAndReviews.find({})
-        .sort({rating:'desc'})
-        .populate({
-            path:'user',
-            select:'firstName lastName email image'
-        })
-        .populate({
-            path:'course',
-            select:'courseName'
-        })
-        .exec();
+            .sort({ rating: 'desc' })
+            .populate({
+                path: 'user',
+                select: 'firstName lastName email image'
+            })
+            .populate({
+                path: 'course',
+                select: 'courseName'
+            })
+            .exec();
 
         return res.status(200).json({
-            success:true,
-            data:allReviews,
-            message:"All reviews fetched successfully"
+            success: true,
+            data: allReviews,
+            message: "All reviews fetched successfully"
         });
     }
-    catch(error){
+    catch (error) {
         console.log('Error while fetching all ratings');
         console.log(error);
         return res.status(500).json({

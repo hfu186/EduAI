@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Footer from "../../components/common/Footer";
+import Footer from "../../components/common/Layout/Footer";
 import { getAllInstructors } from "../../services/operations/profileAPI"; 
 import { FaLinkedin, FaEnvelope } from "react-icons/fa";
 import { BiBookOpen } from "react-icons/bi";

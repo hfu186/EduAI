@@ -3,7 +3,7 @@ import {
   getAllUsers,
   deleteUser,
   promoteUser,
-} from "../../../../services/operations/adminAPI";
+} from "@/services/operations/adminAPI";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 

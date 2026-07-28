@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   getAllCourses,
   approveCourse,
-} from "../../../../services/operations/adminAPI";
+} from "@/services/operations/adminAPI";
 import {
   FaTimes,
   FaEye,

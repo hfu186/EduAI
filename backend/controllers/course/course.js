@@ -32,7 +32,6 @@ export const getInstructorCourses = async (req, res) => {
   }
 }
 
-/* ================= CREATE COURSE ================= */
 
 export const createCourse = async (req, res) => {
   try {

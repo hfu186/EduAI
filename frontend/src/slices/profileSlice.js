@@ -5,11 +5,6 @@ const initialState = {
     loading: false,
 };
 
-// Problem occured and solved
-// initially i mark user data as nulll
-// as i refresh the page user becomes null , so login / signup buttons are not visible - In case of user not logged
-// case - User logged but as i refresh , dashboard dropdown becomes invisible
-// solution - try getting value from localStorage otherwise mark it as null
 
 
 const profileSlice = createSlice({

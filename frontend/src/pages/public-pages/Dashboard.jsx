@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useSelector } from 'react-redux'
 import { Outlet, useLocation } from "react-router-dom"
-import Sidebar from '../../components/core/Dashboard/Sidebar'
-import Loading from '../../components/common/Loading'
+import Sidebar from '@/components/common/Layout/Sidebar'
+import Loading from '@/components/common/Loading'
 
 const Dashboard = () => {
 

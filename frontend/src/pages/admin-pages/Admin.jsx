@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useRef } from "react";
-import Sidebar from "../components/core/Dashboard/Sidebar";
-import Loading from "../components/common/Loading";
+import Sidebar from "../../components/common/Layout/Sidebar";
+import Loading from "../../components/common/Loading";
 
 const Admin = () => {
   const { loading: authLoading } = useSelector((state) => state.auth);

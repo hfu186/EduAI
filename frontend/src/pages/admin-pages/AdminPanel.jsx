@@ -19,7 +19,7 @@ import {
   getInstructorEarnings,
   getEnrollmentGrowth,
   getAverageOrderValue,
-} from "../../../../services/operations/adminAPI";
+} from "@/services/operations/adminAPI";
 import { toast } from "react-hot-toast";
 
 // ── Custom Tooltip ──────────────────────────────────────────────────────────

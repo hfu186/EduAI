@@ -138,7 +138,26 @@ exports.requestInstructor = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Yêu cầu của bạn đang chờ admin duyệt' });
     }
 
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      bio,
+      qualifications,
+      experience,
+    } = req.body || {};
+
     user.instructorRequestStatus = 'pending';
+    user.instructorRequestDetails = {
+      firstName: firstName || user.firstName,
+      lastName: lastName || user.lastName,
+      email: email || user.email,
+      phone: phone || '',
+      bio: bio || '',
+      qualifications: qualifications || '',
+      experience: experience || '',
+    };
     await user.save();
 
     const admins = await User.find({ accountType: 'Admin' }).select('_id');

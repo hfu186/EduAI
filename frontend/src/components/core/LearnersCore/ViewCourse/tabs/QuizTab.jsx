@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { apiConnector } from "../../../../services/apiConnector";
+import { apiConnector } from "@/services/apiConnector";
 import { MdCheckCircle } from "react-icons/md";
-import { courseEndpoints } from "../../../../services/apis";
+import { courseEndpoints } from "@/services/apis";
 import { toast } from "react-hot-toast";
-import { updateCompletedLectures } from "../../../../slices/viewCourseSlice";
+import { updateCompletedLectures } from "@/slices/viewCourseSlice";
 
 export default function QuizTab({ quizData, courseId, subSectionId }) {
   const dispatch = useDispatch();

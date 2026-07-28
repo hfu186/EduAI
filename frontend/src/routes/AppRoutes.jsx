@@ -15,31 +15,32 @@ import Payment from "@/pages/payment/Payment";
 import CourseWorkSpace from "@/pages/courses/CourseWorkSpace";
 import OpenRoute from "@/components/core/Auth/OpenRoute";
 import ProtectedRoute from "@/components/core/Auth/ProtectedRoute";
-import AdminRoute from "@/components/core/Auth/AdminRoute";
+import AdminRoute from "@/pages/admin-pages/AdminRoute";
 import Instructors from "@/pages/instructor/Instructors";
 import Dashboard from "@/pages/public-pages/Dashboard";
-import Admin from "@/pages/Admin";
-import MyProfile from "@/components/core/Dashboard/MyProfile";
-import Settings from "@/components/core/Dashboard/Settings/Settings";
-import MyCourses from "@/components/core/Dashboard/MyCourses";
-import EditCourse from "@/components/core/Dashboard/EditCourse/EditCourse";
-import Instructor from "@/components/core/Dashboard/Instructor";
+import Admin from "@/pages/admin-pages/Admin";
+import MyProfile from "@/components/core/Auth/MyProfile";
+import Settings from "@/components/core/Auth/Settings/Settings";
+import MyCourses from "@/components/core/LearnersCore/MyCourses";
+import EditCourse from "@/components/core/Instructor/EditCourse/EditCourse";
+import Instructor from "@/components/core/Instructor/Instructor";
 import InstructorDetails from "@/pages/instructor/InstructorDetail";
 import PaymentQR from "@/pages/payment/PaymentQR";
-import Cart from "@/components/core/Dashboard/Cart/Cart";
-import EnrolledCourses from "@/components/core/Dashboard/EnrolledCourses";
-import AddCourse from "@/components/core/Dashboard/AddCourse/AddCourse";
+import Cart from "@/components/core/LearnersCore/Cart/Cart";
+import EnrolledCourses from "@/components/core/LearnersCore/EnrolledCourses";
+import AddCourse from "@/components/core/Instructor/AddCourse/AddCourse";
 import AllCourses from "@/pages/courses/Courses";
-import EnrolledCoursesStats from "@/components/core/Dashboard/Settings/Dashboard";
+import EnrolledCoursesStats from "@/components/core/Auth/Settings/Dashboard";
 import { ACCOUNT_TYPE } from "@/utils/constants";
-import Certificates from "@/components/core/Dashboard/Settings/Certificates";
-import AdminPanel from "@/components/core/Dashboard/Admin/AdminPanel";
-import UserManagement from "@/components/core/Dashboard/Admin/UserManagement";
-import CourseApproval from "@/components/core/Dashboard/Admin/CourseApproval";
-import InstructorList from "@/components/core/Dashboard/Admin/InstructorManagement";
-import AdminCategoryManager from "@/components/core/Dashboard/Admin/CategoryManagement";
-import AssignmentSubmit from "@/components/core/Dashboard/InstructorCourses/AssignmentSubmit";
-import CourseContent from "@/components/core/Dashboard/InstructorCourses/CourseContent";
+import Certificates from "@/components/core/Auth/Settings/Certificates";
+import AdminPanel from "@/pages/admin-pages/AdminPanel";
+import UserManagement from "@/pages/admin-pages/UserManagement";
+import CourseApproval from "@/pages/admin-pages/CourseApproval";
+import InstructorList from "@/pages/admin-pages/InstructorManagement";
+import AdminCategoryManager from "@/pages/admin-pages/CategoryManagement";
+import AssignmentSubmit from "@/components/core/Instructor/InstructorCourses/AssignmentSubmit";
+import CourseContent from "@/components/core/Instructor/InstructorCourses/CourseContent";
+import InstructorRequest from "@/components/core/Auth/InstructorRequest";
 
 function AppRoutes() {
   const { user } = useSelector((state) => state.profile);
@@ -119,6 +120,7 @@ function AppRoutes() {
         <Route path="dashboard/my-profile" element={<MyProfile />} />
         <Route path="dashboard/settings" element={<Settings />} />
         <Route path="dashboard/cart" element={<Cart />} />
+        <Route path="dashboard/request-instructor" element={<InstructorRequest />} />
 
         {user?.accountType === ACCOUNT_TYPE.STUDENT && (
           <>

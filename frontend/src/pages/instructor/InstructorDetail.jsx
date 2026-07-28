@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { getInstructorProfile } from "../../services/operations/profileAPI"
-import Footer from "../../components/common/Footer"
+import Footer from "../../components/common/Layout/Footer"
 import Course_Card from "../../components/core/Catalog/Course_Card" 
 import Img from "../../components/common/Img"
 

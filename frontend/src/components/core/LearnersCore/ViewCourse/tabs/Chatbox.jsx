@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from "react";
 import { IoChatbubbleEllipses, IoClose, IoSend } from "react-icons/io5";
-import { chatWithAI } from "../../../../services/operations/courseDetailsAPI";
+import { chatWithAI } from "@/services/operations/courseDetailsAPI";
 
 function AIChatbot({ token, subSectionId }) {
   const [isOpen, setIsOpen] = useState(false);

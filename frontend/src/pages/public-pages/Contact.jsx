@@ -1,8 +1,8 @@
 
-import Footer from "../../components/common/Footer"
-import ContactDetails from "../../components/core/ContactPage/ContactDetails"
-import ContactForm from "../../components/core/ContactPage/ContactForm"
-import ReviewSlider from '../../components/common/ReviewSlider';
+import Footer from "@/components/common/Layout/Footer"
+import ContactDetails from "@/components/core/ContactPage/ContactDetails"
+import ContactForm from "@/components/core/ContactPage/ContactForm"
+import ReviewSlider from '@/components/common/ReviewSlider';
 
 
 

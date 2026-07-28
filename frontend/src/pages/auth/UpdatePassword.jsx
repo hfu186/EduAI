@@ -30,10 +30,6 @@ function UpdatePassword() {
     }))
   }
 
-
-  // const params = useParams()
-  // console.log('Params data = ', params)
-
   const handleOnSubmit = (e) => {
     e.preventDefault()
     const token = location.pathname.split("/").at(-1)

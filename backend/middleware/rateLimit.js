@@ -27,13 +27,6 @@ const aiServiceLimiter = rateLimit({
 });
 
 
-const authLimiter = rateLimit({
-    windowMs: 10 * 60 * 1000, 
-    max: 5, 
-    message: {
-        success: false,
-        message: "Too many login attempts. Please try again after 10 minutes.",
-    },
-});
 
-module.exports = { globalLimiter, aiServiceLimiter, authLimiter };
+
+module.exports = { globalLimiter, aiServiceLimiter };

@@ -8,6 +8,8 @@ const {
     getAllCourses, 
     approveCourse, 
     getInstructors,
+    getInstructorRequests,
+    reviewInstructorRequest,
     getTotalRevenue,
     getAdminStats,
     getRevenue30Days,
@@ -24,9 +26,10 @@ router.delete("/delete-category/:categoryId", auth, isAdmin, deleteCategory);
 router.get("/all-users", auth, isAdmin, getAllUsers);
 router.delete("/delete-user/:userId", auth, isAdmin, deleteUser);
 router.patch("/promote-user/:userId", auth, isAdmin, promoteUserToInstructor);
+router.get("/instructor-requests", auth, isAdmin, getInstructorRequests);
+router.patch("/instructor-requests/:userId", auth, isAdmin, reviewInstructorRequest);
 router.get("/all-courses", auth, isAdmin, getAllCourses);
 router.post("/approve-course", auth, isAdmin, approveCourse);
-router.get("/all-instructors", auth, isAdmin, getInstructors);
 router.get("/stats", auth, isAdmin, getAdminStats);
 router.get("/revenue-stats", auth, isAdmin, getTotalRevenue);
 router.get("/revenue-30days", auth, isAdmin, getRevenue30Days);

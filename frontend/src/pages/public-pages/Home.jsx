@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 
-import HighlightText from '../../components/core/HomePage/HighlightText';
-import CTAButton from "../../components/core/HomePage/Button";
-import CodeBlocks from "../../components/core/HomePage/CodeBlocks";
-import ExploreMore from "../../components/core/HomePage/ExploreMore";
-import Footer from '../../components/common/Footer';
-import Course_Slider from "../../components/core/Catalog/Course_Slider";
-import { getAllCourses } from "../../services/operations/courseDetailsAPI";
+import HighlightText from '@/components/core/HomePage/HighlightText';
+import CTAButton from "@/components/core/HomePage/Button";
+import CodeBlocks from "@/components/core/HomePage/CodeBlocks";
+import ExploreMore from "@/components/core/HomePage/ExploreMore";
+import Footer from '@/components/common/Layout/Footer';
+import Course_Slider from "@/components/core/Catalog/Course_Slider";
+import { getAllCourses } from "@/services/operations/courseDetailsAPI";
 
 const quickLinks = [
   { icon: FaSearch, text: "Search Catalog", link: "/all-courses/" },
