@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FiSearch, FiX } from "react-icons/fi";
+import { FiSearch, FiX, FiBell } from "react-icons/fi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "../../services/operations/notificationAPI";
 
 import { NavbarLinks } from "../../../data/navbar-links";
 import EduSpaceLogo from "@/assets/Logo/Logo-Full-Light.png";
@@ -23,13 +24,16 @@ const Navbar = () => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
   const inputRef = useRef(null);
-
+  const notificationRef = useRef(null);
   const [subLinks, setSubLinks] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [notifications, setNotifications,] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const initData = async () => {
@@ -47,6 +51,38 @@ const Navbar = () => {
     initData();
   }, []);
 
+  useEffect(() => {
+    const loadNotifications = async () => {
+      if (!token) return;
+      try {
+        const data = await getNotifications(token);
+        setNotifications(data);
+        setUnreadCount(data.filter((item) => !item.read).length);
+      } catch (error) {
+        console.log("Error loading notifications", error);
+      }
+    };
+
+    loadNotifications();
+
+    if (!token) return;
+
+    const intervalId = window.setInterval(() => {
+      loadNotifications();
+    }, 10000);
+
+    const handleWindowFocus = () => {
+      loadNotifications();
+    };
+
+    window.addEventListener("focus", handleWindowFocus);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener("focus", handleWindowFocus);
+    };
+  }, [token]);
+
   // Auto focus input when search opens
   useEffect(() => {
     if (isSearchOpen && inputRef.current) {
@@ -54,7 +90,6 @@ const Navbar = () => {
     }
   }, [isSearchOpen]);
 
-  // Filter suggestions
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchValue.trim().length > 0) {
@@ -79,25 +114,42 @@ const Navbar = () => {
     return () => clearTimeout(timeoutId);
   }, [searchValue, allCourses]);
 
-  // Click outside to close search
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
         setIsSearchOpen(false);
-        setShowSuggestions(false);
         setSearchValue("");
       }
+
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  useEffect(() => {
+    if (!showNotifications) return;
 
-  // ESC to close
+    const handleClickOutside = (e) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(e.target)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showNotifications]);
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
         setIsSearchOpen(false);
         setShowSuggestions(false);
+        setNotifications(false);
         setSearchValue("");
       }
     };
@@ -125,12 +177,42 @@ const Navbar = () => {
     setSearchValue("");
   };
 
+  const handleNotificationClick = async (notification) => {
+    if (!notification.read) {
+      try {
+        await markNotificationAsRead(token, notification._id);
+        setNotifications((prev) =>
+          prev.map((item) => (item._id === notification._id ? { ...item, read: true } : item))
+        );
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      } catch (error) {
+        console.log("Error marking notification as read", error);
+      }
+    }
+
+    if (notification.link) {
+      navigate(notification.link);
+      setShowNotifications(false);
+    }
+  };
+
+  const handleMarkAllNotificationsRead = async () => {
+    if (!token) return;
+    try {
+      await markAllNotificationsAsRead(token);
+      setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
+      setUnreadCount(0);
+    } catch (error) {
+      console.log("Error marking all notifications as read", error);
+    }
+  };
+
   const matchRoute = (route) => matchPath({ path: route }, location.pathname);
 
   return (
     <nav className="fixed top-0 z-[1000] w-full border-b border-richblack-700/80 bg-richblack-900/95 backdrop-blur-md text-white">
       <div className="relative flex h-16 w-11/12 max-w-maxContent mx-auto items-center justify-between gap-6">
-        
+
         {/* LOGO */}
         <Link to="/" className="flex-shrink-0 z-10">
           <img
@@ -175,11 +257,10 @@ const Navbar = () => {
               ) : (
                 <Link to={link.path}>
                   <p
-                    className={`${
-                      matchRoute(link.path)
+                    className={`${matchRoute(link.path)
                         ? "text-yellow-25"
                         : "text-richblack-25 hover:text-yellow-25"
-                    } transition-colors`}
+                      } transition-colors`}
                   >
                     {link.title}
                   </p>
@@ -191,8 +272,7 @@ const Navbar = () => {
 
         {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-4 shrink-0 z-10">
-          
-          {/* SEARCH ICON + EXPANDABLE PANEL */}
+
           <div className="relative" ref={searchRef}>
             {/* Search Icon Button */}
             <button
@@ -261,7 +341,7 @@ const Navbar = () => {
                           onClick={handleSearchSubmit}
                           className="w-full px-4 py-3 text-left text-sm text-[#12D8FA] hover:bg-richblack-700/50 transition-colors border-t border-richblack-700"
                         >
-                          View all results for "{searchValue}"
+                          View all results for  {searchValue}
                         </button>
                       </>
                     ) : (
@@ -281,6 +361,55 @@ const Navbar = () => {
               </div>
             )}
           </div>
+
+          {/* Notifications */}
+          {token && (
+            <div className="relative" ref={notificationRef}>
+              <button
+                onClick={() => setShowNotifications((prev) => !prev)}
+                className="relative flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 hover:bg-richblack-800 hover:text-[#12D8FA] transition-all"
+                aria-label="Notifications"
+              >
+                <FiBell size={18} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-pink-500 px-1 text-[10px] font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+
+              {showNotifications && (
+                <div className="absolute right-0 top-[calc(100%+10px)] w-[320px] rounded-2xl border border-richblack-700 bg-richblack-800 shadow-2xl overflow-hidden">
+                  <div className="flex items-center justify-between border-b border-richblack-700 px-4 py-3">
+                    <p className="text-sm font-semibold text-richblack-5">Thông báo</p>
+                    <button
+                      onClick={handleMarkAllNotificationsRead}
+                      className="text-xs text-[#12D8FA] hover:underline"
+                    >
+                      Đánh dấu tất cả
+                    </button>
+                  </div>
+                  <div className="max-h-[320px] overflow-y-auto">
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <button
+                          key={notification._id}
+                          onClick={() => handleNotificationClick(notification)}
+                          className={`block w-full px-4 py-3 text-left transition-colors ${notification.read ? "bg-richblack-800" : "bg-richblack-700/60"}`}
+                        >
+                          <p className="text-sm font-medium text-richblack-5">{notification.title}</p>
+                          <p className="mt-1 text-xs text-richblack-400">{notification.message}</p>
+                        </button>
+                      ))
+                    ) : (
+                      <p className="px-4 py-6 text-center text-sm text-richblack-400">Không có thông báo nào</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Cart */}
           {user && user?.accountType !== "Instructor" && (

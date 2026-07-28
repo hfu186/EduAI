@@ -25,10 +25,8 @@ export default function CourseBuilderForm() {
   const { token } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   
-  // State lưu ID của section đang sửa (nếu có)
   const [editSectionName, setEditSectionName] = useState(null)
 
-  // --- XỬ LÝ SUBMIT (TẠO HOẶC SỬA) ---
   const onSubmit = async (data) => {
     setLoading(true)
     let result
@@ -54,8 +52,8 @@ export default function CourseBuilderForm() {
 
     if (result) {
       dispatch(setCourse(result))
-      setEditSectionName(null) // Reset chế độ edit
-      setValue("sectionName", "") // Xóa input
+      setEditSectionName(null)  
+      setValue("sectionName", "") 
     }
     setLoading(false)
   }
@@ -65,14 +63,11 @@ export default function CourseBuilderForm() {
     setValue("sectionName", "")
   }
 
-  // Hàm chuyển đổi chế độ edit (được gọi từ NestedView)
   const handleChangeEditSectionName = (sectionId, sectionName) => {
-    // Nếu đang là section đó thì toggle tắt
     if (editSectionName === sectionId) {
       cancelEdit()
       return
     }
-    // Bật chế độ edit cho sectionId này
     setEditSectionName(sectionId)
     setValue("sectionName", sectionName)
   }

@@ -61,7 +61,6 @@ export default function CourseInformationForm() {
       currentValues.courseBenefits !== course.whatYouWillLearn ||
       currentValues.courseCategory !== course.category._id ||
       currentValues.courseImage !== course.thumbnail
-      // Thêm so sánh cho Tags và Requirements nếu cần
     )
       return true
     else return false
@@ -74,13 +73,11 @@ export default function CourseInformationForm() {
     if (isFormUpdated()) {
       const formData = new FormData()
       formData.append("courseId", course._id)
-
       if (data.courseTitle !== course.courseName) formData.append("courseName", data.courseTitle)
       if (data.courseShortDesc !== course.courseDescription) formData.append("courseDescription", data.courseShortDesc)
       if (data.coursePrice !== course.price) formData.append("price", data.coursePrice)
       if (data.courseBenefits !== course.whatYouWillLearn) formData.append("whatYouWillLearn", data.courseBenefits)
       if (data.courseCategory !== course.category._id) formData.append("category", data.courseCategory)
-      
       formData.append("tag", JSON.stringify(data.courseTags || []))
       formData.append("instructions", JSON.stringify(data.courseRequirements || []))
 
@@ -107,7 +104,6 @@ export default function CourseInformationForm() {
   formData.append("whatYouWillLearn", data.courseBenefits)
   formData.append("category", data.courseCategory)
   formData.append("status", "Draft")
-  
   formData.append("tag", JSON.stringify(data.courseTags || []))
   formData.append("instructions", JSON.stringify(data.courseRequirements || []))
   
@@ -130,9 +126,17 @@ export default function CourseInformationForm() {
         <input id="courseTitle" placeholder="Enter Course Title" {...register("courseTitle", { required: true })} className="w-full form-style" />
         {errors.courseTitle && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
       </div>
+      <div className="flex flex-col space-y-2">
+  <label>Course Description</label>
 
+  <textarea
+    {...register("courseShortDesc", {
+      required: true,
+    })}
+    className="form-style min-h-[120px]"
+  />
+</div>
      
-
       {/* Price */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="coursePrice">Price <sup className="text-pink-200">*</sup></label>
@@ -153,7 +157,7 @@ export default function CourseInformationForm() {
       </div>
 
        <Upload
-        name="courseImage xl"
+        name="courseImage"
         label="Course Thumbnail"
         register={register}
         setValue={setValue}

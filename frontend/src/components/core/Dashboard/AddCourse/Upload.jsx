@@ -13,7 +13,7 @@ export default function Upload({
 }) {
   const [selectedFile, setSelectedFile] = useState(null)
   const [previewSource, setPreviewSource] = useState(viewData || editData || "")
-  
+
   const inputRef = useRef(null)
   const isInitialized = useRef(false)
 
@@ -54,28 +54,29 @@ export default function Upload({
         {label} {!viewData && <sup className="text-pink-200">*</sup>}
       </label>
 
-      <div 
-        className={`${
-          previewSource ? "bg-richblack-800" : "bg-richblack-700"
-        } flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500`}
+      <div
+        className={`${previewSource ? "bg-richblack-800" : "bg-richblack-700"
+          } flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500 `}
       >
         {previewSource ? (
-          <div className="flex w-full flex-col p-6">
-            { !isPDF(previewSource) ? (
-              <div className="flex flex-col items-center justify-center gap-3 w-full h-[300px] bg-richblack-900 rounded-md border border-richblack-600">
-                  <iframe 
-                    src={`${previewSource}#toolbar=0`}
-                    className="w-full h-full rounded-md"
-                    title="PDF Preview"
-                  />
-              </div>
-            ) : (
-              <img
-                src={previewSource}
-                alt="Preview"
-                className="h-full w-full rounded-md object-cover max-h-[400px]"
-              />
-            )}
+          <div className="flex w-full flex-col items-center p-6">
+           {isPDF(previewSource) ? (
+  <div className="w-full max-w-lg h-[350px] bg-richblack-900 rounded-md border border-richblack-600">
+    <iframe
+      src={`${previewSource}#toolbar=0`}
+      className="w-full h-full rounded-md"
+      title="PDF Preview"
+    />
+  </div>
+) : (
+  <div className="flex justify-center items-center w-full">
+    <img
+      src={previewSource}
+      alt="Preview"
+      className="max-w-[500px] max-h-[250px] w-auto h-auto object-contain rounded-md"
+    />
+  </div>
+)}
 
             {!viewData && (
               <button
@@ -105,7 +106,7 @@ export default function Upload({
             <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
               <span className="font-semibold text-yellow-50">Browse</span>
             </p>
-        
+
           </div>
         )}
 
