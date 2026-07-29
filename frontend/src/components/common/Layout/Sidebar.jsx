@@ -2,16 +2,13 @@ import { useEffect, useState } from "react"
 import { VscSignOut } from "react-icons/vsc"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-
 import { sidebarLinks } from './../../../../data/dashboard-links';
 import { logout } from "../../../services/operations/authAPI"
 import ConfirmationModal from "../../common/ConfirmationModal"
 import SidebarLink from "./SidebarLink"
 import Loading from './../../common/Loading';
-
 import { HiMenuAlt1 } from 'react-icons/hi'
 import { IoMdClose } from 'react-icons/io'
-
 import { setOpenSideMenu, setScreenSize } from "../../../slices/sidebarSlice";
 
 
@@ -30,14 +27,14 @@ export default function Sidebar() {
     window.addEventListener('resize', handleResize)
     handleResize()
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  })
 
   useEffect(() => {
     if (screenSize <= 640) {
       dispatch(setOpenSideMenu(false))
     }
     else dispatch(setOpenSideMenu(true))
-  }, [screenSize])
+  })
 
 
 

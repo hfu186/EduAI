@@ -5,10 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import confetti from "canvas-confetti";
 import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content'; 
-
 import { getFullCourseDetails } from "@/services/operations/courseDetailsAPI";
 import { setCompletedLectures, setTotalNoOfLectures } from "@/slices/viewCourseSlice";
-
 import CourseSidebar from "@/components/core/LearnersCore/ViewCourse/CourseSideBar";
 import SlideTab from "@/components/core/LearnersCore/ViewCourse/tabs/SlideTab";
 import QuizTab from "@/components/core/LearnersCore/ViewCourse/tabs/QuizTab";

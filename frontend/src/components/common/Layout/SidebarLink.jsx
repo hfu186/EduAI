@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import * as Icons from "react-icons/vsc"
 import { useDispatch, useSelector } from "react-redux"
 import { NavLink, matchPath, useLocation } from "react-router-dom"

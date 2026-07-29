@@ -59,13 +59,7 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscDashboard",
   },
-  {
-    id: 8,
-    name: "Manage Users",
-    path: "/admin/manage-users",
-    type: ACCOUNT_TYPE.ADMIN,
-    icon: "VscOrganization",
-  },
+  
   {
     id: 9,
     name: "Approve Courses",
@@ -85,6 +79,27 @@ export const sidebarLinks = [
     name: "Manage Categories",
     path: "/admin/manage-categories",
     type: ACCOUNT_TYPE.ADMIN,
-    icon: "VscAccount",
+    icon: "VscSymbolClass",
   },
+  {
+    id: 8,
+    name: "Manage Users",
+    path: "/admin/manage-users",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscOrganization",
+  },
+  {
+  id: 13,
+  name: "Messages",
+  path: "/chat",
+  type: ACCOUNT_TYPE.STUDENT,
+  icon: "VscComment",
+},
+{
+  id: 14,
+  name: "Messages",
+  path: "/chat",
+  type: ACCOUNT_TYPE.INSTRUCTOR,
+  icon: "VscComment",
+},
 ];

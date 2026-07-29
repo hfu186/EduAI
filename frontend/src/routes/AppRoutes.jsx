@@ -41,6 +41,9 @@ import AdminCategoryManager from "@/pages/admin-pages/CategoryManagement";
 import AssignmentSubmit from "@/components/core/Instructor/InstructorCourses/AssignmentSubmit";
 import CourseContent from "@/components/core/Instructor/InstructorCourses/CourseContent";
 import InstructorRequest from "@/components/core/Auth/InstructorRequest";
+import ChatList from "@/pages/chat/ChatList";
+import ChatWindow from "@/pages/chat/ChatWindow";
+
 function AppRoutes() {
   const { user } = useSelector((state) => state.profile);
 
@@ -53,6 +56,7 @@ function AppRoutes() {
       <Route path="/catalog/:catalogName" element={<Catalog />} />
       <Route path="/course/:courseId" element={<CourseDetails />} />
       <Route path="/all-courses" element={<AllCourses />} />
+      
       <Route
         path="signup"
         element={
@@ -116,6 +120,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
+        <Route path="/chat" element={<ChatList />} />
+      <Route path="/chat/:chatId" element={<ChatWindow />} />
         <Route path="dashboard/my-profile" element={<MyProfile />} />
         <Route path="dashboard/settings" element={<Settings />} />
         <Route path="dashboard/cart" element={<Cart />} />

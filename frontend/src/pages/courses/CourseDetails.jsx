@@ -234,7 +234,7 @@ function CourseDetails() {
             <div className="flex items-center gap-2 text-richblack-300 text-sm mt-5">
                 <Link to="/" className="hover:text-yellow-50 transition-colors">Home</Link>
                 <BiChevronRight />
-                <Link to="/courses" className="hover:text-yellow-50 transition-colors">Courses</Link>
+                <Link to="/all-courses" className="hover:text-yellow-50 transition-colors">Courses</Link>
                 <BiChevronRight />
                 <span className="text-yellow-50 font-medium truncate max-w-[200px]">{courseName}</span>
             </div>

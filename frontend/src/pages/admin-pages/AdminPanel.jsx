@@ -152,7 +152,7 @@ export default function AdminAnalytics() {
     }
   };
 
-  useEffect(() => { fetchData(); }, [token]);
+  useEffect(() => { fetchData(); });
 
   const totalRevenue = revenue.reduce((s, d) => s + (d.revenue || 0), 0);
   const totalStudents = enrollGrowth.reduce((s, d) => s + (d.students || 0), 0);
@@ -191,7 +191,7 @@ export default function AdminAnalytics() {
           </span>
         </div>
         <h1 style={{
-          fontSize: 36, fontWeight: 800, margin: 0,
+          fontSize: 30, fontWeight: 800, margin: 0,
           letterSpacing: "-0.03em",
           background: "linear-gradient(135deg, #fff 40%, #555)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",

@@ -26,7 +26,7 @@ export default function EnrolledCourses() {
 
   useEffect(() => {
     getEnrolledCourses();
-  }, [])
+  })
 
   const sklItem = () => {
     return (
@@ -60,7 +60,8 @@ export default function EnrolledCourses() {
 
   return (
     <>
-      <div className="text-4xl text-richblack-5  text-center sm:text-left ">Enrolled Courses</div>
+
+      <div className="text-3xl font-bold text-richblack-5  text-center sm:text-left mt-10 ">Enrolled Courses</div>
       {
         <div className="my-8 text-richblack-5">
           <div className="flex rounded-t-2xl bg-richblack-800  ">

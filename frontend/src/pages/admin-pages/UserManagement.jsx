@@ -22,7 +22,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  });
 
   useEffect(() => {
     if (!users.length) {
@@ -83,7 +83,7 @@ export default function UserManagement() {
   return (
     <div className="space-y-6">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h2 className="text-3xl font-semibold text-richblack-5">User Management</h2>
+        <h2 className="text-2xl font-semibold text-richblack-5">User Management</h2>
         <p className="text-sm text-richblack-300 mt-1">
           Select a user from the list and manage actions in the detail panel.
         </p>

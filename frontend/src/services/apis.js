@@ -61,6 +61,19 @@ export const aiEndpoints = {
   GENERATE_AI_QUIZ_API: BASE_URL + "/quiz/generate-ai",
 }
 
+
+export const conversationEndpoints = {
+  CREATE_OR_GET_CHAT_API: BASE_URL + "/chat",
+  GET_MY_CHATS_API: BASE_URL + "/chat",
+  GET_CHAT_BY_ID_API: BASE_URL + "/chat", 
+  DELETE_CHAT_API: BASE_URL + "/chat", 
+  UPLOAD_CHAT_FILE_API: BASE_URL + "/message/upload",
+  SEND_MESSAGE_API: BASE_URL + "/message",
+  GET_MESSAGES_API: BASE_URL + "/message", 
+  MARK_READ_API: BASE_URL + "/message", 
+}
+
+
 export const catalogData = {
   CATALOGPAGEDATA_API: BASE_URL + "/course/CategoryPageDetails",
 };
