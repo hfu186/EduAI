@@ -149,7 +149,7 @@ export default function CourseApproval() {
         </button>
       </div>
 
-      {/* Grid danh sách */}
+      {/* Course grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {courses.map((course) => (
           <div
@@ -219,7 +219,7 @@ export default function CourseApproval() {
         ))}
       </div>
 
-      {/* MODAL PREVIEW HOÀN CHỈNH */}
+      {/* Full preview modal */}
       {selectedCourse && (
         <div className="fixed inset-0 z-[1000] grid place-items-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="w-full max-w-[900px] rounded-3xl border border-richblack-700 bg-richblack-800 shadow-2xl overflow-hidden animate-slideUp">
@@ -242,7 +242,7 @@ export default function CourseApproval() {
             </div>
 
             <div className="p-6 md:p-8 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
-              {/* Course Metadata... giữ nguyên như code trước */}
+              {/* Course metadata */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 border-b border-richblack-700 pb-8">
                 <div className="md:col-span-1">
                   <img
@@ -261,7 +261,7 @@ export default function CourseApproval() {
                 </div>
               </div>
 
-              {/* Cấu trúc chương trình học */}
+              {/* Curriculum structure */}
               <div className="space-y-4 pt-4">
                 <h4 className="font-bold text-richblack-5 flex items-center gap-2 uppercase text-xs tracking-widest">
                   <FaChevronRight className="text-yellow-50 size-2" />{" "}

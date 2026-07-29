@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import CourseCard from "../Course/CourseExploreCard";
 import HighlightText from "./HighlightText";
 import { fetchCourseCategories } from "../../../services/operations/courseDetailsAPI";
-import { motion,  } from "framer-motion";
+import { motion } from "framer-motion";
 import { FiBookOpen, FiCompass, FiCpu, FiDatabase, FiGlobe, FiLayout, } from "react-icons/fi";
 
 const ExploreMore = ({ allCourses }) => {
@@ -40,50 +40,49 @@ const ExploreMore = ({ allCourses }) => {
     getCategories();
   }, []);
 
-    const filteredCourses = useMemo(() => {
+  const filteredCourses = useMemo(() => {
     if (!currentTab || !allCourses) return [];
-    const result = allCourses
+    return allCourses
       .filter((course) => course?.category?.name === currentTab)
       .slice(0, 6);
-    
-    if (result.length > 0) setCurrentCard(result[0]?.courseName);
-    return result;
   }, [currentTab, allCourses]);
 
+  useEffect(() => {
+    setCurrentCard(filteredCourses[0]?.courseName || "");
+  }, [filteredCourses]);
+
   return (
-    <div className="w-full py-12">
-      {/* Header Section */}
+    <div className="w-full py-10">
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mb-16 text-center"
+        className="mb-12 text-center"
       >
-        <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white tracking-tight">
+        <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-caribbeangreen-100">Explore by category</p>
+        <h2 className="text-3xl lg:text-5xl font-bold mb-4 text-white tracking-tight">
           Academic <HighlightText text="Excellence Catalog" />
         </h2>
-        <div className="h-1.5 w-20 bg-gradient-to-r from-yellow-50 to-orange-200 mx-auto mb-6 rounded-full"></div>
         <p className="text-richblack-300 text-lg max-w-[750px] mx-auto leading-relaxed">
           Explore specialized curricula crafted for the next generation of IT leaders. 
           Validated by industry standards and enhanced by intelligent tutoring.
         </p>
       </motion.div>
 
-      {/* Modern Tab Bar */}
-      <div className="flex justify-center mb-20 px-4">
-        <div className="flex flex-wrap justify-center gap-3 p-2 bg-richblack-800/40 backdrop-blur-xl rounded-[2rem] border border-richblack-700 shadow-2xl">
+      <div className="mb-14 flex justify-center px-4">
+        <div className="flex flex-wrap justify-center gap-2 rounded-lg border border-richblack-700 bg-richblack-800/70 p-2 shadow-2xl backdrop-blur">
           {
             categories.map((category) => (
               <button
                 key={category._id}
                 onClick={() => setCurrentTab(category.name)}
-                className={`flex items-center gap-2.5 px-7 py-3.5 rounded-[1.6rem] text-sm font-bold transition-all duration-500
+                className={`flex min-h-[44px] items-center gap-2.5 rounded-lg px-5 py-3 text-sm font-bold transition-all duration-300
                   ${currentTab === category.name
-                    ? "bg-yellow-50 text-richblack-900 shadow-[0_10px_30px_rgba(255,214,10,0.3)] -translate-y-1"
+                    ? "bg-yellow-50 text-richblack-900 shadow-[0_10px_30px_rgba(255,214,10,0.22)]"
                     : "text-richblack-200 hover:text-white hover:bg-richblack-700"
                   }`}
               >
-                <span className="text-xl">{getCategoryIcon(category.name)}</span>
+                <span className="text-lg">{getCategoryIcon(category.name)}</span>
                 {category.name}
               </button>
             ))
@@ -91,9 +90,8 @@ const ExploreMore = ({ allCourses }) => {
         </div>
       </div>
 
-      {/* Results Grid */}
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 min-h-[480px]">
+      <div className="mx-auto max-w-7xl px-0 sm:px-2">
+        <motion.div layout className="grid min-h-[430px] grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredCourses.length > 0 ? (
               filteredCourses.map((course, index) => (
                 <motion.div
@@ -115,7 +113,7 @@ const ExploreMore = ({ allCourses }) => {
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="col-span-full flex flex-col items-center justify-center text-richblack-400 py-28 bg-richblack-800/20 rounded-[3rem] border-2 border-dashed border-richblack-700"
+                className="col-span-full flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-richblack-700 bg-richblack-800/20 px-6 py-24 text-richblack-400"
               >
                 <div className="relative mb-6">
                    <FiCompass size={64} className="text-richblack-600 animate-[spin_10s_linear_infinite]" />

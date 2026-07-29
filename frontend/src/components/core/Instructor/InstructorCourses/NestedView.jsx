@@ -25,7 +25,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  // States quản lý Modal
+  // Modal state
   const [addSubSection, setAddSubSection] = useState(null);
   const [viewSubSection, setViewSubSection] = useState(null);
   const [editSubSection, setEditSubSection] = useState(null);
@@ -108,9 +108,9 @@ export default function NestedView({ handleChangeEditSectionName }) {
               </div>
             </summary>
 
-            {/* Nội dung Section */}
+            {/* Section content */}
             <div className="px-6 pb-4 pt-2">
-              {/* Danh sách SubSection */}
+              {/* Subsection list */}
               <div className="flex flex-col gap-y-2">
                 {section.subSection.map((data) => (
                   <div
@@ -119,7 +119,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                     className="flex cursor-pointer items-center justify-between gap-x-3 border-b border-richblack-600 bg-richblack-800 p-3 rounded-md hover:bg-richblack-900 transition-all"
                   >
                     <div className="flex items-center gap-x-3">
-                      {/* Icon tùy theo type */}
+                      {/* Icon based on type */}
                       {data.type === "quiz" ? (
                         <MdQuiz
                           className="text-2xl text-caribbeangreen-200"

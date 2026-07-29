@@ -72,7 +72,7 @@ export default function AssignmentSubmissions() {
     try {
       const response = await apiConnector(
         "POST",
-        courseEndpoints.GRADE_ASSIGNMENT_API, // Đảm bảo bạn đã khai báo endpoint này
+          courseEndpoints.GRADE_ASSIGNMENT_API, // Ensure this endpoint is declared.
         {
           submissionId: selectedSubmission._id,
           grade: grade,
@@ -125,7 +125,7 @@ export default function AssignmentSubmissions() {
                 key={sub._id}
                 className="bg-richblack-800 p-6 rounded-lg border border-richblack-700 flex justify-between items-start md:items-center gap-4"
               >
-                {/* Thông tin học viên */}
+                {/* Student information */}
                 <div>
                   <div className="flex items-center gap-x-3">
                     <img
@@ -156,7 +156,7 @@ export default function AssignmentSubmissions() {
                   </p>
                 </div>
 
-                {/* Trạng thái & Nút chấm */}
+                {/* Status and grading button */}
                 <div className="flex flex-col items-end gap-3 min-w-[150px]">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-bold 
@@ -181,7 +181,7 @@ export default function AssignmentSubmissions() {
         </div>
       )}
 
-      {/* === MODAL CHẤM ĐIỂM === */}
+      {/* === GRADING MODAL === */}
       {selectedSubmission && (
         <div className="fixed inset-0 z-[1000] !mt-0 grid place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
           <div className="w-11/12 max-w-[500px] rounded-lg border border-richblack-400 bg-richblack-800 p-6">

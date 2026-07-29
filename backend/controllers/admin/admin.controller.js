@@ -8,7 +8,6 @@ exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find({})
             .populate("additionalDetails")
-            .select("-password -token -resetPasswordToken -resetPasswordExpires");
         res.status(200).json({ success: true, data: users });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -123,8 +122,8 @@ exports.approveCourse = async (req, res) => {
             await createNotification({
                 recipient: updatedCourse.instructor._id || updatedCourse.instructor,
                 type: "course_approved",
-                title: "Khóa học đã được duyệt",
-                message: `Khóa học "${updatedCourse.courseName}" của bạn đã được admin duyệt và công khai.`,
+                title: "Course approved",
+                message: `Your course "${updatedCourse.courseName}" has been approved by an admin and is now public.`,
                 link: `/course/${updatedCourse._id}`,
                 relatedCourse: updatedCourse._id,
             });
@@ -177,12 +176,12 @@ exports.reviewInstructorRequest = async (req, res) => {
         const { decision } = req.body;
 
         if (!['approved', 'rejected'].includes(decision)) {
-            return res.status(400).json({ success: false, message: 'Đề xuất không hợp lệ' });
+            return res.status(400).json({ success: false, message: 'Invalid request decision' });
         }
 
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
         if (decision === 'approved') {
@@ -192,8 +191,8 @@ exports.reviewInstructorRequest = async (req, res) => {
 
             await mailSender(
                 user.email,
-                'Yêu cầu làm giảng viên đã được duyệt',
-                `Chúc mừng ${user.firstName}! Yêu cầu trở thành giảng viên của bạn đã được duyệt.`
+                'Instructor request approved',
+                `Congratulations ${user.firstName}! Your request to become an instructor has been approved.`
             );
         } else {
             user.instructorRequestStatus = 'rejected';
@@ -201,12 +200,12 @@ exports.reviewInstructorRequest = async (req, res) => {
 
             await mailSender(
                 user.email,
-                'Yêu cầu làm giảng viên bị từ chối',
-                `Xin chào ${user.firstName}, yêu cầu trở thành giảng viên của bạn chưa được duyệt.`
+                'Instructor request rejected',
+                `Hello ${user.firstName}, your request to become an instructor was not approved.`
             );
         }
 
-        return res.status(200).json({ success: true, message: decision === 'approved' ? 'Đã duyệt yêu cầu' : 'Đã từ chối yêu cầu' });
+        return res.status(200).json({ success: true, message: decision === 'approved' ? 'Request approved' : 'Request rejected' });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }

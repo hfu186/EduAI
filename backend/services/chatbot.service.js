@@ -91,7 +91,7 @@ const extractTextVisionFallback = async (filePath) => {
             mimeType: "image/png",
           },
         },
-        `Đây là slide số ${i}. Hãy mô tả toàn bộ nội dung: tiêu đề, các điểm chính, bảng, biểu đồ, sơ đồ nếu có. Trình bày rõ ràng đầy đủ bằng tiếng Việt.`,
+        `This is slide ${i}. Describe all content: the title, key points, tables, charts, and diagrams if present. Present the explanation clearly and completely in English.`,
       ]);
 
       const text = response.response.text();

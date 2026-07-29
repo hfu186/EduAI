@@ -145,8 +145,8 @@ function CourseSectionAccordion({ section, courseId }) {
     }
 
     const handleEditSection = (e) => {
-        e.stopPropagation(); // Ngăn chặn toggle accordion
-        navigate(`/dashboard/edit-course/${courseId}`); // Chuyển về trang Edit
+        e.stopPropagation(); // Prevent toggling the accordion.
+        navigate(`/dashboard/edit-course/${courseId}`); // Go back to the edit page.
     }
 
     return (
@@ -162,7 +162,7 @@ function CourseSectionAccordion({ section, courseId }) {
                 </div>
 
                 <div className="flex items-center gap-x-4">
-                    {/* Nút Sửa Section (Hiện ra khi hover) */}
+                    {/* Edit section button shown on hover */}
                     <button 
                         onClick={handleEditSection}
                         className="text-richblack-300 hover:text-yellow-50 opacity-0 group-hover:opacity-100 transition-all"

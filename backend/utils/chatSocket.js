@@ -9,7 +9,7 @@ module.exports = (io) => {
       const chat = await Chat.findById(chatId);
       if (!chat) return;
       const isParticipant = String(chat.student) === userId || String(chat.instructor) === userId;
-      if (!isParticipant) return socket.emit("errorMsg", "Không có quyền truy cập chat này");
+      if (!isParticipant) return socket.emit("errorMsg", "You do not have permission to access this chat");
       socket.join(chatId);
     });
 
@@ -32,7 +32,7 @@ module.exports = (io) => {
         if (callback) callback({ success: true, message: populated });
       } catch (err) {
         console.error(err);
-        if (callback) callback({ success: false, error: "Gửi tin nhắn thất bại" });
+        if (callback) callback({ success: false, error: "Failed to send message" });
       }
     });
 

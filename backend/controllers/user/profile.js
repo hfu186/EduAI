@@ -131,11 +131,11 @@ exports.requestInstructor = async (req, res) => {
     }
 
     if (user.accountType === 'Instructor') {
-      return res.status(400).json({ success: false, message: 'Bạn đã là giảng viên rồi' });
+      return res.status(400).json({ success: false, message: 'You are already an instructor' });
     }
 
     if (user.instructorRequestStatus === 'pending') {
-      return res.status(400).json({ success: false, message: 'Yêu cầu của bạn đang chờ admin duyệt' });
+      return res.status(400).json({ success: false, message: 'Your request is pending admin approval' });
     }
 
     const {
@@ -165,15 +165,15 @@ exports.requestInstructor = async (req, res) => {
       await createNotification({
         recipient: admin._id,
         type: 'course_approved',
-        title: 'Yêu cầu trở thành giảng viên mới',
-        message: `${user.firstName} ${user.lastName} muốn trở thành giảng viên.`,
+        title: 'New instructor request',
+        message: `${user.firstName} ${user.lastName} wants to become an instructor.`,
         link: '/admin',
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Yêu cầu trở thành giảng viên đã được gửi',
+      message: 'Instructor request submitted successfully',
       data: user,
     });
   } catch (error) {

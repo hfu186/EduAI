@@ -30,7 +30,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
 
   if (!assignment) return null;
 
-  // 🚩 SỬA LỖI 1: Trỏ đúng vào biến lồng nhau của deadline
+  // Use the nested deadline value when available.
   const deadlineDate = assignment.assignment?.deadline || assignment.deadline || assignment.dueDate;
   
   const isDeadlinePassed = deadlineDate ? new Date() > new Date(deadlineDate) : false;
@@ -188,7 +188,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
 
         <div className="p-6 text-richblack-300 bg-richblack-900 flex flex-col gap-6">
           <div className="prose prose-invert max-w-none">
-            {/* 🚩 SỬA LỖI 2: Trỏ đúng vào biến lồng nhau của description */}
+            {/* Use the nested description value when available. */}
             {assignment.assignment?.description || assignment.description || assignment.instructions || "Please complete the assignment and submit your file below."}
           </div>
 
@@ -205,7 +205,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
             </div>
           )}
 
-          {/* 🚩 SỬA LỖI 3: Trỏ đúng vào biến lồng nhau của answerKeyUrl */}
+          {/* Use the nested answerKeyUrl value when available. */}
           {assignment.assignment?.answerKeyUrl && (
             <div className={`mt-4 p-5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all
               ${canViewAnswer 
@@ -242,7 +242,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
         </div>
       </section>
 
-      {/* ---------------- SECTION 2: KHU VỰC UPLOAD / HIỂN THỊ TRẠNG THÁI ---------------- */}
+      {/* ---------------- SECTION 2: UPLOAD AND STATUS WORKSPACE ---------------- */}
       <section className="bg-richblack-900 rounded-2xl border-2 border-dashed border-richblack-700 p-8 shadow-2xl relative">
         <h3 className="text-xl font-bold text-white mb-6 text-center">
           Submission Workspace
@@ -252,7 +252,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
           <div className="text-center text-richblack-200 py-10 animate-pulse">Loading workspace...</div>
         ) : submittedAssignment && !editMode ? (
           
-          // --- TRẠNG THÁI: ĐÃ NỘP BÀI ---
+          // --- STATE: ASSIGNMENT SUBMITTED ---
           <div className="flex flex-col items-center gap-y-4">
             <MdCheckCircle className="text-6xl text-caribbeangreen-200" />
 
@@ -290,7 +290,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
               </div>
             </div>
 
-            {/* Chỉ hiện nút Xóa/Sửa lại nếu chưa bị chấm điểm VÀ chưa quá hạn */}
+            {/* Show delete/resubmit only when the submission is ungraded and before the deadline. */}
             {!isDeadlinePassed && submittedAssignment.status !== "Graded" && (
               <div className="flex gap-x-4 mt-6">
                 <button
@@ -313,7 +313,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
 
         ) : isDeadlinePassed ? (
 
-          // 🚩 --- TRẠNG THÁI: ĐÃ QUÁ HẠN VÀ CHƯA NỘP (HOẶC HỦY NỘP BÀI) ---
+          // --- STATE: DEADLINE PASSED AND NO ACTIVE SUBMISSION ---
           <div className="flex flex-col items-center justify-center text-center py-8">
              <div className="w-24 h-24 bg-pink-900/20 rounded-full flex items-center justify-center mb-6 border-2 border-pink-800">
                 <MdAccessTime className="text-5xl text-pink-300" />
@@ -326,7 +326,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
 
         ) : (
 
-          // --- TRẠNG THÁI: FORM NỘP BÀI BÌNH THƯỜNG ---
+          // --- STATE: STANDARD SUBMISSION FORM ---
           <div className="flex flex-col items-center">
             <input
               type="file"

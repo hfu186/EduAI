@@ -15,7 +15,7 @@ exports.submitAssignment = async (req, res) => {
     if (!submissionFile || !assignmentId || !courseId || !subSectionId) {
       return res.status(400).json({ 
         success: false, 
-        message: "Thiếu thông tin (File, assignmentId, courseId hoặc subSectionId)" 
+        message: "Missing required information: file, assignmentId, courseId, or subSectionId" 
       });
     }
 
@@ -75,8 +75,8 @@ exports.submitAssignment = async (req, res) => {
       await createNotification({
         recipient: course.instructor,
         type: "assignment_submitted",
-        title: "Có bài nộp bài tập mới",
-        message: `Học viên vừa nộp bài cho bài tập "${submission._id}" trong khóa học "${course.courseName}".`,
+        title: "New assignment submission",
+        message: `A student submitted assignment "${submission._id}" in course "${course.courseName}".`,
         link: `/course/${course._id}`,
         relatedCourse: course._id,
         relatedSubmission: submission._id,
@@ -85,7 +85,7 @@ exports.submitAssignment = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Nộp bài thành công!",
+      message: "Assignment submitted successfully!",
       data: submission,
       progressUpdated: true
     });
@@ -94,7 +94,7 @@ exports.submitAssignment = async (req, res) => {
     console.error("SUBMIT ASSIGNMENT ERROR:", error);
     return res.status(500).json({ 
       success: false, 
-      message: "Lỗi hệ thống khi nộp bài", 
+      message: "System error while submitting assignment", 
       error: error.message 
     });
   }
@@ -105,7 +105,7 @@ exports.getAssignmentSubmissions = async (req, res) => {
     const { assignmentId } = req.params;
 
     if (!assignmentId) {
-      return res.status(400).json({ success: false, message: "Thiếu assignmentId" });
+      return res.status(400).json({ success: false, message: "Missing assignmentId" });
     }
 
     const submissions = await Submission.find({ assignmentId })
@@ -122,13 +122,13 @@ exports.getAssignmentSubmissions = async (req, res) => {
     console.error("GET SUBMISSIONS ERROR:", error);
     return res.status(500).json({
       success: false,
-      message: "Không thể lấy danh sách bài nộp",
+      message: "Unable to fetch submissions",
       error: error.message,
     });
   }
 };
 
-/* ================= 3. GIẢNG VIÊN CHẤM ĐIỂM (GRADE) ================= */
+/* ================= 3. INSTRUCTOR GRADES ASSIGNMENT ================= */
 exports.gradeAssignment = async (req, res) => {
   try {
     const { submissionId, grade, feedback } = req.body;
@@ -136,7 +136,7 @@ exports.gradeAssignment = async (req, res) => {
     if (!submissionId || grade === undefined) {
       return res.status(400).json({ 
         success: false, 
-        message: "Thiếu submissionId hoặc điểm số" 
+        message: "Missing submissionId or grade" 
       });
     }
 
@@ -152,34 +152,34 @@ exports.gradeAssignment = async (req, res) => {
     ).populate("studentId", "firstName lastName email");
 
     if (!updatedSubmission) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy bài nộp" });
+      return res.status(404).json({ success: false, message: "Submission not found" });
     }
 
-    // (Tuỳ chọn) Gửi email thông báo cho sinh viên tại đây nếu cần
-    // await mailSender(updatedSubmission.studentId.email, "Bài tập đã được chấm", ...);
+    // Optional: send an email notification to the student here if needed.
+    // await mailSender(updatedSubmission.studentId.email, "Your assignment has been graded", ...);
 
     await mailSender(
       updatedSubmission.studentId.email,
-      "Bài tập của bạn đã được chấm điểm",
-      `Xin chào ${updatedSubmission.studentId.firstName},   
-      Bài tập của bạn đã được chấm với điểm số: ${grade}.
-      Phản hồi từ giảng viên: ${feedback || "Không có phản hồi"}.
-      Vui lòng đăng nhập vào hệ thống để xem chi tiết.
-      Cảm ơn bạn đã nộp bài!`
+      "Your assignment has been graded",
+      `Hello ${updatedSubmission.studentId.firstName},   
+      Your assignment has been graded with a score of: ${grade}.
+      Instructor feedback: ${feedback || "No feedback provided"}.
+      Please log in to the system to view the details.
+      Thank you for your submission!`
     );
 
     await createNotification({
       recipient: updatedSubmission.studentId._id,
       type: "assignment_graded",
-      title: "Bài tập đã được chấm điểm",
-      message: `Bài tập của bạn đã được chấm với điểm số ${grade}. ${feedback ? `Phản hồi: ${feedback}` : ""}`.trim(),
+      title: "Assignment graded",
+      message: `Your assignment has been graded with a score of ${grade}. ${feedback ? `Feedback: ${feedback}` : ""}`.trim(),
       link: "/dashboard/my-courses",
       relatedSubmission: updatedSubmission._id,
     });
 
     return res.status(200).json({
       success: true,
-      message: "Đã chấm điểm thành công",
+      message: "Assignment graded successfully",
       data: updatedSubmission,
     });
 
@@ -187,7 +187,7 @@ exports.gradeAssignment = async (req, res) => {
     console.error("GRADE ASSIGNMENT ERROR:", error);
     return res.status(500).json({
       success: false,
-      message: "Lỗi khi chấm điểm",
+      message: "Error while grading assignment",
       error: error.message,
     });
   }
@@ -212,5 +212,4 @@ exports.checkStudentSubmission = async (req, res) => {
 
   res.json({ success: true, data: submission })
 }
-
 

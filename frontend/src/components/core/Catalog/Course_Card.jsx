@@ -22,18 +22,18 @@ function Course_Card({ course, Height }) {
   }
 
   return (
-    <div className='hover:scale-[1.03] transition-all duration-200 z-50'>
+    <div className='z-50 transition-all duration-200 hover:-translate-y-1'>
       <Link to={`/course/${course?._id}`}>
-        <div className="w-full">
-          <div className="rounded-l overflow-hidden aspect-video">
+        <div className="w-full overflow-hidden rounded-lg border border-richblack-700 bg-richblack-800 shadow-xl transition-colors hover:border-richblack-500">
+          <div className="overflow-hidden aspect-video bg-richblack-900">
             <Img
               src={course?.thumbnail}
-              alt="course thumnail"
+              alt="course thumbnail"
               className={`${Height} w-full object-cover`}
             />
           </div>
 
-          <div className="flex flex-col gap-2 px-1 py-3 min-h-[130px]">
+          <div className="flex min-h-[150px] flex-col gap-2 px-4 py-4">
             <p className="text-xl text-richblack-5 font-bold line-clamp-2 min-h-[3.5rem]">
               {course?.courseName}
             </p>
@@ -50,7 +50,7 @@ function Course_Card({ course, Height }) {
               </span>
             </div>
 
-            <p className="text-xl text-richblack-5 font-bold">
+            <p className="mt-auto text-xl text-richblack-5 font-bold">
               {formatPrice(course?.price)}
             </p>
           </div>

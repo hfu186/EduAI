@@ -104,7 +104,7 @@ export const createCourse = async (req, res) => {
 
     if (thumbnail.tempFilePath) {
       fs.unlink(thumbnail.tempFilePath, (err) => {
-        if (err) console.error("Lỗi xóa file thumbnail tạm:", err);
+        if (err) console.error("Error deleting temporary thumbnail file:", err);
       });
     }
     return res.status(200).json({
@@ -557,4 +557,3 @@ export const getSubSectionDetails = async (req, res) => {
     });
   }
 };
-

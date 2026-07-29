@@ -43,8 +43,8 @@ const ChatList = () => {
     const now = new Date();
     const diff = (now - date) / 1000; // seconds
 
-    if (diff < 60) return "Vừa xong";
-    if (diff < 3600) return `${Math.floor(diff / 60)} phút`;
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)} min`;
     if (diff < 86400)
       return date.toLocaleTimeString("vi-VN", {
         hour: "2-digit",
@@ -97,7 +97,7 @@ const ChatList = () => {
         </h1>
         {chats.length > 0 && (
           <span className="text-sm text-richblack-400 bg-richblack-800 px-3 py-1 rounded-full">
-            {chats.length} cuộc trò chuyện
+            {chats.length} conversations
           </span>
         )}
       </div>
@@ -107,7 +107,7 @@ const ChatList = () => {
         <BsSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-richblack-400 text-lg" />
         <input
           type="text"
-          placeholder="Tìm kiếm cuộc trò chuyện..."
+          placeholder="Search conversations..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full bg-richblack-800 border border-richblack-700 rounded-2xl py-3.5 pl-12 pr-4
@@ -126,13 +126,13 @@ const ChatList = () => {
           </div>
           <h3 className="text-xl font-semibold text-richblack-100 mb-2">
             {searchTerm
-              ? "Không tìm thấy kết quả"
-              : "Chưa có cuộc trò chuyện nào"}
+              ? "No results found"
+              : "No conversations yet"}
           </h3>
           <p className="text-richblack-400 max-w-xs">
             {searchTerm
-              ? "Thử tìm với từ khóa khác nhé"
-              : "Bắt đầu nhắn tin với giảng viên hoặc học viên của bạn"}
+              ? "Try searching with another keyword"
+              : "Start messaging your instructors or classmates"}
           </p>
         </div>
       ) : (
@@ -191,7 +191,7 @@ const ChatList = () => {
                   >
                     {hasMessage
                       ? chat.lastMessage.content
-                      : "Bắt đầu cuộc trò chuyện"}
+                      : "Start the conversation"}
                   </p>
                 </div>
               </div>

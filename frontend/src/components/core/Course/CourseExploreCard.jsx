@@ -26,7 +26,7 @@ const CourseCard = ({ cardData, currentCard, setCurrentCard }) => {
     <div
       onClick={handleClick}
       className={`
-        cursor-pointer rounded-2xl p-6 flex flex-col justify-between
+        group cursor-pointer rounded-lg p-6 flex flex-col justify-between
         transition-all duration-300
         ${
           isActive
@@ -104,7 +104,7 @@ const CourseCard = ({ cardData, currentCard, setCurrentCard }) => {
 
         <div
           className={`
-            w-9 h-9 rounded-full flex items-center justify-center
+            w-9 h-9 rounded-lg flex items-center justify-center
             transition-all duration-200
             ${
               isActive

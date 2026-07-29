@@ -8,16 +8,16 @@ exports.createChat = async (req, res) => {
     const { instructorId, courseId } = req.body;
 
     if (!instructorId) {
-      return res.status(400).json({ success: false, message: "Thiếu instructorId" });
+      return res.status(400).json({ success: false, message: "Missing instructorId" });
     }
 
-    // Xác định ai là student, ai là instructor dựa trên accountType người gọi
+    // Determine the student and instructor based on the caller's accountType.
     let studentId, actualInstructorId;
     if (req.user.accountType === "Instructor") {
       studentId = req.body.studentId;
       actualInstructorId = userId;
       if (!studentId) {
-        return res.status(400).json({ success: false, message: "Thiếu studentId" });
+        return res.status(400).json({ success: false, message: "Missing studentId" });
       }
     } else {
       studentId = userId;

@@ -152,7 +152,7 @@ export default function AdminAnalytics() {
     }
   };
 
-  useEffect(() => { fetchData(); });
+  useEffect(() => { fetchData(); }, [token]);
 
   const totalRevenue = revenue.reduce((s, d) => s + (d.revenue || 0), 0);
   const totalStudents = enrollGrowth.reduce((s, d) => s + (d.students || 0), 0);

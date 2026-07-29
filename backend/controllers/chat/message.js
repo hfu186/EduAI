@@ -10,29 +10,29 @@ exports.uploadChatFile = async (req, res) => {
     const file = req.files?.file;
 
     if (!file) {
-      return res.status(400).json({ success: false, message: "Không có file được gửi" });
+      return res.status(400).json({ success: false, message: "No file was sent" });
     }
 
     const chat = await Chat.findById(chatId);
     if (!chat) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy chat" });
+      return res.status(404).json({ success: false, message: "Chat not found" });
     }
 
     const isParticipant = String(chat.student) === userId || String(chat.instructor) === userId;
     if (!isParticipant) {
-      return res.status(403).json({ success: false, message: "Không có quyền" });
+      return res.status(403).json({ success: false, message: "Permission denied" });
     }
 
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      return res.status(400).json({ success: false, message: "File tối đa 10MB" });
+      return res.status(400).json({ success: false, message: "Maximum file size is 10MB" });
     }
 
     const isImage = file.mimetype.startsWith("image/");
 
     const uploadResult = await cloudinary.uploader.upload(file.tempFilePath, {
       folder: "chat-attachments",
-      resource_type: isImage ? "image" : "raw", // raw cho pdf/doc/file khác
+      resource_type: isImage ? "image" : "raw", // raw for PDF, documents, and other files
     });
 
     if (file.tempFilePath) {
@@ -61,7 +61,7 @@ exports.uploadChatFile = async (req, res) => {
     return res.status(200).json({ success: true, data: populated });
   } catch (err) {
     console.error("Upload chat file error:", err);
-    return res.status(500).json({ success: false, message: "Upload thất bại", error: err.message });
+    return res.status(500).json({ success: false, message: "Upload failed", error: err.message });
   }
 };
 exports.sendMessage = async (req, res) => {
@@ -71,12 +71,12 @@ exports.sendMessage = async (req, res) => {
 
     const chat = await Chat.findById(chatId);
     if (!chat) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy chat" });
+      return res.status(404).json({ success: false, message: "Chat not found" });
     }
 
     const isParticipant = String(chat.student) === userId || String(chat.instructor) === userId;
     if (!isParticipant) {
-      return res.status(403).json({ success: false, message: "Không có quyền gửi tin nhắn" });
+      return res.status(403).json({ success: false, message: "You do not have permission to send messages" });
     }
 
     const message = await Message.create({ chat: chatId, sender: userId, content });
@@ -104,12 +104,12 @@ exports.getMessages = async (req, res) => {
 
     const chat = await Chat.findById(chatId);
     if (!chat) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy chat" });
+      return res.status(404).json({ success: false, message: "Chat not found" });
     }
 
     const isParticipant = String(chat.student) === userId || String(chat.instructor) === userId;
     if (!isParticipant) {
-      return res.status(403).json({ success: false, message: "Không có quyền truy cập" });
+      return res.status(403).json({ success: false, message: "You do not have permission to access this chat" });
     }
 
     const messages = await Message.find({ chat: chatId })
@@ -132,7 +132,7 @@ exports.markAsRead = async (req, res) => {
 
     const message = await Message.findById(messageId);
     if (!message) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy tin nhắn" });
+      return res.status(404).json({ success: false, message: "Message not found" });
     }
 
     if (String(message.sender) === userId) {

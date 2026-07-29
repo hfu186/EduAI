@@ -14,9 +14,9 @@ const CodeBlocks = ({
   codeColor,
 }) => {
   return (
-    <div className={`flex ${position} my-20 justify-between flex-col lg:gap-10 gap-10`}>
+    <div className={`flex ${position} my-16 justify-between flex-col lg:gap-12 gap-10`}>
       
-      <div className="lg:w-[50%] flex flex-col gap-8">
+      <div className="lg:w-[48%] flex flex-col gap-8">
         <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-richblack-5 leading-tight">
           {heading}
         </div>
@@ -38,11 +38,24 @@ const CodeBlocks = ({
         </div>
       </div>
 
-      <div className="lg:w-[500px] flex flex-row relative">
-                <div className={`absolute ${backgroundGradient} -z-10`}></div>
-        <div className="flex flex-row w-full glass-bg rounded-2xl border border-richblack-700/50 shadow-2xl overflow-hidden backdrop-blur-xl">
+      <div className="relative flex flex-row lg:w-[520px]">
+        {typeof backgroundGradient === "string" ? (
+          <div className={`absolute ${backgroundGradient} -z-10`}></div>
+        ) : (
+          backgroundGradient
+        )}
+        <div className="w-full overflow-hidden rounded-lg border border-richblack-600 bg-richblack-900 shadow-[0_24px_80px_rgba(0,0,0,0.32)]">
+          <div className="flex items-center justify-between border-b border-richblack-700 bg-richblack-800 px-4 py-3">
+            <div className="flex gap-2">
+              <span className="h-3 w-3 rounded-full bg-pink-200"></span>
+              <span className="h-3 w-3 rounded-full bg-yellow-50"></span>
+              <span className="h-3 w-3 rounded-full bg-caribbeangreen-100"></span>
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-widest text-richblack-400">main.js</span>
+          </div>
+          <div className="flex flex-row w-full">
           
-          <div className="flex flex-col w-[10%] text-center select-none text-richblack-400 font-mono font-bold py-6 border-r border-richblack-700/50 bg-richblack-900/30">
+          <div className="flex w-[12%] select-none flex-col border-r border-richblack-700 bg-richblack-800/40 py-5 text-center font-mono font-bold text-richblack-400">
             {Array.from({ length: codeblock.split("\n").length }, (_, i) => (
               <p key={i} className="leading-[24px] text-sm opacity-60">
                 {i + 1}
@@ -50,8 +63,7 @@ const CodeBlocks = ({
             ))}
           </div>
 
-          {/* Code Content with Typing Animation */}
-          <div className={`w-[90%] flex flex-col gap-2 font-mono pr-6 py-6 pl-4 ${codeColor}`}>
+          <div className={`flex w-[88%] flex-col gap-2 overflow-x-hidden py-5 pl-4 pr-5 font-mono ${codeColor}`}>
             <TypeAnimation
               sequence={[codeblock, 2000, ""]}
               cursor={true}
@@ -65,6 +77,7 @@ const CodeBlocks = ({
               }}
               omitDeletionAnimation={true}
             />
+          </div>
           </div>
         </div>
       </div>

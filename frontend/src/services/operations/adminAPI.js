@@ -85,7 +85,7 @@ export const getInstructorRequests = async (token) => {
 };
 
 export const reviewInstructorRequest = async (userId, decision, token) => {
-    const toastId = toast.loading("Đang xử lý yêu cầu...");
+    const toastId = toast.loading("Processing request...");
     try {
         const response = await apiConnector(
             "PATCH",
@@ -96,7 +96,7 @@ export const reviewInstructorRequest = async (userId, decision, token) => {
         return response.data;
     } catch (error) {
         console.log("REVIEW_INSTRUCTOR_REQUEST_ERROR...", error);
-        toast.error(error?.response?.data?.message || "Không thể xử lý yêu cầu");
+        toast.error(error?.response?.data?.message || "Unable to process request");
     } finally {
         toast.dismiss(toastId);
     }

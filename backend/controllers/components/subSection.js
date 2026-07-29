@@ -61,7 +61,7 @@ exports.createSubSection = async (req, res) => {
       if (!req.files?.slides) {
         return res.status(400).json({ success: false, message: "Slide files are required" });
       }
-      const slideDir = path.join(__dirname, "..", "uploads", "slides");
+      const slideDir = path.join(__dirname, "../../", "uploads", "slides");
       ensureDirectory(slideDir);
       subSectionData.slides = await saveUploadedFiles(req.files.slides, slideDir, "/uploads/slides");
     }
@@ -88,7 +88,7 @@ exports.createSubSection = async (req, res) => {
         answerKeyUrl: ""
       };
 
-      const assignDir = path.join(__dirname, "..", "uploads", "assignments");
+      const assignDir = path.join(__dirname, "../../", "uploads", "assignments");
       ensureDirectory(assignDir);
 
       if (req.files?.assignment) {
@@ -204,12 +204,12 @@ exports.updateSubSection = async (req, res) => {
       ensureDirectory(assignDir);
 
       if (req.files?.assignment) {
-        const [file] = await saveUploadedFiles(req.files.assignment, assignDir, "/uploads/assignments");
+        const [file] = await saveUploadedFiles(req.files.assignment, assignDir, "public/uploads/assignments");
         subSection.assignment.fileUrl = file.fileUrl;
       }
 
       if (req.files?.answerKey) {
-        const [answerFile] = await saveUploadedFiles(req.files.answerKey, assignDir, "/uploads/assignments");
+        const [answerFile] = await saveUploadedFiles(req.files.answerKey, assignDir, "public/uploads/assignments");
         subSection.assignment.answerKeyUrl = answerFile.fileUrl;
       }
 
@@ -223,7 +223,7 @@ exports.updateSubSection = async (req, res) => {
       subSection.slides = await saveUploadedFiles(
         req.files.slides,
         slideDir,
-        "/uploads/slides"
+        "public/uploads/slides"
       );
 
       subSection.markModified("slides");

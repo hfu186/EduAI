@@ -10,7 +10,7 @@ export default function CertificateTemplate({ userName, courseName, certCode, da
     const input = certificateRef.current;
     html2canvas(input, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("l", "mm", "a4"); // Khổ ngang (Landscape)
+      const pdf = new jsPDF("l", "mm", "a4"); // Landscape
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;

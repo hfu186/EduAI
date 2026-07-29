@@ -23,7 +23,7 @@ const cartSlice = createSlice({
       const index = state.cart.findIndex((item) => item._id === course._id)
 
       if (index >= 0) {
-        toast.error("Khóa học này đã có trong giỏ hàng")
+        toast.error("This course is already in your cart")
         return
       }
 
@@ -36,7 +36,7 @@ const cartSlice = createSlice({
       localStorage.setItem("total", JSON.stringify(state.total))
       localStorage.setItem("totalItems", JSON.stringify(state.totalItems))
       
-      toast.success("Đã thêm vào giỏ hàng")
+      toast.success("Added to cart")
     },
     
     removeFromCart: (state, action) => {
@@ -52,7 +52,7 @@ const cartSlice = createSlice({
         localStorage.setItem("total", JSON.stringify(state.total))
         localStorage.setItem("totalItems", JSON.stringify(state.totalItems))
         
-        toast.success("Đã xóa khỏi giỏ hàng")
+        toast.success("Removed from cart")
       }
     },
       

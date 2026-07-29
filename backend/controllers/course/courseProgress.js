@@ -25,7 +25,7 @@ const generateCertificate = async (userId, courseId) => {
       
       await mailSender(
         user.email,
-        "Chúc mừng! Bạn đã nhận được chứng chỉ hoàn thành khóa học",
+        "Congratulations! You have earned a course completion certificate",
         certEmailTemplate(user.firstName, course.courseName, certLink)
       );
     console.log(`🎓 Certificate generated for User: ${userId} in Course: ${courseId}`);

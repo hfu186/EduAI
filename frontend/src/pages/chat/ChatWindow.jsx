@@ -44,7 +44,7 @@ const ChatWindow = () => {
         setChat(chatData);
         setMessages(messageData || []);
       } catch (error) {
-        console.error("Lỗi tải dữ liệu chat:", error);
+        console.error("Failed to load chat data:", error);
       } finally {
         setLoading(false);
       }
@@ -75,7 +75,7 @@ const ChatWindow = () => {
     };
   }, [chatId, token, user?._id]);
 
-  // Tự cuộn xuống cuối
+  // Automatically scroll to the latest message.
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typingUser]);
@@ -87,14 +87,14 @@ const ChatWindow = () => {
         : chat.student
       : null;
 
-  // ====================== GỬI TIN NHẮN ======================
+  // ====================== SEND MESSAGE ======================
   const handleSend = () => {
     if (!text.trim()) return;
     const socket = getSocket();
     if (!socket) return;
 
     socket.emit("sendMessage", { chatId, content: text.trim() }, (res) => {
-      if (!res?.success) console.error("Gửi tin nhắn thất bại:", res?.error);
+      if (!res?.success) console.error("Failed to send message:", res?.error);
     });
 
     setText("");
@@ -124,9 +124,9 @@ const ChatWindow = () => {
     try {
       const result = await uploadChatFile(chatId, file, token);
       if (!result) {
-        console.error("Upload thất bại");
+        console.error("Upload failed");
       }
-      // Socket "newMessage" sẽ tự cập nhật tin nhắn
+      // The "newMessage" socket event updates messages automatically.
     } catch (err) {
       console.error(err);
     } finally {
@@ -145,7 +145,7 @@ const ChatWindow = () => {
           <div className="h-4 w-32 bg-richblack-700 rounded animate-pulse" />
         </div>
         <div className="flex-1 flex items-center justify-center text-richblack-400">
-          Đang tải cuộc trò chuyện...
+          Loading conversation...
         </div>
       </div>
     );
@@ -156,13 +156,13 @@ const ChatWindow = () => {
       <div className="w-full h-[calc(100vh-3.5rem)] bg-richblack-900 flex items-center justify-center">
         <div className="text-center">
           <p className="text-richblack-300 text-lg mb-4">
-            Không tìm thấy cuộc trò chuyện
+            Conversation not found
           </p>
           <button
             onClick={() => navigate("/chat")}
             className="px-4 py-2 bg-yellow-50 text-richblack-900 rounded-lg font-medium hover:bg-yellow-100 transition"
           >
-            Quay lại
+            Go back
           </button>
         </div>
       </div>
@@ -194,9 +194,9 @@ const ChatWindow = () => {
             {otherPerson?.firstName} {otherPerson?.lastName}
           </p>
           {typingUser ? (
-            <p className="text-xs text-yellow-50 animate-pulse">Đang nhập...</p>
+            <p className="text-xs text-yellow-50 animate-pulse">Typing...</p>
           ) : (
-            <p className="text-xs text-richblack-400">Đang hoạt động</p>
+            <p className="text-xs text-richblack-400">Active now</p>
           )}
         </div>
       </div>
@@ -208,9 +208,9 @@ const ChatWindow = () => {
             <div className="w-20 h-20 rounded-full bg-richblack-800 flex items-center justify-center mb-4">
               <span className="text-3xl">💬</span>
             </div>
-            <p className="text-richblack-300 font-medium">Chưa có tin nhắn nào</p>
+            <p className="text-richblack-300 font-medium">No messages yet</p>
             <p className="text-sm text-richblack-500 mt-1">
-              Hãy gửi lời chào để bắt đầu cuộc trò chuyện!
+              Send a greeting to start the conversation!
             </p>
           </div>
         ) : (
@@ -257,7 +257,7 @@ const ChatWindow = () => {
                         : "bg-richblack-700 text-richblack-5 rounded-2xl rounded-bl-md"
                     }`}
                 >
-                  {/* Nội dung tin nhắn */}
+                  {/* Message content */}
                   {m.messageType === "image" ? (
                     <img
                       src={m.fileUrl}
@@ -272,7 +272,7 @@ const ChatWindow = () => {
                       rel="noreferrer"
                       className="flex items-center gap-2 underline text-sm break-all"
                     >
-                      📎 {m.fileName || "Tệp đính kèm"}
+                      📎 {m.fileName || "Attachment"}
                     </a>
                   ) : (
                     <p className="whitespace-pre-wrap break-words">{m.content}</p>
@@ -323,7 +323,7 @@ const ChatWindow = () => {
       {/* ===== INPUT ===== */}
       <div className="flex-shrink-0 px-4 py-3 border-t border-richblack-700 bg-richblack-900">
         <div className="flex items-center gap-2">
-          {/* Nút đính kèm file */}
+          {/* File attachment button */}
           <input
             type="file"
             ref={fileInputRef}
@@ -353,7 +353,7 @@ const ChatWindow = () => {
                 handleSend();
               }
             }}
-            placeholder={uploading ? "Đang tải file..." : "Nhập tin nhắn..."}
+            placeholder={uploading ? "Uploading file..." : "Type a message..."}
             disabled={uploading}
             className="flex-1 bg-richblack-800 text-richblack-5 px-5 py-3 rounded-full
                        outline-none placeholder:text-richblack-500

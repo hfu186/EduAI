@@ -66,10 +66,10 @@ const ChatWindow = ({ chatId }) => {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           className="flex-1 bg-richblack-700 text-white px-4 py-2 rounded-lg"
-          placeholder="Nhập tin nhắn..."
+          placeholder="Type a message..."
         />
         <button onClick={sendMessage} className="bg-yellow-50 px-4 py-2 rounded-lg">
-          Gửi
+          Send
         </button>
       </div>
     </div>

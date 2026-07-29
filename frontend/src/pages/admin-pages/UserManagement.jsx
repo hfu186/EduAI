@@ -22,7 +22,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     fetchUsers();
-  });
+  }, []);
 
   useEffect(() => {
     if (!users.length) {

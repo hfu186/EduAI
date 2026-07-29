@@ -114,7 +114,7 @@ export default function InstructorList() {
                 onClick={() => openInstructorProfile(ins._id)}
                 className="mt-4 w-full bg-richblack-700 hover:bg-richblack-600 text-richblack-5 text-sm py-2 rounded-md transition-all"
               >
-                Xem hồ sơ
+                View profile
               </button>
             </div>
           ))}
