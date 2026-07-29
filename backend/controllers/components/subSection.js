@@ -200,7 +200,7 @@ exports.updateSubSection = async (req, res) => {
         ...parsedAssignment,
       };
 
-      const assignDir = path.join(__dirname, "..", "uploads", "assignments");
+      const assignDir = path.join(__dirname, "../../", "uploads", "assignments");
       ensureDirectory(assignDir);
 
       if (req.files?.assignment) {
@@ -217,7 +217,7 @@ exports.updateSubSection = async (req, res) => {
     }
 
     if (type === "slide" && req.files?.slides) {
-      const slideDir = path.join(__dirname, "..", "uploads", "slides");
+      const slideDir = path.join(__dirname, "../../", "uploads", "slides");
       ensureDirectory(slideDir);
 
       subSection.slides = await saveUploadedFiles(
