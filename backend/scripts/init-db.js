@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+const fs = require("fs");
+const path = require("path");
 const mongoose = require("mongoose");
 const { connectDB } = require("../config/database");
 
@@ -20,38 +22,53 @@ const models = [
   require("../models/user"),
 ];
 
-async function ensureCollections() {
-  const db = mongoose.connection.db;
+async function exportSchemas() {
+  let output = "";
 
   for (const model of models) {
-    const collectionName = model.collection.name;
+    output += "=====================================================\n";
+    output += `Collection: ${model.collection.name}\n`;
+    output += `Model: ${model.modelName}\n`;
+    output += "=====================================================\n";
 
-    try {
-      const exists = await db.listCollections({ name: collectionName }).hasNext();
+    const paths = model.schema.paths;
 
-      if (!exists) {
-        await db.createCollection(collectionName);
-        console.log(`Created collection: ${collectionName}`);
-      } else {
-        console.log(`Collection already exists: ${collectionName}`);
+    for (const key in paths) {
+      const field = paths[key];
+
+      output += `${key}\n`;
+      output += `  Type      : ${field.instance}\n`;
+      output += `  Required  : ${field.isRequired || false}\n`;
+
+      if (field.options.ref) {
+        output += `  Ref       : ${field.options.ref}\n`;
       }
 
-      await model.syncIndexes();
-      console.log(`Synced indexes for: ${collectionName}`);
-    } catch (error) {
-      console.error(`Failed for ${collectionName}:`, error.message);
+      if (field.options.default !== undefined) {
+        output += `  Default   : ${field.options.default}\n`;
+      }
+
+      output += "\n";
     }
+
+    output += "\n\n";
   }
+
+  fs.writeFileSync(
+    path.join(__dirname, "mongodb-schema.txt"),
+    output,
+    "utf8"
+  );
+
+  console.log("Schema exported to mongodb-schema.txt");
 }
 
 async function main() {
   try {
     await connectDB();
-    await ensureCollections();
-    console.log("Database initialization completed successfully.");
-  } catch (error) {
-    console.error("Database initialization failed:", error.message);
-    process.exit(1);
+    await exportSchemas();
+  } catch (err) {
+    console.error(err);
   } finally {
     await mongoose.disconnect();
   }

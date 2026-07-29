@@ -107,8 +107,6 @@ export const createCourse = async (req, res) => {
         if (err) console.error("Lỗi xóa file thumbnail tạm:", err);
       });
     }
-    // ===================================================
-
     return res.status(200).json({
       success: true,
       message: "Course Created Successfully",
@@ -346,9 +344,6 @@ export const updateCourse = async (req, res) => {
 
     if (req.files && req.files.thumbnailImage) {
       const thumbnail = req.files.thumbnailImage
-
-
-
       course.thumbnail = uploadedImage.secure_url
     }
 
@@ -364,7 +359,6 @@ export const updateCourse = async (req, res) => {
 
     await course.save()
 
-    /* ================= RETURN UPDATED COURSE ================= */
     const updatedCourse = await Course.findById(courseId)
       .populate({
         path: "instructor",

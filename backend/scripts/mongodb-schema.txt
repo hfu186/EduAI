@@ -1,0 +1,652 @@
+=====================================================
+Collection: categories
+Model: Category
+=====================================================
+name
+  Type      : String
+  Required  : true
+
+description
+  Type      : String
+  Required  : false
+
+courses
+  Type      : Array
+  Required  : false
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: certificates
+Model: Certificate
+=====================================================
+user
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+course
+  Type      : ObjectId
+  Required  : true
+  Ref       : Course
+
+certificateCode
+  Type      : String
+  Required  : false
+
+issueDate
+  Type      : Date
+  Required  : false
+  Default   : function now() { [native code] }
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: chats
+Model: Chat
+=====================================================
+student
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+instructor
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+course
+  Type      : ObjectId
+  Required  : false
+  Ref       : Course
+
+lastMessage
+  Type      : ObjectId
+  Required  : false
+  Ref       : Message
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+
+updatedAt
+  Type      : Date
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: courses
+Model: Course
+=====================================================
+courseName
+  Type      : String
+  Required  : true
+
+courseDescription
+  Type      : String
+  Required  : true
+
+instructor
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+whatYouWillLearn
+  Type      : String
+  Required  : false
+
+courseContent
+  Type      : Array
+  Required  : false
+
+ratingAndReviews
+  Type      : Array
+  Required  : false
+
+price
+  Type      : Number
+  Required  : false
+  Default   : 0
+
+thumbnail
+  Type      : String
+  Required  : false
+
+category
+  Type      : ObjectId
+  Required  : false
+  Ref       : Category
+
+tag
+  Type      : Array
+  Required  : false
+  Default   : 
+
+studentsEnrolled
+  Type      : Array
+  Required  : false
+
+instructions
+  Type      : Array
+  Required  : false
+  Default   : 
+
+status
+  Type      : String
+  Required  : false
+  Default   : Draft
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+
+updatedAt
+  Type      : Date
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: courseprogresses
+Model: CourseProgress
+=====================================================
+userId
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+courseID
+  Type      : ObjectId
+  Required  : true
+  Ref       : Course
+
+completedSubSections
+  Type      : Array
+  Required  : false
+
+quizResults
+  Type      : Array
+  Required  : false
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: orders
+Model: Order
+=====================================================
+orderCode
+  Type      : Number
+  Required  : true
+
+userId
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+coursesId
+  Type      : Array
+  Required  : false
+
+status
+  Type      : String
+  Required  : false
+  Default   : PENDING
+
+amount
+  Type      : Number
+  Required  : true
+
+createdAt
+  Type      : Date
+  Required  : false
+  Default   : function now() { [native code] }
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: otps
+Model: OTP
+=====================================================
+email
+  Type      : String
+  Required  : true
+
+otp
+  Type      : String
+  Required  : true
+
+createdAt
+  Type      : Date
+  Required  : false
+  Default   : 1785293953613
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: profiles
+Model: Profile
+=====================================================
+gender
+  Type      : String
+  Required  : false
+
+dateOfBirth
+  Type      : String
+  Required  : false
+
+about
+  Type      : String
+  Required  : false
+
+contactNumber
+  Type      : Number
+  Required  : false
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: quizresults
+Model: QuizResult
+=====================================================
+studentId
+  Type      : ObjectId
+  Required  : false
+  Ref       : User
+
+subSectionId
+  Type      : ObjectId
+  Required  : false
+  Ref       : SubSection
+
+score
+  Type      : Number
+  Required  : false
+
+totalQuestions
+  Type      : Number
+  Required  : false
+
+answers
+  Type      : Array
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+  Default   : function now() { [native code] }
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: ratingandreviews
+Model: RatingAndReview
+=====================================================
+user
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+rating
+  Type      : Number
+  Required  : true
+
+review
+  Type      : String
+  Required  : true
+
+course
+  Type      : ObjectId
+  Required  : true
+  Ref       : Course
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: sections
+Model: Section
+=====================================================
+sectionName
+  Type      : String
+  Required  : true
+
+course
+  Type      : ObjectId
+  Required  : true
+  Ref       : Course
+
+subSection
+  Type      : Array
+  Required  : false
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: submissions
+Model: Submission
+=====================================================
+assignmentId
+  Type      : ObjectId
+  Required  : true
+  Ref       : Assignment
+
+studentId
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+fileName
+  Type      : String
+  Required  : false
+
+fileUrl
+  Type      : String
+  Required  : true
+
+status
+  Type      : String
+  Required  : false
+  Default   : Pending
+
+grade
+  Type      : Number
+  Required  : false
+
+feedback
+  Type      : String
+  Required  : false
+
+submittedAt
+  Type      : Date
+  Required  : false
+  Default   : function now() { [native code] }
+
+gradedAt
+  Type      : Date
+  Required  : false
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: subsections
+Model: SubSection
+=====================================================
+title
+  Type      : String
+  Required  : true
+
+type
+  Type      : String
+  Required  : true
+
+aiMetadata.isIndexed
+  Type      : Boolean
+  Required  : false
+  Default   : false
+
+aiMetadata.totalChunks
+  Type      : Number
+  Required  : false
+
+aiMetadata.lastProcessed
+  Type      : Date
+  Required  : false
+
+slides
+  Type      : Array
+  Required  : false
+
+quiz.source
+  Type      : String
+  Required  : false
+
+quiz.status
+  Type      : String
+  Required  : false
+  Default   : draft
+
+quiz.version
+  Type      : Number
+  Required  : false
+  Default   : 1
+
+quiz.questions
+  Type      : Array
+  Required  : false
+
+quiz.generatedByAI
+  Type      : Boolean
+  Required  : false
+  Default   : false
+
+quiz.previousVersions
+  Type      : Array
+  Required  : false
+
+quiz.generatedAt
+  Type      : Date
+  Required  : false
+
+quiz.approvedAt
+  Type      : Date
+  Required  : false
+
+assignment.description
+  Type      : String
+  Required  : false
+
+assignment.deadline
+  Type      : Date
+  Required  : false
+
+assignment.fileUrl
+  Type      : String
+  Required  : false
+
+assignment.answerKeyUrl
+  Type      : String
+  Required  : false
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: users
+Model: User
+=====================================================
+firstName
+  Type      : String
+  Required  : true
+
+lastName
+  Type      : String
+  Required  : true
+
+email
+  Type      : String
+  Required  : true
+
+password
+  Type      : String
+  Required  : true
+
+accountType
+  Type      : String
+  Required  : false
+
+active
+  Type      : Boolean
+  Required  : false
+  Default   : true
+
+approved
+  Type      : Boolean
+  Required  : false
+  Default   : true
+
+instructorRequestStatus
+  Type      : String
+  Required  : false
+  Default   : none
+
+instructorRequestDetails
+  Type      : Mixed
+  Required  : false
+  Default   : null
+
+additionalDetails
+  Type      : ObjectId
+  Required  : true
+  Ref       : Profile
+
+courses
+  Type      : Array
+  Required  : false
+
+image
+  Type      : String
+  Required  : true
+
+token
+  Type      : String
+  Required  : false
+
+resetPasswordTokenExpires
+  Type      : Date
+  Required  : false
+
+courseProgress
+  Type      : Array
+  Required  : false
+
+lastActiveDate
+  Type      : Date
+  Required  : false
+  Default   : function now() { [native code] }
+
+studyStreak
+  Type      : Number
+  Required  : false
+  Default   : 0
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+
+updatedAt
+  Type      : Date
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+

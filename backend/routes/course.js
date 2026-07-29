@@ -26,22 +26,24 @@ const {
   getAllRatingReview,
 } = require("../controllers/course/RatingAndReview");
 
-router.patch("/publish/:courseId", auth, isInstructor, publishCourse);
-router.post("/", auth, isInstructor, createCourse);
-router.post("/editCourse", auth, isInstructor, editCourse);
-router.post("/updateCourseProgress", auth, updateCourseProgress);
-router.get("/", getAllCourses);
+
 router.get("/categories", showAllCategories);
 router.get("/getReviews", getAllRatingReview);
 router.post("/createRating", auth, createRating);
 router.get("/getAverageRating", getAverageRating);
+router.post("/", auth, isInstructor, createCourse);
+router.post("/editCourse", auth, isInstructor, editCourse);
+router.post("/updateCourseProgress", auth, updateCourseProgress);
+router.get("/", getAllCourses);
+router.get("/instructor", auth, isInstructor, getInstructorCourses);
+
+router.patch("/publish/:courseId", auth, isInstructor, publishCourse);
 router.get("/getFullCourseDetails/:courseId", auth, getFullCourseDetails);
 router.get("/getSectionDetails/:sectionId", auth, getSectionDetails);       
 router.get("/getSubSectionDetails/:subsectionId", auth, getSubSectionDetails);
 router.get("/:courseId", getCourseById);
 router.put("/:courseId", auth, isInstructor, updateCourse);
 router.delete("/:courseId", auth, isInstructor, deleteCourse);
-router.get("/instructor", auth, isInstructor, getInstructorCourses);
 router.get("/:courseId/learning", getCourseLearningData);
 router.get("/categoryPageDetails/:categoryId",getCategoryPageDetails);
 
