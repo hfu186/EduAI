@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { formatVND } from "../../utils/formatVND";
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -44,10 +45,7 @@ export default function Payment() {
                     <p className="text-lg font-semibold">{course.courseName}</p>
 
                     <p className="text-right text-yellow-100">
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(course.price)}
+                    {formatVND(course.price)}
                     </p>
                   </div>
                 </div>

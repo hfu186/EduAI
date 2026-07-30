@@ -3,21 +3,11 @@ import copy from "copy-to-clipboard"
 import { toast } from "react-hot-toast"
 import { BsFillCaretRightFill } from "react-icons/bs"
 import { FaShareSquare } from "react-icons/fa"
-import Img from "../../common/Img"
-
+import Img from "../../common/Img";
+import { formatVND } from "../../../utils/formatVND" ;
 function CourseDetailsCard({ course, handleBuyCourse, handleAddToCart }) {
   if (!course) return null
-
   const { thumbnail, price, courseName, instructions = [] } = course
-
-  const formatPrice = (price) => {
-    if (Number(price) === 0) return "FREE"
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price)
-  }
-
   const handleShare = () => {
     copy(window.location.href)
     toast.success("Link copied")
@@ -32,11 +22,11 @@ function CourseDetailsCard({ course, handleBuyCourse, handleAddToCart }) {
       />
 
       <p className="text-3xl font-semibold text-yellow-100">
-        {formatPrice(price)}
+        {formatVND(price)}
       </p>
 
       <button className="yellowButton w-full" onClick={handleBuyCourse}>
-        {Number(price) === 0 ? "Enroll Free" : "Buy Now"}
+        {formatVND(price) === 0 ? "Enroll Free" : "Buy Now"}
       </button>
       <button className="blackButton w-full" onClick={handleAddToCart}>
         Add to Cart

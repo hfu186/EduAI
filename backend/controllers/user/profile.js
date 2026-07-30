@@ -395,15 +395,13 @@ exports.getInstructorPublicProfile = async (req, res) => {
     const { instructorId } = req.params;
     const instructorDetails = await User.findById(instructorId)
       .populate("additionalDetails")
-      .populate({
-        path: "courses",
-        match: { status: "Published" },
-        populate: {
-          path: "ratingAndReviews",
-        },
-      })
       .select("-password -token -resetPasswordToken -resetPasswordExpires")
       .exec();
+
+    const instructCourses = await Course.find({
+      instructor: instructorId,
+      status: "Published",
+    }).populate("ratingAndReviews");
 
     if (!instructorDetails) {
       return res.status(404).json({
@@ -416,21 +414,27 @@ exports.getInstructorPublicProfile = async (req, res) => {
     let totalReviews = 0;
     let totalRating = 0;
 
-    instructorDetails.courses.forEach((course) => {
+    instructCourses.forEach((course) => {
       totalStudents += course.studentsEnrolled.length;
       totalReviews += course.ratingAndReviews.length;
-      course.ratingAndReviews.forEach((r) => totalRating += r.rating);
+
+      course.ratingAndReviews.forEach((r) => {
+        totalRating += r.rating;
+      });
     });
+
     return res.status(200).json({
       success: true,
       data: {
         ...instructorDetails.toObject(),
+        courses: instructCourses,
         stats: {
           totalStudents,
           totalReviews,
-          averageRating: totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : 0,
-          totalCourses: instructorDetails.courses.length,
-        }
+          averageRating:
+            totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : 0,
+          totalCourses: instructCourses.length,
+        },
       },
     });
 

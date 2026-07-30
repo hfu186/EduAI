@@ -7,7 +7,7 @@ import { formatDate } from "../../../../services/formatDate"
 import { VscEdit } from "react-icons/vsc";
 import { BiTask } from "react-icons/bi";
 
-// Icons
+import { formatVND } from "../../../../utils/formatVND";
 import { BiDetail } from "react-icons/bi"
 import { HiOutlineUsers } from "react-icons/hi"
 import {  MdKeyboardArrowDown, MdKeyboardArrowUp, MdEdit } from "react-icons/md"
@@ -96,7 +96,7 @@ export default function CourseContent() {
                 </div>
                 <div className="text-center px-4 border-r border-richblack-600">
                     <p className="text-2xl font-bold text-caribbeangreen-50 flex items-center justify-center gap-1">
-                         {courseData?.price === 0 ? "Free" : `₹${courseData?.price}`}
+                         {courseData?.price === 0 ? "Free" : `₹${formatVND(courseData?.price)}`}
                     </p>
                     <p className="text-xs text-richblack-300 uppercase">Price</p>
                 </div>

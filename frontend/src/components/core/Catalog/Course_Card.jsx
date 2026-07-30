@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import GetAvgRating from "../../../utils/avgRating"
 import RatingStars from "../../common/RatingStars"
 import Img from './../../common/Img';
+import {formatVND}  from "../../../utils/formatVND";
 
 function Course_Card({ course, Height }) {
 
@@ -14,12 +15,7 @@ function Course_Card({ course, Height }) {
     setAvgReviewCount(count)
   }, [course])
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(price);
-  }
+
 
   return (
     <div className='z-50 transition-all duration-200 hover:-translate-y-1'>
@@ -51,7 +47,7 @@ function Course_Card({ course, Height }) {
             </div>
 
             <p className="mt-auto text-xl text-richblack-5 font-bold">
-              {formatPrice(course?.price)}
+              {formatVND(course?.price)}
             </p>
           </div>
         </div>

@@ -6,7 +6,7 @@ import { fetchInstructorCourses } from "../../../services/operations/courseDetai
 import { getInstructorData } from "../../../services/operations/profileAPI"
 import InstructorChart from "./InstructorDashboard/InstructorChart"
 import Img from './../../common/Img';
-
+import { formatVND } from "../../../utils/formatVND"
 
 
 export default function Instructor() {
@@ -23,7 +23,6 @@ export default function Instructor() {
       setLoading(true)
       const instructorApiData = await getInstructorData(token)
       const result = await fetchInstructorCourses(token)
-      // console.log('INSTRUCTOR_API_RESPONSE.....', instructorApiData)
       if (instructorApiData.length) setInstructorData(instructorApiData)
       if (result) {
         setCourses(result)
@@ -169,7 +168,7 @@ export default function Instructor() {
                           |
                         </p>
                         <p className="text-xs font-medium text-richblack-300">
-                          {course.price}
+                          {formatVND(course.price)}
                         </p>
                       </div>
                     </div>
