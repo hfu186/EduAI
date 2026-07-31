@@ -6,14 +6,11 @@ import { getFullCourseDetails } from "../../../../services/operations/courseDeta
 import { formatDate } from "../../../../services/formatDate"
 import { VscEdit } from "react-icons/vsc";
 import { BiTask } from "react-icons/bi";
-
 import { formatVND } from "../../../../utils/formatVND";
 import { BiDetail } from "react-icons/bi"
 import { HiOutlineUsers } from "react-icons/hi"
 import {  MdKeyboardArrowDown, MdKeyboardArrowUp, MdEdit } from "react-icons/md"
 import { VscPlay } from "react-icons/vsc";
-
-
 import IconBtn from "../../../common/IconBtn" 
 
 export default function CourseContent() {

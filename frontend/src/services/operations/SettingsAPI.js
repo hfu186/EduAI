@@ -12,8 +12,6 @@ const {
   DELETE_PROFILE_API,
 } = settingsEndpoints
 
-
-
 // ================ update User Profile Image  ================
 export function updateUserProfileImage(token, formData) {
   return async (dispatch) => {
@@ -49,7 +47,6 @@ export function updateUserProfileImage(token, formData) {
 // ================ update Profile  ================
 export function updateProfile(token, formData) {
   return async (dispatch) => {
-    // console.log('This is formData for updated profile -> ', formData)
     const toastId = toast.loading("Loading...")
     try {
       const response = await apiConnector("PUT", UPDATE_PROFILE_API, formData, {
@@ -65,9 +62,6 @@ export function updateProfile(token, formData) {
         : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.updatedUserDetails.firstName} ${response.data.updatedUserDetails.lastName}`
 
       dispatch(setUser({ ...response.data.updatedUserDetails, image: userImage }))
-
-
-      // console.log('DATA = ', data)
       localStorage.setItem("user", JSON.stringify({ ...response.data.updatedUserDetails, image: userImage }));
       toast.success("Profile Updated Successfully")
     } catch (error) {
