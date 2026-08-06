@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import ProgressBar from "@ramonak/react-progress-bar"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-
 import { getUserEnrolledCourses } from "../../../services/operations/profileAPI"
 import Img from './../../common/Img';
 
@@ -11,9 +10,7 @@ import Img from './../../common/Img';
 export default function EnrolledCourses() {
   const { token } = useSelector((state) => state.auth)
   const navigate = useNavigate()
-
   const [enrolledCourses, setEnrolledCourses] = useState(null)
-
   const getEnrolledCourses = async () => {
     try {
       const res = await getUserEnrolledCourses(token);
@@ -37,7 +34,6 @@ export default function EnrolledCourses() {
             <p className="h-2 w-[70%] rounded-xl mt-3 skeleton"></p>
           </div>
         </div>
-
         <div className="flex flex-[0.4] flex-col ">
           <p className="h-2 w-[20%] rounded-xl skeleton mt-2"></p>
           <p className="h-2 w-[40%] rounded-xl skeleton mt-3"></p>
@@ -54,14 +50,13 @@ export default function EnrolledCourses() {
       </div>)
   }
   return (
-    <>
-
+    <div className="min-h-[calc(100vh-2.5rem-5rem)] items-center justify-center">
       <div className="text-3xl font-bold text-richblack-5  text-center sm:text-left mt-10 ">Enrolled Courses</div>
       {
-        <div className="my-8 text-richblack-5">
-          <div className="flex rounded-t-2xl bg-richblack-800  ">
-            <p className="w-[45%] px-5 py-3">Course Name</p>
-            <p className="flex-1 py-3">Progress</p>
+        <div className="my-5 text-richblack-5 ">
+          <div className="grid grid-cols-[7fr_3fr] rounded-t-2xl bg-richblack-800">
+            <p className="px-5 py-3 font-medium">Course Name</p>
+            <p className="py-3  font-medium">Progress</p>
           </div>
           {!enrolledCourses && <div >
             {sklItem()}
@@ -70,8 +65,6 @@ export default function EnrolledCourses() {
             {sklItem()}
             {sklItem()}
           </div>}
-
-          {/* Course Names */}
           {
             enrolledCourses?.map((course, i, arr) => (
               <div
@@ -79,33 +72,25 @@ export default function EnrolledCourses() {
                 key={i}
               >
                 <div
-                  className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3"
+                  className="flex sm:w-[70%] cursor-pointer items-center gap-4 px-5 py-3"
                   onClick={() => {
                     navigate(`/course-workspace/${course?._id}`)
-                  }}
-
-                >
+                  }}>
                   <Img
                     src={course.thumbnail}
                     alt="course_img"
-                    className="h-14 w-14 rounded-lg object-cover"
+                    className="h-20 w-25 rounded-lg object-cover"
                   />
-
-                  <div className="flex max-w-xs flex-col gap-2">
-                    <p className="font-semibold">{course.courseName}</p>
-                    <p className="text-xs text-richblack-300">
-                      {course.courseDescription.length > 50
-                        ? `${course.courseDescription.slice(0, 50)}...`
-                        : course.courseDescription}
+                  <div className="flexflex-col gap-2">
+                    <p className="font-semibold text-base">{course.courseName}</p>
+                    <p className="text-sm text-richblack-300 max-w-[400px] truncate">
+                      {course.courseDescription}
                     </p>
                   </div>
                 </div>
-
                 <div className='sm:hidden'>
                   <div className=" px-2 py-3">{course?.totalDuration}</div>
-
                   <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
-
                     <p>Progress: {course.progressPercentage || 0}%</p>
                     <ProgressBar
                       completed={course.progressPercentage || 0}
@@ -114,9 +99,7 @@ export default function EnrolledCourses() {
                     />
                   </div>
                 </div>
-
-      
-                <div className="hidden w-1/5 sm:flex px-2 py-3">{course?.totalDuration}</div>
+                <div className="hidden">{course?.totalDuration}</div>
                 <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
                   <p>Progress: {course.progressPercentage || 0}%</p>
                   <ProgressBar
@@ -130,6 +113,6 @@ export default function EnrolledCourses() {
           }
         </div>
       }
-    </>
+    </div>
   )
 }

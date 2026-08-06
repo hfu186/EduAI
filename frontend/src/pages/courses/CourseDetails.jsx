@@ -135,11 +135,10 @@ function CourseDetails() {
             return
         }
         if (isEnrolled) {
-
             navigate(`/course-workspace/${courseId}`);
             return
         }
-        if (formatVND(price) === 0) {
+        if (formatVND(price) === formatVND(0)) {
             try {
                 const res = await enrollFreeCourse(courseId, token)
                 if (res?.success) {
@@ -230,7 +229,7 @@ function CourseDetails() {
                         <BiChevronRight />
                         <Link to="/all-courses" className="hover:text-yellow-50 transition-colors">Courses</Link>
                         <BiChevronRight />
-                        <span className="text-yellow-50 font-medium truncate max-w-[200px]">{courseName}</span>
+                        <span className="text-yellow-50 font-medium truncate">{courseName}</span>
                     </div>
                 </div>
             </div>
@@ -493,7 +492,7 @@ function CourseDetails() {
 
             <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-richblack-800 p-4 border-t border-richblack-700 z-50 flex items-center justify-between gap-4 shadow-[0_-5px_20px_rgba(0,0,0,0.3)]">
                 <div className="font-bold text-white text-lg">
-                    {isEnrolled ? "Purchased" : (formatVND(price) === 0 ? "Free" : `${formatVND(price)} VND`)}
+                    {isEnrolled ? "Purchased" : (formatVND(price) === formatVND(0) ? "Free" : `${formatVND(price)} VND`)}
                 </div>
                 <button
                     onClick={handleCourseAction}

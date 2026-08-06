@@ -67,11 +67,8 @@ const Navbar = () => {
         console.log("Error loading notifications", error);
       }
     };
-
     loadNotifications();
-
     if (!token) return;
-
     const intervalId = window.setInterval(() => {
       loadNotifications();
     }, 10000);
@@ -230,7 +227,7 @@ const Navbar = () => {
         </Link>
 
         {/* CENTER NAV LINKS */}
-        <ul className="hidden text-m lg:flex items-center gap-7 font-semibold absolute left-1/2 -translate-x-1/2">
+        <ul className="hidden text-m lg:flex items-center gap-7 font-base absolute left-1/2 -translate-x-1/2">
           {NavbarLinks.map((link, index) => (
             <li key={index}>
               {link.title === "Catalog" ? (

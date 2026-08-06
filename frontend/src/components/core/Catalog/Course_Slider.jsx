@@ -1,12 +1,9 @@
 /* eslint-disable react/prop-types */
 
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-// import {  Pagination } from "swiper"
 
 import Course_Card from "./Course_Card";
 

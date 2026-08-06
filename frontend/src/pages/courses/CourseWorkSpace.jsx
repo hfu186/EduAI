@@ -111,7 +111,7 @@ function CourseWorkspace() {
       <CourseSidebar grouped={grouped} currentItem={currentItem} setCurrentItem={setCurrentItem} setActiveGroup={setActiveGroup} />
       <div className="flex-1 p-6 overflow-y-auto">
         {currentItem ? (
-          <div className="max-w-5xl mx-auto">
+          <div className="mt-4 mx-auto">
             <div className="mb-6 border-b border-richblack-700 pb-4">
               <p className="text-yellow-50 text-xs font-bold uppercase tracking-widest">{currentItem.sectionName}</p>
             </div>

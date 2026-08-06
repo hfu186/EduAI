@@ -136,8 +136,6 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
 
           return (
             <div key={slideFile._id || index} className="w-full">
-
-              {/* ── Slide Header ── */}
               <div className="flex justify-between items-center mb-4">
                 <p className="text-white font-bold text-xl flex items-center gap-2">
                   <span className="text-yellow-50">📄 Slide:</span>

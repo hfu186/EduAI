@@ -88,8 +88,7 @@ const ChatList = () => {
   }
 
   return (
-
-    <div className="w-full max-w-2xl mx-auto px-4 py-8">
+    <div className="min-h-[calc(100vh-2.5rem-5rem)] p-2 items-center justify-center ">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-richblack-5 tracking-tight">
@@ -116,7 +115,6 @@ const ChatList = () => {
                      transition-all duration-200"
         />
       </div>
-
       {/* Empty State */}
       {filteredChats.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
