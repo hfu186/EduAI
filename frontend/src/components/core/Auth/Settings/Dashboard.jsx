@@ -81,7 +81,7 @@ export default function EnrolledCoursesStats() {
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold mb-5 text-richblack-50 flex items-center gap-2">
+      <h2 className="text-2xl font-semibold mb-5 flex items-center gap-2">
         My Courses <span className="text-sm font-normal text-richblack-400">({totalCourses})</span>
       </h2>
 
@@ -105,14 +105,14 @@ export default function EnrolledCoursesStats() {
           enrolledCourses.map((course, i) => (
             <div
               key={i}
-              className="flex flex-col sm:flex-row items-center border-b border-richblack-700 p-5 px-8 hover:bg-richblack-700/30 transition-all cursor-pointer group"
+              className="flex flex-col sm:flex-row items-center border-b border-richblack-700 p-2 px-4 hover:bg-richblack-700/30 transition-all cursor-pointer group"
               onClick={() => navigate(`/course/${course?._id}`)}
             >
               <div className="flex w-full sm:w-[50%] items-center gap-5 mb-4 sm:mb-0">
                 <img
                   src={course.thumbnail}
                   alt="course_img"
-                  className="h-16 w-16 rounded-xl object-cover border border-richblack-600 group-hover:scale-105 transition-transform"
+                  className="h-20 w-20 rounded-xl object-cover border border-richblack-600 group-hover:scale-105 transition-transform"
                 />
                 <div className="flex flex-col gap-1">
                   <p className="font-bold text-richblack-5 text-lg group-hover:text-yellow-50 transition-colors">
@@ -125,7 +125,7 @@ export default function EnrolledCoursesStats() {
               </div>
 
               <div className="w-full sm:w-[20%] text-center mb-4 sm:mb-0">
-                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
+                <span className={`px-3 py-1 rounded-full text-[12px] font-bold uppercase ${
                   course.progressPercentage === 100 
                   ? "bg-caribbeangreen-900 text-caribbeangreen-200" 
                   : "bg-richblack-900 text-yellow-100 border border-yellow-500/20"
@@ -136,8 +136,8 @@ export default function EnrolledCoursesStats() {
 
               <div className="w-full sm:w-[30%] flex flex-col gap-2">
                 <div className="flex justify-between items-end">
-                    <span className="text-[10px] font-bold text-richblack-300 uppercase">Completion</span>
-                    <span className="text-xs font-bold text-richblack-5">{course.progressPercentage || 0}%</span>
+                    <span className="text-[12px] font-bold text-richblack-300 uppercase">Completion</span>
+                    <span className="text-sm font-bold text-richblack-5">{course.progressPercentage || 0}%</span>
                 </div>
                 <ProgressBar
                   completed={course.progressPercentage || 0}
