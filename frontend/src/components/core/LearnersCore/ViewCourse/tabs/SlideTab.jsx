@@ -6,7 +6,7 @@ import { apiConnector } from "@/services/apiConnector";
 import { courseEndpoints } from "@/services/apis";
 import { generateAIQuiz } from "@/services/operations/courseDetailsAPI";
 import { toast } from "react-hot-toast";
-import { MdAutoAwesome, MdClose,  } from "react-icons/md";
+import { MdAutoAwesome, MdClose, } from "react-icons/md";
 import PDFViewer from "./pdfViewer";
 
 const BASE_URL = "http://localhost:5000";
@@ -20,9 +20,9 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
   const [isMarking, setIsMarking] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);
-  const [aiQuiz, setAiQuiz] = useState(null);       
+  const [aiQuiz, setAiQuiz] = useState(null);
   const [quizAnswers, setQuizAnswers] = useState({});
-  const [quizResult, setQuizResult] = useState(null); 
+  const [quizResult, setQuizResult] = useState(null);
   const [showQuiz, setShowQuiz] = useState(false);
 
   const isAlreadyCompleted = completedLectures.some(
@@ -71,7 +71,8 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
           document.getElementById("ai-quiz-section")?.scrollIntoView({ behavior: "smooth" });
         }, 100);
       } else {
-        toast.error("No lecture content found to generate the quiz.");      }
+        toast.error("No lecture content found to generate the quiz.");
+      }
     } catch (err) {
       toast.error("Failed to generate quiz. Please try again.");
       console.error(err);
@@ -129,10 +130,10 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
           const fullFileUrl = slideFile.fileUrl.startsWith("http")
             ? slideFile.fileUrl
             : `${BASE_URL}${encodeURI(
-                slideFile.fileUrl.startsWith("/")
-                  ? slideFile.fileUrl
-                  : `/${slideFile.fileUrl}`
-              )}`;
+              slideFile.fileUrl.startsWith("/")
+                ? slideFile.fileUrl
+                : `/${slideFile.fileUrl}`
+            )}`;
 
           return (
             <div key={slideFile._id || index} className="w-full">
@@ -150,8 +151,11 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
 
               {/* ── PDF Viewer ── */}
               <div className="bg-richblack-800 rounded-lg p-1 border border-richblack-700 shadow-2xl">
-                <PDFViewer pdfUrl={fullFileUrl} />
-              </div>
+                <PDFViewer
+                  pdfUrl={fullFileUrl}
+                  subSectionId={slideFile._id}
+                  token={token}
+                />              </div>
 
               {/* ── Footer ── */}
               <div className="mt-6 p-6 bg-richblack-800 rounded-2xl border border-richblack-700">
@@ -249,11 +253,10 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
                               {question.options.map((option, optIndex) => (
                                 <label
                                   key={optIndex}
-                                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer border transition-all ${
-                                    quizAnswers[qIndex] === optIndex
+                                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer border transition-all ${quizAnswers[qIndex] === optIndex
                                       ? "bg-yellow-500/10 border-yellow-400"
                                       : "border-transparent hover:bg-richblack-700"
-                                  }`}
+                                    }`}
                                 >
                                   <input
                                     type="radio"
@@ -261,9 +264,8 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
                                     onChange={() => handleOptionChange(qIndex, optIndex)}
                                     checked={quizAnswers[qIndex] === optIndex}
                                   />
-                                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                    quizAnswers[qIndex] === optIndex ? "border-yellow-400" : "border-richblack-500"
-                                  }`}>
+                                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${quizAnswers[qIndex] === optIndex ? "border-yellow-400" : "border-richblack-500"
+                                    }`}>
                                     {quizAnswers[qIndex] === optIndex && (
                                       <div className="w-2 h-2 rounded-full bg-yellow-400" />
                                     )}

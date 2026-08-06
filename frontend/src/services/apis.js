@@ -53,6 +53,10 @@ export const courseEndpoints = {
   GET_ASSIGNMENT_SUBMISSIONS_API: BASE_URL + "/submission/assignment-submissions",
   GRADE_ASSIGNMENT_API: BASE_URL + "/submission/grade-submission",
   SUBMIT_QUIZ_API: BASE_URL + "/quiz/submit",
+    GET_HIGHLIGHTS_API: BASE_URL + "/highlight",
+  CREATE_HIGHLIGHT_API: BASE_URL + "/highlight",
+  DELETE_HIGHLIGHT_API: BASE_URL + "/highlight",
+  CLEAR_HIGHLIGHTS_API: BASE_URL + "/highlight/clear",
 
 }
 

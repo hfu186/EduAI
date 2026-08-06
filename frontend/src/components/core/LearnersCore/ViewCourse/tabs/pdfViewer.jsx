@@ -1,34 +1,45 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { MdDeleteOutline, MdHighlight, MdOutlineInfo } from "react-icons/md";
+import { toast } from "react-hot-toast";
+import { apiConnector } from "@/services/apiConnector";
+import { courseEndpoints } from "@/services/apis";
 
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
-export default function PDFViewer({ pdfUrl }) {
+export default function PDFViewer({ pdfUrl, subSectionId, token }) {
   const [numPages, setNumPages] = useState(null);
   const [highlights, setHighlights] = useState([]);
   const [pendingHighlight, setPendingHighlight] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
   const viewerRef = useRef(null);
 
-  const storageKey = useMemo(() => `pdf-highlights:${pdfUrl}`, [pdfUrl]);
-
   useEffect(() => {
+    if (!subSectionId || !token) return;
+
+    const fetchHighlights = async () => {
+      try {
+        const response = await apiConnector(
+          "GET",
+          `${courseEndpoints.GET_HIGHLIGHTS_API}/${subSectionId}`,
+          null,
+          { Authorization: `Bearer ${token}` }
+        );
+        if (response?.data?.success) {
+          setHighlights(response.data.data);
+        }
+      } catch (error) {
+        console.error("Could not load highlights:", error);
+      }
+    };
+
     setPendingHighlight(null);
-    try {
-      const savedHighlights = JSON.parse(localStorage.getItem(storageKey) || "[]");
-      setHighlights(Array.isArray(savedHighlights) ? savedHighlights : []);
-    } catch {
-      setHighlights([]);
-    }
-  }, [storageKey]);
-
-  useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(highlights));
-  }, [highlights, storageKey]);
+    fetchHighlights();
+  }, [subSectionId, token]);
 
   const getSelectionRects = () => {
     const selection = window.getSelection();
@@ -72,7 +83,6 @@ export default function PDFViewer({ pdfUrl }) {
     if (rectsByPage.length === 0) return null;
 
     return {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
       text: selectedText,
       pages: rectsByPage,
     };
@@ -85,18 +95,72 @@ export default function PDFViewer({ pdfUrl }) {
     }
   };
 
-  const addHighlight = () => {
+  const addHighlight = async () => {
     const selectedHighlight = getSelectionRects() || pendingHighlight;
-    if (!selectedHighlight) return;
+    if (!selectedHighlight || isSaving) return;
 
-    setHighlights((prev) => [...prev, selectedHighlight]);
-    setPendingHighlight(null);
-    window.getSelection()?.removeAllRanges();
+    setIsSaving(true);
+    try {
+      const response = await apiConnector(
+        "POST",
+        courseEndpoints.CREATE_HIGHLIGHT_API,
+        {
+          subSectionId,
+          pdfUrl,
+          text: selectedHighlight.text,
+          pages: selectedHighlight.pages,
+        },
+        { Authorization: `Bearer ${token}` }
+      );
+
+      if (response?.data?.success) {
+        setHighlights((prev) => [...prev, response.data.data]);
+      }
+    } catch (error) {
+      toast.error("Could not save highlight");
+      console.error(error);
+    } finally {
+      setIsSaving(false);
+      setPendingHighlight(null);
+      window.getSelection()?.removeAllRanges();
+    }
   };
 
-  const clearHighlights = () => {
-    setHighlights([]);
-    setPendingHighlight(null);
+  const clearHighlights = async () => {
+    if (highlights.length === 0) return;
+
+    try {
+      const response = await apiConnector(
+        "DELETE",
+        `${courseEndpoints.CLEAR_HIGHLIGHTS_API}/${subSectionId}`,
+        null,
+        { Authorization: `Bearer ${token}` }
+      );
+      if (response?.data?.success) {
+        setHighlights([]);
+        setPendingHighlight(null);
+      }
+    } catch (error) {
+      toast.error("Could not clear highlights");
+      console.error(error);
+    }
+  };
+
+  const removeHighlight = async (highlightId) => {
+    try {
+      const response = await apiConnector(
+        "DELETE",
+        `${courseEndpoints.DELETE_HIGHLIGHT_API}/${highlightId}`,
+        null,
+        { Authorization: `Bearer ${token}` }
+      );
+      if (response?.data?.success) {
+        setHighlights((prev) => prev.filter((h) => h._id !== highlightId));
+      }
+    } catch (error) {
+      toast.error("Could not delete highlight");
+      console.error(error);
+    }
   };
 
   return (
@@ -111,11 +175,11 @@ export default function PDFViewer({ pdfUrl }) {
           <button
             type="button"
             onClick={addHighlight}
-            disabled={!pendingHighlight}
+            disabled={!pendingHighlight || isSaving}
             className="inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 text-sm font-bold text-richblack-900 transition-all hover:bg-yellow-25 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <MdHighlight className="text-lg" />
-            Highlight
+            {isSaving ? "Saving..." : "Highlight"}
           </button>
           <button
             type="button"
@@ -144,9 +208,11 @@ export default function PDFViewer({ pdfUrl }) {
           {Array.from(new Array(numPages), (_, i) => {
             const pageNumber = i + 1;
             const pageHighlights = highlights.flatMap((highlight) =>
-              highlight.pages
+              (highlight.pages || [])
                 .filter((page) => page.pageNumber === pageNumber)
-                .flatMap((page) => page.rects)
+                .flatMap((page) =>
+                  page.rects.map((rect) => ({ ...rect, highlightId: highlight._id }))
+                )
             );
 
             return (
@@ -157,16 +223,20 @@ export default function PDFViewer({ pdfUrl }) {
               >
                 <Page pageNumber={pageNumber} width={800} />
 
-                <div className="pointer-events-none absolute inset-0 z-10">
+                <div className="absolute inset-0 z-10 pointer-events-none">
                   {pageHighlights.map((rect, rectIndex) => (
                     <span
                       key={`${pageNumber}-${rectIndex}`}
-                      className="absolute rounded-[2px] bg-yellow-50/45 mix-blend-multiply"
+                      onClick={() => removeHighlight(rect.highlightId)}
+                      title="Click to remove"
+                      className="absolute rounded-[2px] pointer-events-auto cursor-pointer "
                       style={{
                         left: rect.left,
                         top: rect.top,
                         width: rect.width,
                         height: rect.height,
+                        backgroundColor: "rgba(255, 214, 10, 0.35)",
+                        mixBlendMode: "multiply",
                       }}
                     />
                   ))}
