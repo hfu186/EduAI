@@ -57,12 +57,10 @@ function Course_Card({ course, Height }) {
           </div>
         </div>
 
-        {/* Panel thông tin - ẩn mặc định, hiện khi hover */}
         <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-hover:grid-rows-[1fr]">
           <div className="overflow-hidden">
             <div className="flex flex-col gap-3 border-t border-richblack-700/60 bg-richblack-800/60 p-4 backdrop-blur-sm">
               
-              {/* Instructor với avatar chữ cái đầu */}
               <div className="flex items-center gap-2.5">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-yellow-50 to-yellow-400 text-xs font-bold text-richblack-900">
                   {instructorInitial}
@@ -72,7 +70,6 @@ function Course_Card({ course, Height }) {
                 </p>
               </div>
 
-              {/* Rating tách bằng divider mảnh */}
               <div className="flex items-center gap-2 border-t border-richblack-700/60 pt-3">
                 <span className="text-sm font-semibold text-yellow-50">
                   {avgReviewCount?.toFixed?.(1) || avgReviewCount || 0}

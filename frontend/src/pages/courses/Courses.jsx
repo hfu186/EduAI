@@ -217,12 +217,18 @@ const AllCourses = () => {
               courses
             </p>
           </div>
-         
+
           {filteredCourses.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {currentCourses.map((course) => (
-                <Course_Card key={course._id} course={course} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+              {currentCourses.map((course, i) => (
+                <div
+                  key={i}
+                  className="hover:scale-[1.01] transition-all duration-300"
+                >
+                  <Course_Card course={course} Height={"h-[200px]"} />
+                </div>
               ))}
+
             </div>
           )}
           {totalPages > 1 && (
@@ -238,11 +244,10 @@ const AllCourses = () => {
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 rounded ${
-                    currentPage === i + 1
+                  className={`px-4 py-2 rounded ${currentPage === i + 1
                       ? "bg-yellow-50 text-black"
                       : "bg-richblack-800"
-                  }`}
+                    }`}
                 >
                   {i + 1}
                 </button>

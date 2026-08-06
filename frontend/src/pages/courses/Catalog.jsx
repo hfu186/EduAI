@@ -169,7 +169,7 @@ function Catalog() {
             Top Selling Courses
           </h2>
           <div className="py-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
               {" "}
               {catalogPageData.mostSellingCourses
                 .slice(0, 4)

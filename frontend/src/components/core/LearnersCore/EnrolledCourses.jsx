@@ -79,7 +79,7 @@ export default function EnrolledCourses() {
                   <Img
                     src={course.thumbnail}
                     alt="course_img"
-                    className="h-20 w-25 rounded-lg object-cover"
+                    className="h-20 w-20  rounded-lg object-cover"
                   />
                   <div className="flexflex-col gap-2">
                     <p className="font-semibold text-base">{course.courseName}</p>
