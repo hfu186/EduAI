@@ -1,5 +1,6 @@
 const User = require("../../models/user");
 const Course = require("../../models/course");
+const Profile = require("../../models/profile");
 const mailSender = require("../../utils/mailSender");
 const { courseStatusTemplate } = require("../../mail/templates/reviewCourse");
 const Orders = require("../../models/order");
@@ -52,6 +53,27 @@ exports.promoteUserToInstructor = async (req, res) => {
         user.accountType = "Instructor";
         user.instructorRequestStatus = "approved";
         await user.save();
+
+        if (user.instructorRequestDetails) {
+            const requestDetails = user.instructorRequestDetails;
+            let profile = null;
+            if (user.additionalDetails) {
+                profile = await Profile.findById(user.additionalDetails);
+            }
+
+            if (!profile) {
+                profile = await Profile.create({
+                    qualifications: requestDetails.qualifications || '',
+                    experience: requestDetails.experience || '',
+                });
+                user.additionalDetails = profile._id;
+                await user.save();
+            } else {
+                profile.qualifications = requestDetails.qualifications || profile.qualifications;
+                profile.experience = requestDetails.experience || profile.experience;
+                await profile.save();
+            }
+        }
 
         await mailSender(
             user.email,
@@ -188,6 +210,27 @@ exports.reviewInstructorRequest = async (req, res) => {
             user.accountType = 'Instructor';
             user.instructorRequestStatus = 'approved';
             await user.save();
+
+            if (user.instructorRequestDetails) {
+                const requestDetails = user.instructorRequestDetails;
+                let profile = null;
+                if (user.additionalDetails) {
+                    profile = await Profile.findById(user.additionalDetails);
+                }
+
+                if (!profile) {
+                    profile = await Profile.create({
+                        qualifications: requestDetails.qualifications || '',
+                        experience: requestDetails.experience || '',
+                    });
+                    user.additionalDetails = profile._id;
+                    await user.save();
+                } else {
+                    profile.qualifications = requestDetails.qualifications || profile.qualifications;
+                    profile.experience = requestDetails.experience || profile.experience;
+                    await profile.save();
+                }
+            }
 
             await mailSender(
                 user.email,

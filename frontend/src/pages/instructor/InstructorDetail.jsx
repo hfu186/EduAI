@@ -29,7 +29,10 @@ const InstructorDetails = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex justify-center items-center bg-richblack-900 text-richblack-200">
-                Loading...
+                <div className="flex flex-col items-center gap-3">
+                    <div className="h-10 w-10 animate-spin rounded-full border-2 border-richblack-700 border-t-yellow-50" />
+                    <p className="text-sm text-richblack-400">Loading instructor profile...</p>
+                </div>
             </div>
         )
     }
@@ -42,16 +45,38 @@ const InstructorDetails = () => {
         )
     }
 
+    const qualifications =
+        instructor.qualifications ||
+        instructor.instructorRequestDetails?.qualifications ||
+        instructor.additionalDetails?.qualifications
+
+    const experience =
+        instructor.experience ||
+        instructor.instructorRequestDetails?.experience ||
+        instructor.additionalDetails?.experience
+
+    const statItems = [
+        { icon: FaUserGraduate, value: instructor.stats?.totalStudents || 0, label: "Students" },
+        { icon: FaPlayCircle, value: instructor.stats?.totalCourses || 0, label: "Courses" },
+        { icon: MdOutlineRateReview, value: instructor.stats?.totalReviews || 0, label: "Reviews" },
+        { icon: FaStar, value: instructor.stats?.averageRating || 0, label: "Rating" },
+    ]
+
     return (
         <div className="bg-richblack-900 min-h-screen flex flex-col font-inter text-white">
-            {/* ========== HEADER ========== */}
-            <section className="relative bg-richblack-800 border-b border-richblack-700">
-                <div className="absolute inset-0 bg-gradient-to-br from-yellow-50/5 via-transparent to-transparent pointer-events-none" />
+            {/* ========== HERO ========== */}
+            <section className="relative overflow-hidden border-b border-richblack-800">
+                {/* Layered background accents */}
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-50/[0.07] via-transparent to-caribbeangreen-100/[0.05] pointer-events-none" />
+                <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-yellow-50/[0.06] blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-32 -left-16 h-70 w-72 rounded-full bg-caribbeangreen-100/[0.05] blur-3xl pointer-events-none" />
 
-                <div className="relative w-11/12 max-w-maxContent mx-auto py-12 md:py-16">
-                    <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start">
+                <div className="relative w-10/12 max-w-maxContent mx-auto py-10">
+                    <div className="flex flex-col md:flex-row gap-8 md:gap-10 items-center md:items-start">
+                        {/* Avatar */}
                         <div className="relative shrink-0">
-                            <div className="w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden border-[3px] border-yellow-50/80 shadow-[0_0_0_6px_rgba(255,214,10,0.08)]">
+                            <div className="absolute inset-0 rounded-full bg-yellow-50/20 blur-xl scale-110" />
+                            <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden border-[3px] border-yellow-50/80 shadow-[0_0_0_6px_rgba(255,214,10,0.08)]">
                                 <Img
                                     src={instructor.image}
                                     alt={`${instructor.firstName} ${instructor.lastName}`}
@@ -61,54 +86,40 @@ const InstructorDetails = () => {
                         </div>
 
                         {/* Info */}
-                        <div className="flex-1 text-center md:text-left space-y-3">
-                            <h1 className="text-3xl md:text-4xl font-bold tracking-tight capitalize">
-                                {instructor.firstName} {instructor.lastName}
-                            </h1>
+                        <div className="flex-1 text-center md:text-left space-y-4 w-full">
+                            <div className="space-y-2">
+                                <span className="inline-block rounded-full border border-yellow-50/30 bg-yellow-50/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-yellow-50">
+                                    Instructor
+                                </span>
+                                <h1 className="text-3xl md:text-4xl font-bold tracking-tight capitalize">
+                                    {instructor.firstName} {instructor.lastName}
+                                </h1>
+                            </div>
 
                             <p className="text-richblack-300 text-base md:text-lg max-w-2xl leading-relaxed">
                                 {instructor.additionalDetails?.about ||
                                     "Instructor at EduSpace"}
                             </p>
 
-                            {/* Stats */}
-                            <div className="flex flex-wrap gap-x-6 gap-y-3 justify-center md:justify-start pt-2">
-                                <div className="flex items-center gap-2 text-sm text-richblack-100">
-                                    <FaUserGraduate className="text-yellow-50 text-base" />
-                                    <span className="font-medium">
-                                        {instructor.stats?.totalStudents || 0}
-                                    </span>
-                                    <span className="text-richblack-400">Students</span>
-                                </div>
-
-                                <div className="flex items-center gap-2 text-sm text-richblack-100">
-                                    <FaPlayCircle className="text-yellow-50 text-base" />
-                                    <span className="font-medium">
-                                        {instructor.stats?.totalCourses || 0}
-                                    </span>
-                                    <span className="text-richblack-400">Courses</span>
-                                </div>
-
-                                <div className="flex items-center gap-2 text-sm text-richblack-100">
-                                    <MdOutlineRateReview className="text-yellow-50 text-base" />
-                                    <span className="font-medium">
-                                        {instructor.stats?.totalReviews || 0}
-                                    </span>
-                                    <span className="text-richblack-400">Reviews</span>
-                                </div>
-
-                                <div className="flex items-center gap-2 text-sm text-richblack-100">
-                                    <FaStar className="text-yellow-50 text-base" />
-                                    <span className="font-medium">
-                                        {instructor.stats?.averageRating || 0}
-                                    </span>
-                                    <span className="text-richblack-400">Rating</span>
-                                </div>
+                            {/* Stat pills */}
+                            <div className="flex flex-wrap gap-3 justify-center md:justify-start pt-2">
+                                {statItems.map(({ icon: Icon, value, label }) => (
+                                    <div
+                                        key={label}
+                                        className="flex items-center gap-2.5 rounded-xl border border-richblack-700 bg-richblack-800/80 px-4 py-2.5 backdrop-blur-sm transition-colors hover:border-yellow-50/30"
+                                    >
+                                        <Icon className="text-yellow-50 text-base shrink-0" />
+                                        <div className="flex items-baseline gap-1.5">
+                                            <span className="font-bold text-richblack-5">{value}</span>
+                                            <span className="text-xs text-richblack-400">{label}</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="flex items-center gap-2 text-richblack-400 text-sm justify-center md:justify-start pt-1">
                                 <BiWorld className="text-base" />
-                                <span>English · Vietnamese</span>
+                                <span>English &middot; Vietnamese</span>
                             </div>
                         </div>
                     </div>
@@ -119,10 +130,11 @@ const InstructorDetails = () => {
             <section className="w-11/12 max-w-maxContent mx-auto py-12 md:py-16 flex-1">
                 <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
                     {/* Left sidebar */}
-                    <aside className="w-full lg:w-[280px] shrink-0 space-y-5">
-                        <div className="bg-richblack-800/80 rounded-2xl border border-richblack-700 p-5">
-                            <h3 className="text-base font-semibold mb-3 text-richblack-25">
-                                About Me
+                    <aside className="w-full lg:w-[380px] shrink-0 space-y-5">
+                        <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
+                            <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
+                                <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
+                                About me
                             </h3>
                             <p className="text-richblack-300 text-sm leading-relaxed">
                                 Hi, I'm {instructor.firstName}. I am passionate about teaching
@@ -131,11 +143,36 @@ const InstructorDetails = () => {
                             </p>
                         </div>
 
-                        <div className="bg-richblack-800/80 rounded-2xl border border-richblack-700 p-5">
-                            <h3 className="text-base font-semibold mb-3 text-richblack-25">
+                        {qualifications && (
+                            <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
+                                <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
+                                    Qualifications & certifications
+                                </h3>
+                                <p className="whitespace-pre-line text-sm leading-relaxed text-richblack-300">
+                                    {qualifications}
+                                </p>
+                            </div>
+                        )}
+
+                        {experience && (
+                            <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
+                                <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
+                                    Teaching experience
+                                </h3>
+                                <p className="whitespace-pre-line text-sm leading-relaxed text-richblack-300">
+                                    {experience}
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
+                            <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
+                                <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
                                 Contact
                             </h3>
-                            <p className="text-richblack-300 text-sm break-all">
+                            <p className="break-all text-sm text-richblack-300">
                                 {instructor.email}
                             </p>
                         </div>
@@ -143,13 +180,13 @@ const InstructorDetails = () => {
 
                     {/* Courses */}
                     <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
-                                <span className="w-1 h-6 bg-yellow-50 rounded-full" />
+                        <div className="mb-6 flex items-center justify-between">
+                            <h2 className="flex items-center gap-3 text-xl md:text-2xl font-bold">
+                                <span className="h-6 w-1 rounded-full bg-yellow-50" />
                                 Courses by {instructor.firstName}
                             </h2>
                             {instructor.courses?.length > 0 && (
-                                <span className="text-sm text-richblack-400">
+                                <span className="rounded-full border border-richblack-700 bg-richblack-800 px-3 py-1 text-xs text-richblack-300">
                                     {instructor.courses.length} course
                                     {instructor.courses.length > 1 ? "s" : ""}
                                 </span>
@@ -157,35 +194,42 @@ const InstructorDetails = () => {
                         </div>
 
                         {instructor.courses?.length === 0 ? (
-                            <div className="bg-richblack-800/50 border border-richblack-700 rounded-2xl py-16 text-center">
+                            <div className="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-richblack-700 bg-richblack-800/40 py-16 text-center">
+                                <FaPlayCircle className="text-3xl text-richblack-600" />
                                 <p className="text-richblack-300">
                                     This instructor hasn't published any courses yet.
                                 </p>
                             </div>
                         ) : (
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-4">
                                 {instructor.courses.map((course) => (
                                     <Link
                                         key={course._id}
                                         to={`/course/${course._id}`}
-                                        className="group flex gap-4 bg-richblack-800 rounded-xl border border-richblack-700 p-3 hover:border-richblack-600 transition-all"
+                                        className="group flex gap-4 rounded-2xl border border-richblack-700 bg-richblack-800 p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-yellow-50/40 hover:shadow-[0_12px_30px_-8px_rgba(0,0,0,0.4)]"
                                     >
-                                        {/* Thumbnail nhỏ */}
-                                        <div className="w-36 h-24 shrink-0 rounded-lg overflow-hidden bg-richblack-700">
+                                        {/* Thumbnail */}
+                                        <div className="relative h-24 w-36 shrink-0 overflow-hidden rounded-xl bg-richblack-700">
                                             <Img
                                                 src={course.thumbnail}
                                                 alt={course.courseName}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
+                                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-richblack-900/50 via-transparent to-transparent" />
                                         </div>
 
                                         {/* Info */}
-                                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                                            <h3 className="text-sm font-semibold text-richblack-5 line-clamp-2 group-hover:text-yellow-50 transition-colors">
-                                                {course.courseName}
-                                            </h3>
+                                        <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                                            <div>
+                                                <h3 className="line-clamp-2 text-xl font-semibold text-richblack-5 transition-colors group-hover:text-yellow-50">
+                                                    {course.courseName}
+                                                </h3>
+                                                <p className="mt-1 line-clamp-2 text-sm text-richblack-300">
+                                                    {course.courseDescription.substring(0, 100)}...
+                                                </p>
+                                            </div>
 
-                                            <div className="flex items-center justify-between text-xs text-richblack-400 mt-2">
+                                            <div className="mt-2 flex items-center justify-between text-md font-semibold text-richblack-400">
                                                 <div className="flex items-center gap-3">
                                                     <span className="flex items-center gap-1">
                                                         <HiOutlineUsers className="text-sm" />
@@ -193,7 +237,7 @@ const InstructorDetails = () => {
                                                     </span>
                                                     {course.ratingAndReviews?.length > 0 && (
                                                         <span className="flex items-center gap-1">
-                                                            <FaStar className="text-yellow-50 text-[11px]" />
+                                                            <FaStar className="text-[11px] text-yellow-50" />
                                                             {(
                                                                 course.ratingAndReviews.reduce((a, r) => a + r.rating, 0) /
                                                                 course.ratingAndReviews.length
@@ -201,8 +245,8 @@ const InstructorDetails = () => {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <span className="font-semibold text-yellow-50 text-sm">
-                                                    {formatVND(course.price) === 0 ? "Free" : `${formatVND(course.price)}`}
+                                                <span className="rounded-full bg-richblack-900 px-2.5 py-1 text-sm font-semibold text-yellow-50">
+                                                    {course.price === 0 ? "Free" : formatVND(course.price)}
                                                 </span>
                                             </div>
                                         </div>

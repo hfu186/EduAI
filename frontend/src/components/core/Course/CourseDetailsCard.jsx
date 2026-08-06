@@ -5,6 +5,7 @@ import { BsFillCaretRightFill } from "react-icons/bs"
 import { FaShareSquare } from "react-icons/fa"
 import Img from "../../common/Img";
 import { formatVND } from "../../../utils/formatVND" ;
+
 function CourseDetailsCard({ course, handleBuyCourse, handleAddToCart }) {
   if (!course) return null
   const { thumbnail, price, courseName, instructions = [] } = course

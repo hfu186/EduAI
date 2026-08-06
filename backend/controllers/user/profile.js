@@ -13,10 +13,18 @@ const { createNotification } = require('../../utils/notification')
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { gender = '', dateOfBirth = "", about = "", contactNumber = '', firstName, lastName } = req.body;
+    const {
+      gender = '',
+      dateOfBirth = "",
+      about = "",
+      contactNumber = '',
+      firstName,
+      lastName,
+      qualifications = '',
+      experience = ''
+    } = req.body;
 
     const userId = req.user.id;
-
 
     const userDetails = await User.findById(userId);
     const profileId = userDetails.additionalDetails;
@@ -28,6 +36,8 @@ exports.updateProfile = async (req, res) => {
         dateOfBirth: null,
         about: null,
         contactNumber: null,
+        qualifications: null,
+        experience: null,
       });
 
       userDetails.additionalDetails = profileDetails._id;
@@ -36,12 +46,14 @@ exports.updateProfile = async (req, res) => {
 
     userDetails.firstName = firstName;
     userDetails.lastName = lastName;
-    await userDetails.save()
+    await userDetails.save();
 
     profileDetails.gender = gender;
     profileDetails.dateOfBirth = dateOfBirth;
     profileDetails.about = about;
     profileDetails.contactNumber = contactNumber;
+    profileDetails.qualifications = qualifications;
+    profileDetails.experience = experience;
 
     // save data to DB
     await profileDetails.save();

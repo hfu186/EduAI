@@ -9,6 +9,7 @@ const cookie = require('cookie');
 const mailSender = require('../../utils/mailSender');
 const otpTemplate = require('../../mail/templates/emailVerificationTemplate');
 const { passwordUpdated } = require("../../mail/templates/passwordUpdate");
+
 exports.sendOTP = async (req, res) => {
     try {
 
@@ -66,7 +67,7 @@ exports.signup = async (req, res) => {
         if (password !== confirmPassword) {
             return res.status(400).json({
                 success: false,
-                messgae: 'passowrd & confirm password does not match, Please try again..!'
+                message: 'Password & confirm password does not match, Please try again..!'
             });
         }
 

@@ -14,6 +14,16 @@ const profileSchema = new mongoose.Schema({
     contactNumber: {
         type: Number,
         trim: true
+    },
+    qualifications: {
+        type: String,
+        trim: true,
+        default: ''
+    },
+    experience: {
+        type: String,
+        trim: true,
+        default: ''
     }
 
 });

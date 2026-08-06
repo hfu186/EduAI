@@ -10,7 +10,7 @@ import { formatVND } from "../../../../utils/formatVND";
 export default function RenderCartCourses() {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-
+ console.log("CART DATA:", cart); 
   if (!cart || cart.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center py-16 text-richblack-300">
@@ -48,9 +48,12 @@ export default function RenderCartCourses() {
                   <h3 className="line-clamp-2 text-base font-semibold text-richblack-5 sm:text-lg">
                     {course?.courseName}
                   </h3>
-                  <p className="text-sm text-richblack-300">
-                    {course?.category?.name }
-                  </p>
+                   <p className="text-sm text-yellow-100">
+                     <span className="font-medium font-semibold">Instructor:</span> {course?.instructor?.firstName} {course?.instructor?.lastName}
+                    </p>
+                    <p className="text-sm text-richblack-300">
+                      {course?.courseDescription?.substring(0, 50)}...
+                    </p>
                 </div>
 
                 {/* Rating */}
@@ -73,13 +76,13 @@ export default function RenderCartCourses() {
                 </div>
               </div>
             </div>
-
-            {/* Right: Price + Remove */}
-            <div className="flex shrink-0 flex-row items-center justify-between gap-4 border-t border-richblack-700 pt-4 sm:flex-col sm:items-end sm:justify-start sm:border-t-0 sm:pt-0 sm:gap-3">
-              <p className="text-2xl font-bold text-yellow-100 sm:text-3xl">
-                {formatVND(course.total ?? 0)}
+            <div className="flex flex-row items-bottom  gap-4 border-t border-richblack-700 pt-4 sm:flex-col sm:items-end sm:justify-start sm:border-t-0 sm:pt-0 sm:gap-3">
+              <p className="text-xl font-bold text-yellow-100 sm:text-xl">
+            {course?.price === 0 || course?.price === "0" ? "Free" : formatVND(course.price)}
               </p>
+            </div>
 
+            <div className="absolute bottom-4 right-4 flex flex-col items-end gap-3">
               <button
                 onClick={() => dispatch(removeFromCart(course._id))}
                 className="flex items-center gap-x-1.5 rounded-lg border border-richblack-600 bg-richblack-700 px-3.5 py-2.5 text-sm font-medium text-pink-200 transition-all duration-200 hover:border-pink-700 hover:bg-pink-900/30 hover:text-pink-100 active:scale-95"

@@ -156,12 +156,7 @@ function CourseDetails() {
     }
 
     const handleBuyCourse = async () => {
-        dispatch(addToCart({
-            _id: courseData._id,
-            courseName: courseData.courseName,
-            price: formatVND(courseData.price),
-            thumbnail: courseData.thumbnail,
-        }))
+        dispatch(addToCart(courseData))
         navigate("/payment")
     }
 
@@ -441,11 +436,11 @@ function CourseDetails() {
                                 <div className="relative rounded-xl overflow-hidden group">
                                     <Img src={thumbnail} alt="course thumbnail" className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer backdrop-blur-[2px]">
-                                        <FaPlayCircle className="text-6xl text-white drop-shadow-lg transform scale-90 group-hover:scale-110 transition-transform duration-300" />
+                                        <FaPlayCircle className="text-5xl text-white drop-shadow-lg transform scale-90 group-hover:scale-110 transition-transform duration-300" />
                                     </div>
                                 </div>
                                 <div className="p-6 space-y-2">
-                                    <div className="text-3xl font-bold text-richblack-5">
+                                    <div className="text-3xl font-bold text-richblack-5 text-center ">
                                         {isEnrolled ? (
                                             <span className="text-caribbeangreen-200 flex items-center gap-2">
                                                 <FaCheckCircle /> Purchased
@@ -454,18 +449,27 @@ function CourseDetails() {
                                             formatVND(price) === 0 ? "Free" : `${formatVND(price)} `
                                         )}
                                     </div>
-                                    <div className="flex flex-col gap-3">
+                                    <div className="grid grid-cols-2 gap-4 mt-4">
                                         <button
                                             onClick={handleCourseAction}
-                                            className={`w-full py-3 px-6 rounded-xl font-bold text-richblack-900 transition-all duration-200 shadow-lg transform hover:-translate-y-1 
-                                        ${isEnrolled
+                                            className={`w-full  px-4 rounded-xl font-bold text-richblack-900 transition-all duration-200 shadow-lg transform hover:-translate-y-1
+      ${isEnrolled
                                                     ? "bg-gradient-to-r from-caribbeangreen-200 to-caribbeangreen-300 hover:from-caribbeangreen-300 hover:to-caribbeangreen-400"
-                                                    : "bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200"}`}
+                                                    : "bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200"
+                                                }`}
                                         >
-                                            {isEnrolled ? "Go to Course" : (formatVND(price) === formatVND(0) ? "Enroll Now" : "Buy Now")}
+                                            {isEnrolled
+                                                ? "Go to Course"
+                                                : price === 0
+                                                    ? "Enroll Now"
+                                                    : "Buy Now"}
                                         </button>
-                                        {!isEnrolled && formatVND(price) > 0 && (
-                                            <button onClick={handleAddToCart} className="w-full py-3 px-6 rounded-xl font-bold text-richblack-5 bg-richblack-700 hover:bg-richblack-600 border border-richblack-600 transition-all">
+
+                                        {!isEnrolled && price > 0 && (
+                                            <button
+                                                onClick={handleAddToCart}
+                                                className="w-full py-3 px-6 rounded-xl border border-richblack-600 bg-richblack-700 font-bold text-richblack-5 transition-all hover:bg-richblack-600"
+                                            >
                                                 Add to Cart
                                             </button>
                                         )}
@@ -496,7 +500,7 @@ function CourseDetails() {
                 </div>
                 <button
                     onClick={handleCourseAction}
-                    className={`py-2 px-6 rounded-lg font-bold text-richblack-900 shadow-md 
+                    className={`py-2 px-4 rounded-lg font-bold text-richblack-900 shadow-md 
                 ${isEnrolled ? "bg-caribbeangreen-200" : "bg-yellow-50"}`}
                 >
                     {isEnrolled ? "Go to Course" : "Buy Now"}

@@ -11,6 +11,7 @@ const initialState = {
   totalItems: localStorage.getItem("totalItems")
     ? JSON.parse(localStorage.getItem("totalItems"))
     : 0,
+
 }
 
 const cartSlice = createSlice({
@@ -19,7 +20,6 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const course = action.payload
-      
       const index = state.cart.findIndex((item) => item._id === course._id)
 
       if (index >= 0) {
@@ -28,10 +28,8 @@ const cartSlice = createSlice({
       }
 
       state.cart.push(course)
-      
       state.totalItems++
       state.total += Number(course.price)
-
       localStorage.setItem("cart", JSON.stringify(state.cart))
       localStorage.setItem("total", JSON.stringify(state.total))
       localStorage.setItem("totalItems", JSON.stringify(state.totalItems))
@@ -51,7 +49,7 @@ const cartSlice = createSlice({
         localStorage.setItem("cart", JSON.stringify(state.cart))
         localStorage.setItem("total", JSON.stringify(state.total))
         localStorage.setItem("totalItems", JSON.stringify(state.totalItems))
-        
+      
         toast.success("Removed from cart")
       }
     },
