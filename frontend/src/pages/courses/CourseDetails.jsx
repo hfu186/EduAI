@@ -223,7 +223,6 @@ function CourseDetails() {
 
     return (
         <div className="bg-richblack-900 min-h-screen">
-
             <div className="bg-richblack-800 border-b border-richblack-700">
                 <div className="mx-auto max-w-7xl px-4 py-4">
                     <div className="flex items-center gap-2 text-richblack-300 text-sm mt-5">
@@ -237,11 +236,10 @@ function CourseDetails() {
             </div>
 
             <div className="relative w-full bg-richblack-900">
-                <div className="absolute top-0 left-0 w-full h-[550px] bg-gradient-to-br from-richblack-900 via-richblack-800/90 to-richblack-900 z-0"></div>
                 <div className="relative z-10 mx-auto max-w-7xl px-4 py-12">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                        <div className="lg:col-span-8 space-y-6">
-                            <h1 className="text-4xl md:text-5xl font-extrabold text-richblack-5 tracking-tight leading-tight">
+                        <div className="lg:col-span-8 space-y-3">
+                            <h1 className="text-4xl md:text-4xl font-extrabold text-richblack-5 tracking-tight leading-tight">
                                 {courseName}
                             </h1>
                             <p className="text-lg text-richblack-200 leading-relaxed max-w-3xl">
@@ -285,10 +283,9 @@ function CourseDetails() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
                     <div className="lg:col-span-8 space-y-10">
-
-                        <div className="border border-richblack-700 bg-richblack-800/40 p-8 rounded-2xl shadow-xl backdrop-blur-md">
-                            <h2 className="text-2xl font-bold text-richblack-5 mb-6">What youll learn</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                        <div className="border border-richblack-700 bg-richblack-800/40 p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                            <h2 className="text-2xl font-bold text-richblack-5 mb-3">What youll learn</h2>
+                            <div>
                                 {whatYouWillLearn && whatYouWillLearn.split('\n').map((line, index) => (
                                     <div key={index} className="flex items-start gap-3">
                                         <FaCheckCircle className="text-caribbeangreen-200 mt-1.5 text-sm flex-shrink-0" />
@@ -448,14 +445,14 @@ function CourseDetails() {
                                         <FaPlayCircle className="text-6xl text-white drop-shadow-lg transform scale-90 group-hover:scale-110 transition-transform duration-300" />
                                     </div>
                                 </div>
-                                <div className="p-6 space-y-6">
+                                <div className="p-6 space-y-2">
                                     <div className="text-3xl font-bold text-richblack-5">
                                         {isEnrolled ? (
                                             <span className="text-caribbeangreen-200 flex items-center gap-2">
                                                 <FaCheckCircle /> Purchased
                                             </span>
                                         ) : (
-                                            formatVND(price) === 0 ? "Free" : `${formatVND(price)} VND`
+                                            formatVND(price) === 0 ? "Free" : `${formatVND(price)} `
                                         )}
                                     </div>
                                     <div className="flex flex-col gap-3">
@@ -466,7 +463,7 @@ function CourseDetails() {
                                                     ? "bg-gradient-to-r from-caribbeangreen-200 to-caribbeangreen-300 hover:from-caribbeangreen-300 hover:to-caribbeangreen-400"
                                                     : "bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200"}`}
                                         >
-                                            {isEnrolled ? "Go to Course" : (formatVND(price) === 0 ? "Enroll Now" : "Buy Now")}
+                                            {isEnrolled ? "Go to Course" : (formatVND(price) === formatVND(0) ? "Enroll Now" : "Buy Now")}
                                         </button>
                                         {!isEnrolled && formatVND(price) > 0 && (
                                             <button onClick={handleAddToCart} className="w-full py-3 px-6 rounded-xl font-bold text-richblack-5 bg-richblack-700 hover:bg-richblack-600 border border-richblack-600 transition-all">

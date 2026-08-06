@@ -26,7 +26,7 @@ function CourseDetailsCard({ course, handleBuyCourse, handleAddToCart }) {
       </p>
 
       <button className="yellowButton w-full" onClick={handleBuyCourse}>
-        {formatVND(price) === 0 ? "Enroll Free" : "Buy Now"}
+        {formatVND(price) === formatVND(0) ? "Enroll Free" : "Buy Now"}
       </button>
       <button className="blackButton w-full" onClick={handleAddToCart}>
         Add to Cart
