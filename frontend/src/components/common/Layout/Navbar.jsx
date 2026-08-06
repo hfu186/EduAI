@@ -219,10 +219,10 @@ const Navbar = () => {
       <div className="relative flex h-16 w-11/12 max-w-maxContent mx-auto items-center justify-between gap-6">
 
         {/* LOGO */}
-        <Link to="/" className="flex-shrink-0 z-10">
+        <Link to="/" className="flex-shrink-0">
           <img
             src={EduSpaceLogo}
-            width={130}
+            width={180}            
             height={34}
             alt="EduSpace"
             className="object-contain"
@@ -230,17 +230,17 @@ const Navbar = () => {
         </Link>
 
         {/* CENTER NAV LINKS */}
-        <ul className="hidden lg:flex items-center gap-7 text-sm font-medium absolute left-1/2 -translate-x-1/2">
+        <ul className="hidden  lg:flex items-center gap-7 text-s font-semibold absolute left-1/2 -translate-x-1/2">
           {NavbarLinks.map((link, index) => (
             <li key={index}>
               {link.title === "Catalog" ? (
-                <div className="group relative flex cursor-pointer items-center gap-1 text-richblack-25 hover:text-yellow-25 transition-colors">
-                  <span>{link.title}</span>
+                <div className="group relative flex cursor-pointer items-center  text-richblack-25 hover:text-yellow-25 transition-colors">
+                  <span>{link.title === "Catalog" ? t('nav.catalog') : t(`nav.${link.title.toLowerCase()}`)}</span>
                   <MdKeyboardArrowDown className="text-lg" />
 
                   <div className="invisible absolute left-1/2 top-full z-[1000] w-52 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
                     <div className="relative rounded-xl bg-richblack-5 p-2 text-richblack-900 shadow-xl">
-                      <div className="absolute left-1/2 -top-1.5 h-3 w-3 -translate-x-1/2 rotate-45 bg-richblack-5" />
+                      <div className="absolute left-1/2 -top-1.5 h-3 w- -translate-x-1/2 rotate-45 bg-richblack-5" />
                       {subLinks.length > 0 ? (
                         subLinks.map((sub, i) => (
                           <Link
@@ -253,7 +253,7 @@ const Navbar = () => {
                         ))
                       ) : (
                         <p className="px-3 py-2 text-sm text-richblack-500">
-                          Loading...
+                          {t('navbar.loading')}
                         </p>
                       )}
                     </div>
@@ -267,7 +267,7 @@ const Navbar = () => {
                       : "text-richblack-25 hover:text-yellow-25"
                       } transition-colors`}
                   >
-                    {link.title}
+                    {t(`nav.${link.title.toLowerCase()}`)}
                   </p>
                 </Link>
               )}
@@ -276,7 +276,7 @@ const Navbar = () => {
         </ul>
 
         {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-4 shrink-0 z-10">
+        <div className="flex items-center gap-2 shrink-0 z-10">
 
           <div className="relative" ref={searchRef}>
             {/* Search Icon Button */}
@@ -297,7 +297,7 @@ const Navbar = () => {
                     <input
                       ref={inputRef}
                       type="text"
-                      placeholder="Search courses, instructors..."
+                      placeholder={t('navbar.search.placeholder')}
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
                       className="flex-1 bg-transparent text-richblack-5 text-sm outline-none placeholder:text-richblack-400"
@@ -318,8 +318,8 @@ const Navbar = () => {
                     {suggestions.length > 0 ? (
                       <>
                         <p className="px-4 pt-3 pb-1.5 text-[10px] text-richblack-400 uppercase font-semibold tracking-wider">
-                          Results
-                        </p>
+                              {t('navbar.search.results')}
+                            </p>
                         {suggestions.map((course) => (
                           <Link
                             key={course._id}
@@ -337,7 +337,7 @@ const Navbar = () => {
                                 {course.courseName}
                               </p>
                               <p className="text-xs text-richblack-400 truncate">
-                                by {course.instructor?.firstName}
+                                {t('navbar.search.by', { name: course.instructor?.firstName })}
                               </p>
                             </div>
                           </Link>
@@ -346,12 +346,12 @@ const Navbar = () => {
                           onClick={handleSearchSubmit}
                           className="w-full px-4 py-3 text-left text-sm text-[#12D8FA] hover:bg-richblack-700/50 transition-colors border-t border-richblack-700"
                         >
-                          View all results for  {searchValue}
+                          {t('navbar.search.view_all', { query: searchValue })}
                         </button>
                       </>
                     ) : (
                       <div className="px-4 py-8 text-center text-sm text-richblack-400">
-                        No results found
+                        {t('navbar.search.no_results')}
                       </div>
                     )}
                   </div>
@@ -360,7 +360,7 @@ const Navbar = () => {
                 {/* Empty state hint */}
                 {!showSuggestions && (
                   <div className="px-4 py-6 text-center text-xs text-richblack-400">
-                    Type to search courses...
+                    {t('navbar.search.hint')}
                   </div>
                 )}
               </div>
@@ -387,12 +387,12 @@ const Navbar = () => {
               {showNotifications && (
                 <div className="absolute right-0 top-[calc(100%+10px)] w-[320px] rounded-2xl border border-richblack-700 bg-richblack-800 shadow-2xl overflow-hidden">
                   <div className="flex items-center justify-between border-b border-richblack-700 px-4 py-3">
-                    <p className="text-sm font-semibold text-richblack-5">Notifications</p>
+                    <p className="text-sm font-semibold text-richblack-5">{t('navbar.notifications.title')}</p>
                     <button
                       onClick={handleMarkAllNotificationsRead}
                       className="text-xs text-[#12D8FA] hover:underline"
                     >
-                      Mark all as read
+                      {t('navbar.notifications.mark_all')}
                     </button>
                   </div>
                   <div className="max-h-[320px] overflow-y-auto">
@@ -408,7 +408,7 @@ const Navbar = () => {
                         </button>
                       ))
                     ) : (
-                      <p className="px-4 py-6 text-center text-sm text-richblack-400">No notifications yet</p>
+                      <p className="px-4 py-6 text-center text-sm text-richblack-400">{t('navbar.notifications.empty')}</p>
                     )}
                   </div>
                 </div>
@@ -435,7 +435,7 @@ const Navbar = () => {
             <div className="flex items-center gap-2.5">
               <Link to="/login">
                 <button className="rounded-lg border border-richblack-600 bg-richblack-800 px-3.5 py-1.5 text-sm font-medium text-richblack-100 hover:bg-richblack-700 hover:border-richblack-500 transition-all">
-                  Log In
+                  {t('auth.button.login')}
                 </button>
               </Link>
             </div>

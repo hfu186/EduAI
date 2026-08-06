@@ -2,20 +2,21 @@
   "common": {
     "hello": "Xin chào",
     "welcome": "Chào mừng đến EduSpace",
-    "change_language": "Thay đổi ngôn ngữ"
+    "change_language": "Thay đổi ngôn ngữ",
+    "edit": "Chỉnh sửa",
+    "save": "Lưu"
   },
   "nav": {
     "home": "Trang chủ",
     "courses": "Khóa học",
     "profile": "Hồ sơ",
-    "catalog": "Danh mục"
+    "catalog": "Danh mục",
+    "instructors": "Giảng viên",
+    "about us": "Về chúng tôi",
+    "contact us": "Liên hệ"
   },
   "about": "Về chúng tôi",
   "contact": "Liên hệ",
-  "profile": {
-    "dashboard": "Bảng điều khiển",
-    "logout": "Đăng xuất"
-  },
   "auth": {
     "login": {
       "welcome": "Chào mừng trở lại",
@@ -89,6 +90,10 @@
   ,
   "profile": {
     "title": "Hồ sơ của tôi",
+    "edit_profile": "Chỉnh sửa hồ sơ",
+    "personal_info": "Thông tin cá nhân",
+    "dashboard": "Bảng điều khiển",
+    "logout": "Đăng xuất",
     "about": {
       "title": "Giới thiệu",
       "empty": "Viết vài dòng về bạn"

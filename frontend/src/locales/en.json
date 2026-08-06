@@ -2,20 +2,21 @@
   "common": {
     "hello": "Hello",
     "welcome": "Welcome to EduSpace",
-    "change_language": "Change language"
+    "change_language": "Change language",
+    "edit": "Edit",
+    "save": "Save"
   },
   "nav": {
     "home": "Home",
     "courses": "Courses",
     "profile": "Profile",
-    "catalog": "Catalog"
+    "catalog": "Catalog",
+    "instructors": "Instructors",
+    "about us": "About",
+    "contact us": "Contact"
   },
   "about": "About Us",
   "contact": "Contact Us",
-  "profile": {
-    "dashboard": "Dashboard",
-    "logout": "Logout"
-  },
   "auth": {
     "login": {
       "welcome": "Welcome Back",
@@ -89,6 +90,8 @@
   ,
   "profile": {
     "title": "My Profile",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
     "about": {
       "title": "About",
       "empty": "Write Something About Yourself"

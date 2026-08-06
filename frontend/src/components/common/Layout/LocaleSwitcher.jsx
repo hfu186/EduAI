@@ -17,29 +17,29 @@ export default function LocaleSwitcher() {
       className="inline-flex items-center rounded-full border border-richblack-600 bg-richblack-800 p-1"
       aria-label={t("common.change_language")}
     >
-      <button
-        type="button"
-        onClick={() => changeLocale("vi")}
-        className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
-          locale === "vi"
-            ? "bg-yellow-50 text-richblack-900 shadow-sm"
-            : "text-richblack-300 hover:text-richblack-5"
-        }`}
-      >
-        VI
-      </button>
+    <button
+  type="button"
+  onClick={() => changeLocale("vi")}
+  className={`flex h-9 w-9 items-center justify-center rounded-full text-lg transition-all duration-200 ${
+    locale === "vi"
+      ? "bg-yellow-50 shadow-sm text-black"
+      : "hover:bg-richblack-700"
+  }`}
+>
+  🇻🇳
+</button>
 
-      <button
-        type="button"
-        onClick={() => changeLocale("en")}
-        className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
-          locale === "en"
-            ? "bg-yellow-50 text-richblack-900 shadow-sm"
-            : "text-richblack-300 hover:text-richblack-5"
-        }`}
-      >
-        EN
-      </button>
+<button
+  type="button"
+  onClick={() => changeLocale("en")}
+  className={`flex h-9 w-9 items-center justify-center rounded-full text-lg transition-all duration-200 ${
+    locale === "en"
+      ? "bg-yellow-50 shadow-sm text-black"
+      : "hover:bg-richblack-700"
+  }`}
+>
+  🇺🇸
+</button>
     </div>
   );
 }
