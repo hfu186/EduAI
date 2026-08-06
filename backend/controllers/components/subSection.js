@@ -15,27 +15,7 @@ const parseJsonSafe = (data) => {
   }
 };
 
-const ensureDirectory = (dirPath) => {
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-};
-
-const saveUploadedFiles = async (files, uploadDir, publicPath) => {
-  const fileArray = Array.isArray(files) ? files : [files];
-
-  return Promise.all(
-    fileArray.map(async (file) => {
-      const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-      await file.mv(path.join(uploadDir, fileName));
-
-      return {
-        fileName: file.name,
-        fileUrl: `${publicPath}/${fileName}`,
-      };
-    })
-  );
-};
+const { ensureDirectoryExists, saveUploadedFiles } = require("../../utils/uploadHelper");
 
 const isContentLocked = async (subSectionId) => {
   return CourseProgress.exists({

@@ -47,7 +47,7 @@ export default function InstructorChart({ courses }) {
       tooltip: {
         backgroundColor: "#1e293b",
         padding: 14,
-        bodyFont: { family: "'DM Sans', sans-serif", size: 13 },
+        bodyFont: { family: "'Inter', sans-serif", size: 13 },
         cornerRadius: 10,
         displayColors: true,
       },
@@ -57,10 +57,8 @@ export default function InstructorChart({ courses }) {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
-
         .chart-card {
-          font-family: 'DM Sans', sans-serif;
+          font-family: 'Inter', sans-serif;
           background: #0f172a;
           border: 1px solid rgba(255,255,255,0.08);
           border-radius: 24px;
@@ -100,7 +98,7 @@ export default function InstructorChart({ courses }) {
         }
 
         .tab-btn {
-          font-family: 'DM Sans', sans-serif;
+          font-family: 'Inter', sans-serif;
           font-size: 13px;
           font-weight: 600;
           padding: 8px 20px;

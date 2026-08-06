@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaArrowRight, FaBrain, FaSearch, FaLightbulb, FaBookOpen, FaGraduationCap, FaChalkboardTeacher, FaCheckCircle, FaPlay } from "react-icons/fa";
+import { FaArrowRight, FaBrain, FaSearch, FaLightbulb, FaBookOpen, FaGraduationCap, FaChalkboardTeacher } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
@@ -11,8 +11,6 @@ import ExploreMore from "@/components/core/HomePage/ExploreMore";
 import Footer from '@/components/common/Layout/Footer';
 import Course_Slider from "@/components/core/Catalog/Course_Slider";
 import { getAllCourses } from "@/services/operations/courseDetailsAPI";
-import heroFrame from "@/assets/Images/frame.png";
-import progressImage from "@/assets/Images/Know_your_progress.png";
 
 const quickLinks = [
   { icon: FaSearch, text: "Search Catalog", link: "/all-courses/" },
@@ -27,8 +25,6 @@ const stats = [
   { label: "AI Support", value: "24/7", icon: <FaBrain /> },
   { icon: <FaChalkboardTeacher />, label: "Expert Mentors", value: "200+" },
 ];
-
-const trustSignals = ["RAG-powered answers", "Course-based quizzes", "Mentor-ready workflows"];
 
 const Home = () => {
   const [courses, setCourses] = useState([]);
@@ -48,86 +44,49 @@ const Home = () => {
 
   return (
     <div className='bg-richblack-900 text-richblack-5 min-h-screen font-inter'>
+      
+      <div className="relative box-content bg-richblack-800 px-4 py-20 shadow-2xl border-b border-richblack-700 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-20 pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-200 rounded-full blur-[120px]"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-pink-200 rounded-full blur-[120px]"></div>
+        </div>
 
-      <section className="relative overflow-hidden border-b border-richblack-700/70 bg-[linear-gradient(180deg,#000814_0%,#101723_58%,#000814_100%)] px-4 pb-16 pt-14 sm:pt-20">
-        <div className="absolute inset-0 pointer-events-none opacity-[0.08] [background-image:linear-gradient(#ffffff_1px,transparent_1px),linear-gradient(90deg,#ffffff_1px,transparent_1px)] [background-size:72px_72px]"></div>
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-richblack-900 to-transparent pointer-events-none"></div>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative z-10 mx-auto grid max-w-maxContentTab items-center gap-12 lg:max-w-maxContent lg:grid-cols-[0.95fr_1.05fr]"
+          className="relative z-10 mx-auto flex max-w-maxContentTab flex-col justify-center gap-8 lg:max-w-maxContent text-center items-center"
         >
-          <div className="flex flex-col items-start gap-8 text-left">
-            <Link to={"/signup"} className="group inline-flex items-center gap-3 rounded-lg border border-caribbeangreen-100/25 bg-caribbeangreen-100/10 px-4 py-2 text-sm font-semibold text-caribbeangreen-50 shadow-[0_12px_40px_rgba(6,214,160,0.12)] transition-all duration-300 hover:border-caribbeangreen-100/60 hover:bg-caribbeangreen-100/15">
-              <span className="flex h-2 w-2 rounded-full bg-caribbeangreen-100"></span>
-              Start Your Professional Journey
-              <FaArrowRight className="transition-transform group-hover:translate-x-1" />
-            </Link>
-
-            <div className="space-y-6">
-              <h1 className="max-w-[780px] text-4xl font-black leading-[1.06] text-richblack-5 sm:text-5xl lg:text-6xl">
-                The Future of IT Education is <HighlightText text={"Intelligent & Personal"} />
-              </h1>
-
-              <p className="max-w-[690px] text-base leading-8 text-richblack-200 md:text-lg">
-                Experience a modern LMS powered by <span className="font-semibold text-blue-100">RAG-based AI</span>. Get grounded academic support, instant practice, and course recommendations from one focused workspace.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-4">
-              <CTAButton active={true} linkto={"/all-courses"}>Explore Catalog</CTAButton>
-              <CTAButton active={false} linkto={"/signup"}>
-                <span className="flex items-center gap-2"><FaPlay className="text-xs" /> Try AI Tutor</span>
-              </CTAButton>
-            </div>
-
-            <div className="grid w-full max-w-[760px] gap-3 sm:grid-cols-3">
-              {trustSignals.map((signal) => (
-                <div key={signal} className="flex items-center gap-2 rounded-lg border border-richblack-700 bg-richblack-800/60 px-4 py-3 text-sm font-medium text-richblack-200">
-                  <FaCheckCircle className="shrink-0 text-caribbeangreen-100" />
-                  <span>{signal}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative mx-auto w-full max-w-[560px]">
-            <div className="rounded-lg border border-richblack-600 bg-richblack-800/80 p-3 shadow-[0_28px_90px_rgba(0,0,0,0.35)] backdrop-blur">
-              <div className="flex items-center justify-between rounded-lg border border-richblack-700 bg-richblack-900 px-4 py-3">
-                <div>
-                  <p className="text-xs font-bold uppercase text-richblack-400">EduAI workspace</p>
-                  <p className="text-sm font-semibold text-richblack-50">Personalized learning path</p>
-                </div>
-                <div className="rounded-lg bg-yellow-50 px-3 py-1 text-xs font-bold text-richblack-900">Live</div>
-              </div>
-              <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_0.8fr]">
-                <div className="rounded-lg bg-richblack-900 p-4">
-                  <img src={heroFrame} alt="Interactive course workspace" className="h-[220px] w-full object-contain sm:h-[280px]" />
-                </div>
-                <div className="flex flex-col gap-3">
-                  <div className="rounded-lg border border-blue-100/20 bg-blue-200/10 p-4">
-                    <p className="text-xs font-semibold uppercase text-blue-100">AI Tutor</p>
-                    <p className="mt-2 text-sm text-richblack-100">Answers grounded in your lessons and slides.</p>
-                  </div>
-                  <div className="rounded-lg border border-yellow-50/20 bg-yellow-50/10 p-4">
-                    <p className="text-xs font-semibold uppercase text-yellow-50">Practice</p>
-                    <p className="mt-2 text-sm text-richblack-100">Quizzes generated from real course material.</p>
-                  </div>
-                  <img src={progressImage} alt="Progress tracking preview" className="mt-auto h-[110px] w-full rounded-lg bg-richblack-900 object-contain p-3" />
-                </div>
+          <Link to={"/signup"}>
+            <div className="group rounded-full bg-richblack-700 p-1 font-bold text-richblack-200 transition-all duration-300 hover:scale-95 border border-richblack-600 shadow-lg">
+              <div className="flex flex-row items-center gap-2 rounded-full px-8 py-[6px] transition-all duration-300 group-hover:bg-richblack-900">
+                <p>Start Your Professional Journey</p>
+                <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
+          </Link>
+
+          <h1 className="text-4xl font-extrabold text-richblack-5 sm:text-6xl leading-[1.1] tracking-tight max-w-[900px]">
+            The Future of IT Education is <HighlightText text={"Intelligent & Personal"} />
+          </h1>
+
+          <p className="max-w-[850px] text-lg md:text-xl text-richblack-300 leading-relaxed mx-auto italic">
+            Experience a revolutionary LMS powered by <span className="text-blue-100 font-semibold underline decoration-blue-200">RAG-based AI</span>. 
+            Get real-time academic assistance, grounded in university-standard curriculum.
+          </p>
+
+          <div className="flex flex-wrap gap-6 justify-center mt-4">
+            <CTAButton active={true} linkto={"/all-courses"}>Explore Catalog</CTAButton>
+            <CTAButton active={false} linkto={"/signup"}>Try AI Tutor</CTAButton>
           </div>
         </motion.div>
-      </section>
+      </div>
 
-      <section className="mx-auto max-w-maxContentTab lg:max-w-maxContent px-4 py-20">
+      <div className="mx-auto max-w-maxContentTab lg:max-w-maxContent px-4 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           
           <div className="lg:col-span-5 space-y-8">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-caribbeangreen-100">Learning built for momentum</p>
-            <h2 className="text-3xl font-bold text-richblack-5 leading-tight sm:text-4xl">
+            <h2 className="text-4xl font-bold text-richblack-5 leading-tight">
               Why Learn with our <br/>
               <HighlightText text={"AI Advantage?"} />
             </h2>
@@ -137,8 +96,8 @@ const Home = () => {
                 { title: "24/7 AI Assistance", desc: "Never wait for an instructor. Get instant explanations for complex code.", icon: <FaBrain className="text-pink-200"/> },
                 { title: "Instant Quiz Gen", desc: "AI designs practice tests tailored to your learning progress.", icon: <FaLightbulb className="text-caribbeangreen-100"/> }
               ].map((item, i) => (
-                <div key={i} className="flex gap-4 rounded-lg border border-richblack-700/60 bg-richblack-800/45 p-4 transition-colors hover:border-richblack-600 hover:bg-richblack-800">
-                  <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-richblack-900 text-xl">{item.icon}</div>
+                <div key={i} className="flex gap-4 p-4 rounded-xl hover:bg-richblack-800 transition-colors border border-transparent hover:border-richblack-700">
+                  <div className="text-2xl mt-1">{item.icon}</div>
                   <div>
                     <h3 className="text-xl font-bold text-richblack-5">{item.title}</h3>
                     <p className="text-richblack-400 text-sm mt-1">{item.desc}</p>
@@ -152,20 +111,22 @@ const Home = () => {
             {quickLinks.map((link, index) => {
               const Icon = link.icon;
               return (
-                <Link key={index} to={link.link} className="group relative flex min-h-[180px] flex-col justify-between rounded-lg border border-richblack-700 bg-richblack-800 p-6 shadow-xl transition-all hover:-translate-y-1 hover:border-blue-100/60 hover:shadow-blue-900/20">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-richblack-900 transition-transform group-hover:scale-105">
-                    <Icon className="text-2xl text-yellow-50" />
+                <Link key={index} to={link.link} className="group relative flex flex-col items-center gap-4 p-10 bg-richblack-800 rounded-2xl border border-richblack-700 shadow-xl hover:shadow-blue-900/20 transition-all hover:-translate-y-2">
+                  <div className="p-4 bg-richblack-900 rounded-full group-hover:scale-110 transition-transform">
+                    <Icon className="text-4xl text-yellow-50" />
                   </div>
-                  <span className="text-lg text-richblack-50 font-bold">{link.text}</span>
-                  <FaArrowRight className="absolute bottom-6 right-6 text-yellow-50 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100" />
+                  <span className="text-lg text-richblack-50 font-bold tracking-wide">{link.text}</span>
+                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <FaArrowRight className="text-yellow-50" />
+                  </div>
                 </Link>
               )
             })}
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="mx-auto w-full max-w-maxContentTab lg:max-w-maxContent px-4 pb-20">
+      <div className="mx-auto w-full max-w-maxContentTab lg:max-w-maxContent px-4 pb-20">
         <CodeBlocks 
           position={"lg:flex-row"}
           heading={
@@ -178,30 +139,30 @@ const Home = () => {
           ctabtn2={{ btnText: "View Documentation", linkto: "/login", active: false }}
           codeblock={`function welcomeToEduSpace() {\n  const goal = "Intelligent Learning";\n  const tools = ["Llama 3.1", "RAG", "Gemini"];\n  console.log(\`Unlocking \${goal} using \${tools.join(", ")}\`);\n}\nwelcomeToEduSpace();`}
           codeColor={"text-blue-100"}
-          backgroundGradient={"code-block2-grad"}
+          backgroundGradient={<div className="codeblock1 absolute"></div>}
         />
-      </section>
+      </div>
 
-      <section className="bg-richblack-800/70 py-16 border-t border-b border-richblack-700">
+      <div className="bg-richblack-800 py-20 border-t border-b border-richblack-700">
         <div className="mx-auto max-w-maxContentTab lg:max-w-maxContent px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
             {stats.map((stat, index) => (
-              <div key={index} className="flex flex-col items-center gap-3 rounded-lg border border-richblack-700 bg-richblack-900 p-6 text-center shadow-2xl transition-colors hover:border-yellow-50">
+              <div key={index} className="flex flex-col items-center gap-3 p-8 bg-richblack-900 rounded-2xl border border-richblack-700 hover:border-yellow-50 transition-colors shadow-2xl">
                 <div className="text-3xl text-yellow-50 mb-2">{stat.icon}</div>
-                <span className="text-3xl font-black text-white sm:text-4xl">{stat.value}</span>
+                <span className="text-4xl font-black text-white">{stat.value}</span>
                 <span className="text-sm text-richblack-400 font-bold uppercase tracking-widest">{stat.label}</span>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
+      {/* SECTION 5: TRENDING COURSES - Hiển thị dữ liệu thực tế */}
       {trendingCourses.length > 0 && (
-        <section className="mx-auto w-full max-w-maxContentTab lg:max-w-maxContent px-4 py-20">
+        <div className="mx-auto w-full max-w-maxContentTab lg:max-w-maxContent px-4 py-24">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div className="space-y-4">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-50">Popular right now</p>
-              <h2 className="text-3xl font-bold text-white leading-tight sm:text-4xl">
+              <h2 className="text-4xl font-bold text-white leading-tight">
                 Trending <HighlightText text={"IT Skill Tracks"} />
               </h2>
               <p className="text-richblack-400 max-w-[600px] text-lg">
@@ -213,14 +174,14 @@ const Home = () => {
             </Link>
           </div>
           <Course_Slider Courses={trendingCourses} />
-        </section>
+        </div>
       )}
 
-      <section className='text-richblack-700 py-16'>
+      <div className='text-richblack-700 py-24'>
         <div className="mx-auto w-full max-w-maxContentTab lg:max-w-maxContent px-4">
           <ExploreMore allCourses={courses} />
         </div>
-      </section>
+      </div>
 
       <Footer />
     </div>

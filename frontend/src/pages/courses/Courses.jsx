@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getAllCourses } from "../../services/operations/courseDetailsAPI";
 import Course_Card from "../../components/core/Catalog/Course_Card";
+import GetAvgRating from "../../utils/avgRating"
+
 import {
   FiSearch,
   FiFilter,
@@ -53,11 +55,7 @@ const AllCourses = () => {
       );
     })
     .filter((course) => {
-      const avgRating =
-        course?.ratingAndReviews?.length > 0
-          ? course.ratingAndReviews.reduce((a, b) => a + b.rating, 0) /
-            course.ratingAndReviews.length
-          : 0;
+      const avgRating = GetAvgRating(course?.ratingAndReviews)
       return minRating === 0 || avgRating >= minRating;
     })
     .sort((a, b) => {

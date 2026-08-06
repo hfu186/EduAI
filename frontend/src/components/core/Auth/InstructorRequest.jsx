@@ -5,6 +5,9 @@ import { toast } from "react-hot-toast";
 import { apiConnector } from "../../../services/apiConnector";
 import { profileEndpoints } from "../../../services/apis";
 
+const MAX_FILE_SIZE_MB = 10;
+const ACCEPTED_TYPES = [".pdf", ".jpg", ".jpeg", ".png"];
+
 export default function InstructorRequest() {
     const { user } = useSelector((state) => state.profile);
     const { token } = useSelector((state) => state.auth);
@@ -19,6 +22,8 @@ export default function InstructorRequest() {
         qualifications: "",
         experience: "",
     });
+    const [files, setFiles] = useState([]); // array of File objects (CV, certificates, etc.)
+    const [fileError, setFileError] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -39,6 +44,49 @@ export default function InstructorRequest() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleFileChange = (e) => {
+        const selected = Array.from(e.target.files || []);
+        setFileError("");
+
+        const tooBig = selected.find(
+            (f) => f.size > MAX_FILE_SIZE_MB * 1024 * 1024
+        );
+        if (tooBig) {
+            setFileError(`"${tooBig.name}" vượt quá ${MAX_FILE_SIZE_MB}MB`);
+            e.target.value = "";
+            return;
+        }
+
+        const invalidType = selected.find(
+            (f) => !ACCEPTED_TYPES.some((ext) => f.name.toLowerCase().endsWith(ext))
+        );
+        if (invalidType) {
+            setFileError(
+                `"${invalidType.name}" không đúng định dạng cho phép (PDF, JPG, PNG)`
+            );
+            e.target.value = "";
+            return;
+        }
+
+        // merge with existing selection, avoid exact duplicates by name+size
+        setFiles((prev) => {
+            const merged = [...prev];
+            selected.forEach((f) => {
+                const exists = merged.some(
+                    (m) => m.name === f.name && m.size === f.size
+                );
+                if (!exists) merged.push(f);
+            });
+            return merged;
+        });
+
+        e.target.value = ""; // allow re-selecting the same file later
+    };
+
+    const removeFile = (index) => {
+        setFiles((prev) => prev.filter((_, i) => i !== index));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -47,28 +95,39 @@ export default function InstructorRequest() {
             return;
         }
 
+        if (files.length === 0) {
+            setFileError("Vui lòng đính kèm ít nhất 1 tài liệu xác thực (CV, chứng chỉ...)");
+            return;
+        }
+
         setLoading(true);
         try {
+            const payload = new FormData();
+            payload.append("firstName", formData.firstName);
+            payload.append("lastName", formData.lastName);
+            payload.append("email", formData.email);
+            payload.append("phone", formData.phone);
+            payload.append("bio", formData.bio);
+            payload.append("qualifications", formData.qualifications);
+            payload.append("experience", formData.experience);
+            files.forEach((file) => payload.append("documents", file));
+
             const response = await apiConnector(
                 "POST",
                 profileEndpoints.REQUEST_INSTRUCTOR_API,
+                payload,
                 {
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    email: formData.email,
-                    phone: formData.phone,
-                    bio: formData.bio,
-                    qualifications: formData.qualifications,
-                    experience: formData.experience,
-                },
-                { Authorization: `Bearer ${token}` }
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                }
             );
 
             if (!response?.data?.success) {
                 throw new Error(response?.data?.message || "Failed to submit request");
             }
 
-            toast.success("Your instructor request has been submitted successfully"); navigate("/dashboard/my-profile");
+            toast.success("Your instructor request has been submitted successfully");
+            navigate("/dashboard/my-profile");
         } catch (error) {
             toast.error(error.message || "Error");
         } finally {
@@ -192,6 +251,59 @@ export default function InstructorRequest() {
                             className="w-full rounded-lg border border-richblack-600 bg-richblack-900 px-4 py-3 outline-none"
                             placeholder="Describe your teaching experience or relevant professional background."
                         />
+                    </div>
+
+                    {/* --- File upload: verification documents (CV, certificates, ID, etc.) --- */}
+                    <div>
+                        <label className="mb-2 block text-sm text-richblack-300">
+                            Verification Documents (CV, Certificates...)
+                        </label>
+
+                        <label
+                            htmlFor="documents"
+                            className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-richblack-600 bg-richblack-900 px-4 py-6 text-center transition hover:border-yellow-50"
+                        >
+                            <span className="text-sm text-richblack-300">
+                                Click to upload PDF, JPG or PNG — max {MAX_FILE_SIZE_MB}MB each
+                            </span>
+                            <input
+                                id="documents"
+                                type="file"
+                                multiple
+                                accept={ACCEPTED_TYPES.join(",")}
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                        </label>
+
+                        {fileError && (
+                            <p className="mt-2 text-sm text-pink-200">{fileError}</p>
+                        )}
+
+                        {files.length > 0 && (
+                            <ul className="mt-3 space-y-2">
+                                {files.map((file, index) => (
+                                    <li
+                                        key={`${file.name}-${file.size}-${index}`}
+                                        className="flex items-center justify-between rounded-lg border border-richblack-600 bg-richblack-900 px-4 py-2 text-sm"
+                                    >
+                                        <span className="truncate text-richblack-100">
+                                            {file.name}{" "}
+                                            <span className="text-richblack-400">
+                                                ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                                            </span>
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeFile(index)}
+                                            className="ml-3 shrink-0 text-richblack-300 hover:text-pink-200"
+                                        >
+                                            Remove
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
 
                     <div className="flex flex-wrap gap-3 pt-2">

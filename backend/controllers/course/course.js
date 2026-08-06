@@ -7,6 +7,7 @@ import CourseProgress from "../../models/courseProgress.js"
 import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
+import uploadHelper from "../../utils/uploadHelper.js"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -55,14 +56,7 @@ export const createCourse = async (req, res) => {
       });
     }
 
-    let imageBuffer;
-    if (thumbnail.tempFilePath) {
-      imageBuffer = fs.readFileSync(thumbnail.tempFilePath);
-    } else {
-      imageBuffer = thumbnail.data;
-    }
-
-    const base64Thumbnail = `data:${thumbnail.mimetype};base64,${imageBuffer.toString('base64')}`;
+    const base64Thumbnail = uploadHelper.getFileBase64(thumbnail);
     const parsedTag = typeof tag === "string" ? JSON.parse(tag) : tag;
     const parsedInstructions = typeof instructions === "string" ? JSON.parse(instructions) : instructions;
 
@@ -135,15 +129,7 @@ export const editCourse = async (req, res) => {
 
     if (req.files && req.files.thumbnailImage) {
       const thumbnail = req.files.thumbnailImage;
-
-      let imageBuffer;
-      if (thumbnail.tempFilePath) {
-        imageBuffer = fs.readFileSync(thumbnail.tempFilePath);
-      } else {
-        imageBuffer = thumbnail.data;
-      }
-      const base64Thumbnail = `data:${thumbnail.mimetype};base64,${imageBuffer.toString('base64')}`;
-
+      const base64Thumbnail = uploadHelper.getFileBase64(thumbnail);
       course.thumbnail = base64Thumbnail;
     }
 

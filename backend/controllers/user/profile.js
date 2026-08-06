@@ -2,6 +2,7 @@ const Profile = require('../../models/profile');
 const User = require('../../models/user');
 const CourseProgress = require('../../models/courseProgress')
 const Course = require('../../models/course')
+const { uploadImageToCloudinary, getFileBase64 } = require('../../utils/imageUploader');
 
 const fs = require('fs');
 const { convertSecondsToDuration } = require('../../utils/secToDuration')
@@ -120,7 +121,7 @@ exports.deleteAccount = async (req, res) => {
 }
 
 
-// ================ get details of user ================
+// ================ request to become instructor ================
 exports.requestInstructor = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -148,6 +149,64 @@ exports.requestInstructor = async (req, res) => {
       experience,
     } = req.body || {};
 
+    
+    let uploadedDocs = [];
+
+    if (req.files && req.files.documents) {
+      const rawFiles = Array.isArray(req.files.documents)
+        ? req.files.documents
+        : [req.files.documents];
+
+      if (rawFiles.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Please attach at least one verification document',
+        });
+      }
+
+      const ALLOWED_TYPES = ['pdf', 'jpg', 'jpeg', 'png'];
+      const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+
+      for (const file of rawFiles) {
+        const ext = file.name.split('.').pop().toLowerCase();
+
+        if (!ALLOWED_TYPES.includes(ext)) {
+          return res.status(400).json({
+            success: false,
+            message: `File "${file.name}" has an unsupported format`,
+          });
+        }
+
+        if (file.size > MAX_SIZE_BYTES) {
+          return res.status(400).json({
+            success: false,
+            message: `File "${file.name}" exceeds the 10MB limit`,
+          });
+        }
+      }
+
+      for (const file of rawFiles) {
+        const uploaded = await uploadImageToCloudinary(
+          file,
+          process.env.FOLDER_NAME_INSTRUCTOR_DOCS || 'instructor-requests',
+          undefined,
+          undefined,
+          { resource_type: 'auto' }
+        );
+
+        uploadedDocs.push({
+          name: file.name,
+          url: uploaded.secure_url,
+          uploadedAt: new Date(),
+        });
+      }
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Please attach at least one verification document',
+      });
+    }
+
     user.instructorRequestStatus = 'pending';
     user.instructorRequestDetails = {
       firstName: firstName || user.firstName,
@@ -157,6 +216,7 @@ exports.requestInstructor = async (req, res) => {
       bio: bio || '',
       qualifications: qualifications || '',
       experience: experience || '',
+      documents: uploadedDocs,
     };
     await user.save();
 
@@ -234,12 +294,7 @@ exports.updateUserProfileImage = async (req, res) => {
     const profileImage = req.files.profileImage;
     const userId = req.user.id;
 
-    let imageBuffer;
-    if (profileImage.tempFilePath) {
-      imageBuffer = fs.readFileSync(profileImage.tempFilePath);
-    } else {
-      imageBuffer = profileImage.data;
-    } const base64Image = `data:${profileImage.mimetype};base64,${imageBuffer.toString("base64")}`;
+    const base64Image = getFileBase64(profileImage);
     const updatedUserDetails = await User.findByIdAndUpdate(
       userId,
       { image: base64Image },

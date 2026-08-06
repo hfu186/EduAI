@@ -1,13 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 
+// eslint-disable-next-line no-undef
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     fontFamily: {
+      sans: ["Inter", "sans-serif"],
       inter: ["Inter", "sans-serif"],
-      "edu-sa": ["Edu SA Beginner", "cursive"],
-      mono: ["Roboto Mono", "monospace"],
-      boogaloo: ['Boogaloo', "sans-serif"]
+      serif: ["Inter", "sans-serif"],
+      mono: ["Inter", "sans-serif"],
+      "edu-sa": ["Inter", "sans-serif"],
+      boogaloo: ["Inter", "sans-serif"],
     },
     colors: {
       white: "#fff",

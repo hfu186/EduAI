@@ -1,7 +1,7 @@
 const Message = require("../../models/Message");
 const Chat = require("../../models/Chat");
-const cloudinary = require("cloudinary").v2; 
 const fs = require("fs");
+const { uploadToCloudinary } = require("../../utils/uploadHelper");
 
 exports.uploadChatFile = async (req, res) => {
   try {
@@ -30,9 +30,8 @@ exports.uploadChatFile = async (req, res) => {
 
     const isImage = file.mimetype.startsWith("image/");
 
-    const uploadResult = await cloudinary.uploader.upload(file.tempFilePath, {
-      folder: "chat-attachments",
-      resource_type: isImage ? "image" : "raw", // raw for PDF, documents, and other files
+    const uploadResult = await uploadToCloudinary(file, "chat-attachments", undefined, {
+      resource_type: isImage ? "image" : "raw",
     });
 
     if (file.tempFilePath) {

@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }) => 
         backdropFilter: "blur(12px)",
         boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
       }}>
-        <p style={{ color: "#666", fontSize: 11, marginBottom: 4, fontFamily: "monospace" }}>{label}</p>
+        <p style={{ color: "#666", fontSize: 11, marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>{label}</p>
         <p style={{ color: "#fff", fontSize: 15, fontWeight: 700 }}>
           {prefix}{Number(payload[0].value).toLocaleString()}{suffix}
         </p>
@@ -163,13 +163,9 @@ export default function AdminAnalytics() {
       minHeight: "100vh",
       background: "#080810",
       color: "#fff",
-      fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
-      padding: "40px 48px",
+      fontFamily: "'Inter', sans-serif",
     }}>
-
-      {/* ── Google Font ── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap');
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }

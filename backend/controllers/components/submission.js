@@ -2,7 +2,7 @@ const Submission = require("../../models/submission");
 const CourseProgress = require("../../models/courseProgress");
 const SubSection = require("../../models/subSection");
 const path = require("path");
-const fs = require("fs");
+const { saveUploadedFiles, ensureDirectoryExists } = require("../../utils/uploadHelper");
 const mailSender = require("../../utils/mailSender");
 const { createNotification } = require("../../utils/notification");
 
@@ -20,15 +20,9 @@ exports.submitAssignment = async (req, res) => {
     }
 
     const uploadDir = path.join(__dirname, "..", "uploads", "submissions");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+    ensureDirectoryExists(uploadDir);
 
-    const fileExtension = path.extname(submissionFile.name);
-    const fileName = `${Date.now()}-${studentId}-${assignmentId}${fileExtension}`;
-    const filePath = path.join(uploadDir, fileName);
-    
-    await submissionFile.mv(filePath);
+    const [savedFile] = await saveUploadedFiles(submissionFile, uploadDir, "/uploads/submissions");
 
     let submission = await Submission.findOne({ assignmentId, studentId });
 
@@ -36,14 +30,14 @@ exports.submitAssignment = async (req, res) => {
       submission = await Submission.create({
         assignmentId,
         studentId,
-        fileName: submissionFile.name,
-        fileUrl: `/uploads/submissions/${fileName}`,
+        fileName: savedFile.fileName,
+        fileUrl: savedFile.fileUrl,
         status: "Pending",  
         submittedAt: Date.now()
       });
     } else {
-      submission.fileName = submissionFile.name;
-      submission.fileUrl = `/uploads/submissions/${fileName}`;
+      submission.fileName = savedFile.fileName;
+      submission.fileUrl = savedFile.fileUrl;
       submission.submittedAt = Date.now();
       submission.status = "Pending"; 
       submission.grade = null; 
