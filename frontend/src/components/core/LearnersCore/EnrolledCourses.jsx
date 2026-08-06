@@ -15,18 +15,15 @@ export default function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState(null)
 
   const getEnrolledCourses = async () => {
-  try {
-    const res = await getUserEnrolledCourses(token);
-    setEnrolledCourses(Array.isArray(res) ? res : []);
-  } catch (error) {
-    console.log("Could not fetch enrolled courses.")
-  }
-};
-
-
+    try {
+      const res = await getUserEnrolledCourses(token);
+      setEnrolledCourses(Array.isArray(res) ? res : []);
+    } catch (error) {
+      console.log("Could not fetch enrolled courses.", error);}
+  };
   useEffect(() => {
     getEnrolledCourses();
-  })
+  }, [token])
 
   const sklItem = () => {
     return (
@@ -47,17 +44,12 @@ export default function EnrolledCourses() {
       </div>
     )
   }
-
-  // return if data is null
   if (enrolledCourses?.length == 0) {
     return (
-      <p className="grid h-[50vh] w-full place-content-center text-center text-richblack-5 text-3xl">
+      <p className="grid h-[50vh] w-full place-content-center text-center text-richblack-5 text-2xl">
         You have not enrolled in any course yet.
       </p>)
   }
-
-
-
   return (
     <>
 
@@ -109,8 +101,6 @@ export default function EnrolledCourses() {
                   </div>
                 </div>
 
-                {/* only for smaller devices */}
-                {/* duration -  progress */}
                 <div className='sm:hidden'>
                   <div className=" px-2 py-3">{course?.totalDuration}</div>
 

@@ -26,9 +26,8 @@ export default function EnrolledCoursesStats() {
   };
 
   useEffect(() => {
-    getEnrolledCourses();
-  });
-
+  getEnrolledCourses();
+}, [token])
   const totalCourses = enrolledCourses?.length || 0;
   const completedCourses = enrolledCourses?.filter((course) => course.progressPercentage === 100).length || 0;
   const avgProgress = totalCourses > 0 

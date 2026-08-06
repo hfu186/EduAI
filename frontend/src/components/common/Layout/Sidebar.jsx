@@ -12,8 +12,6 @@ import { IoMdClose } from 'react-icons/io'
 import { setOpenSideMenu, setScreenSize } from "../../../slices/sidebarSlice";
 
 
-
-
 export default function Sidebar() {
   const { user, loading: profileLoading } = useSelector((state) => state.profile)
   const { loading: authLoading } = useSelector((state) => state.auth)
@@ -36,8 +34,6 @@ export default function Sidebar() {
     else dispatch(setOpenSideMenu(true))
   })
 
-
-
   if (profileLoading || authLoading) {
     return (
       <div className="grid min-w-[220px] items-center border-r-[1px] border-r-richblack-700 bg-richblack-800">
@@ -53,11 +49,9 @@ export default function Sidebar() {
           openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />
         }
       </div>
-
-
       {
         openSideMenu &&
-        <div className="flex min-h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 ">
+        <div className="flex max-h-full min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 ">
           <div className="flex flex-col mt-6">
             {sidebarLinks.map((link) => {
               if (link.type && user?.accountType !== link.type) return null
