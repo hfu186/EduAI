@@ -1,0 +1,110 @@
+{
+  "common": {
+    "hello": "Hello",
+    "welcome": "Welcome to EduSpace",
+    "change_language": "Change language"
+  },
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "profile": "Profile",
+    "catalog": "Catalog"
+  },
+  "about": "About Us",
+  "contact": "Contact Us",
+  "profile": {
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": {
+      "welcome": "Welcome Back",
+      "subtitle": "Login to continue your learning journey"
+    },
+    "label": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirm_password": "Confirm Password"
+    },
+    "placeholder": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "you@example.com",
+      "password": "••••••••"
+    },
+    "forgot_password": "Forgot Password?",
+    "button": {
+      "login": "Login",
+      "logging_in": "Logging in..."
+    },
+    "divider": {
+      "or": "or"
+    },
+    "signup": {
+      "prompt": "Don't have an account?",
+      "link": "Create one now",
+      "title": "Create Account",
+      "subtitle": "Join thousands of learners worldwide",
+      "errors": {
+        "password_mismatch": "Passwords Do Not Match"
+      },
+      "button": {
+        "create": "Create Account",
+        "creating": "Creating Account..."
+      },
+      "already_have": "Already have an account?",
+      "login_link": "Login Here"
+    },
+    "right": {
+      "badge": "Premium Learning Platform",
+      "title_part1": "Continue Your",
+      "title_part2": "Journey",
+      "desc1": "Access thousands of courses and enhance your skills with expert-led content.",
+      "desc2": "Your personalized dashboard awaits!"
+    },
+    "features": [
+      { "title": "Track Your Progress", "desc": "Monitor your learning journey and achievements in real-time" },
+      { "title": "Access Anywhere", "desc": "Learn on any device, anytime, anywhere — fully responsive" },
+      { "title": "Expert Instructors", "desc": "Learn from industry professionals with real-world experience" }
+    ]
+  },
+  "navbar": {
+    "loading": "Loading...",
+    "search": {
+      "placeholder": "Search courses, instructors...",
+      "results": "Results",
+      "by": "by {{name}}",
+      "view_all": "View all results for {{query}}",
+      "no_results": "No results found",
+      "hint": "Type to search courses..."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "mark_all": "Mark all as read",
+      "empty": "No notifications yet"
+    }
+  }
+  ,
+  "profile": {
+    "title": "My Profile",
+    "about": {
+      "title": "About",
+      "empty": "Write Something About Yourself"
+    },
+    "personal": {
+      "title": "Personal Details",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "account_type": "Account Type",
+      "email": "Email",
+      "gender": "Gender",
+      "add_gender": "Add Gender",
+      "phone": "Phone Number",
+      "add_phone": "Add Contact Number",
+      "dob": "Date Of Birth",
+      "add_dob": "Add Date Of Birth"
+    }
+  }
+}

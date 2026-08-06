@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import { useTranslation } from 'react-i18next'
 import { AiOutlineCaretDown } from "react-icons/ai"
 import { VscDashboard, VscSignOut } from "react-icons/vsc"
 import { useDispatch, useSelector } from "react-redux"
@@ -9,6 +10,7 @@ import Img from './../../common/Img';
 
 
 export default function ProfileDropdown() {
+  const { t } = useTranslation()
   const { user } = useSelector((state) => state.profile)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -37,7 +39,7 @@ export default function ProfileDropdown() {
           <Link to="/dashboard/my-profile" onClick={() => setOpen(false)}>
             <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 hover:bg-richblack-700 hover:text-richblack-25">
               <VscDashboard className="text-lg" />
-              Dashboard
+              {t('profile.dashboard')}
             </div>
           </Link>
 
@@ -50,7 +52,7 @@ export default function ProfileDropdown() {
             className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 hover:bg-richblack-700 hover:text-richblack-25"
           >
             <VscSignOut className="text-lg" />
-            Logout
+            {t('profile.logout')}
           </div>
         </div>
       )}

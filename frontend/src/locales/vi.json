@@ -1,0 +1,110 @@
+{
+  "common": {
+    "hello": "Xin chào",
+    "welcome": "Chào mừng đến EduSpace",
+    "change_language": "Thay đổi ngôn ngữ"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "courses": "Khóa học",
+    "profile": "Hồ sơ",
+    "catalog": "Danh mục"
+  },
+  "about": "Về chúng tôi",
+  "contact": "Liên hệ",
+  "profile": {
+    "dashboard": "Bảng điều khiển",
+    "logout": "Đăng xuất"
+  },
+  "auth": {
+    "login": {
+      "welcome": "Chào mừng trở lại",
+      "subtitle": "Đăng nhập để tiếp tục hành trình học tập của bạn"
+    },
+    "label": {
+      "first_name": "Tên",
+      "last_name": "Họ",
+      "email": "Địa chỉ Email",
+      "password": "Mật khẩu",
+      "confirm_password": "Xác nhận mật khẩu"
+    },
+    "placeholder": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "you@example.com",
+      "password": "••••••••"
+    },
+    "forgot_password": "Quên mật khẩu?",
+    "button": {
+      "login": "Đăng nhập",
+      "logging_in": "Đang đăng nhập..."
+    },
+    "divider": {
+      "or": "hoặc"
+    },
+    "signup": {
+      "prompt": "Chưa có tài khoản?",
+      "link": "Tạo ngay",
+      "title": "Tạo tài khoản",
+      "subtitle": "Tham gia hàng ngàn người học trên toàn cầu",
+      "errors": {
+        "password_mismatch": "Mật khẩu không khớp"
+      },
+      "button": {
+        "create": "Tạo tài khoản",
+        "creating": "Đang tạo tài khoản..."
+      },
+      "already_have": "Đã có tài khoản?",
+      "login_link": "Đăng nhập"
+    },
+    "right": {
+      "badge": "Nền tảng học tập cao cấp",
+      "title_part1": "Tiếp tục",
+      "title_part2": "Hành trình",
+      "desc1": "Truy cập hàng ngàn khóa học và nâng cao kỹ năng với nội dung do chuyên gia hướng dẫn.",
+      "desc2": "Bảng điều khiển cá nhân của bạn đang chờ!"
+    },
+    "features": [
+      { "title": "Theo dõi tiến trình", "desc": "Theo dõi hành trình học và thành tựu của bạn theo thời gian thực" },
+      { "title": "Truy cập mọi nơi", "desc": "Học trên mọi thiết bị, bất cứ lúc nào, ở bất kỳ đâu — hoàn toàn tương thích" },
+      { "title": "Giảng viên chuyên gia", "desc": "Học từ các chuyên gia trong ngành với kinh nghiệm thực tiễn" }
+    ]
+  },
+  "navbar": {
+    "loading": "Đang tải...",
+    "search": {
+      "placeholder": "Tìm khóa học, giảng viên...",
+      "results": "Kết quả",
+      "by": "bởi {{name}}",
+      "view_all": "Xem tất cả kết quả cho {{query}}",
+      "no_results": "Không tìm thấy kết quả",
+      "hint": "Gõ để tìm khóa học..."
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "mark_all": "Đánh dấu tất cả đã đọc",
+      "empty": "Chưa có thông báo"
+    }
+  }
+  ,
+  "profile": {
+    "title": "Hồ sơ của tôi",
+    "about": {
+      "title": "Giới thiệu",
+      "empty": "Viết vài dòng về bạn"
+    },
+    "personal": {
+      "title": "Thông tin cá nhân",
+      "first_name": "Tên",
+      "last_name": "Họ",
+      "account_type": "Loại tài khoản",
+      "email": "Email",
+      "gender": "Giới tính",
+      "add_gender": "Thêm giới tính",
+      "phone": "Số điện thoại",
+      "add_phone": "Thêm số liên hệ",
+      "dob": "Ngày sinh",
+      "add_dob": "Thêm ngày sinh"
+    }
+  }
+}

@@ -9,7 +9,8 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
 } from "../../../services/operations/notificationAPI";
-
+import LocaleSwitcher from "./LocaleSwitcher";
+import { useTranslation } from 'react-i18next';
 import { NavbarLinks } from "../../../../data/navbar-links";
 import EduSpaceLogo from "@/assets/Logo/Logo-Full-Light.png";
 import {
@@ -21,9 +22,9 @@ import MobileProfileDropDown from "../../core/Auth/MobileProfileDropDown";
 
 const Navbar = () => {
   const { token } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
   const { user } = useSelector((state) => state.profile);
   const { totalItems } = useSelector((state) => state.cart);
-
   const location = useLocation();
   const navigate = useNavigate();
   const searchRef = useRef(null);
@@ -262,8 +263,8 @@ const Navbar = () => {
                 <Link to={link.path}>
                   <p
                     className={`${matchRoute(link.path)
-                        ? "text-yellow-25"
-                        : "text-richblack-25 hover:text-yellow-25"
+                      ? "text-yellow-25"
+                      : "text-richblack-25 hover:text-yellow-25"
                       } transition-colors`}
                   >
                     {link.title}
@@ -445,7 +446,9 @@ const Navbar = () => {
                 <MobileProfileDropDown />
               </div>
             </div>
+
           )}
+          <LocaleSwitcher />
         </div>
       </div>
     </nav>

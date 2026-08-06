@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react"
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import useOnClickOutside from "../../../hooks/useOnClickOutside"
@@ -14,6 +15,7 @@ import { fetchCourseCategories } from './../../../services/operations/courseDeta
 
 export default function MobileProfileDropDown() {
     const { user } = useSelector((state) => state.profile)
+    const { t } = useTranslation()
     if (!user) return null
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -61,7 +63,7 @@ export default function MobileProfileDropDown() {
                     <Link to="/dashboard/my-profile" onClick={() => setOpen(false)}>
                         <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100">
                             <VscDashboard className="text-lg" />
-                            Dashboard
+                            {t('profile.dashboard')}
                         </div>
                     </Link>
 
@@ -69,28 +71,28 @@ export default function MobileProfileDropDown() {
                     <Link to='/' onClick={() => setOpen(false)}>
                         <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 border-y border-richblack-700 ">
                             <AiOutlineHome className="text-lg" />
-                            Home
+                            {t('nav.home')}
                         </div>
                     </Link>
 
                     <Link to='/' onClick={() => setOpen(false)}>
                         <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100">
                             <PiNotebook className="text-lg" />
-                            Catalog
+                            {t('nav.catalog')}
                         </div>
                     </Link>
 
                     <Link to='/about' onClick={() => setOpen(false)}>
                         <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 border-y border-richblack-700 ">
                             <TbMessage2Plus className="text-lg" />
-                            About Us
+                            {t('about')}
                         </div>
                     </Link>
 
                     <Link to='/contact' onClick={() => setOpen(false)}>
                         <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 ">
                             <MdOutlineContactPhone className="text-lg" />
-                            Contact Us
+                            {t('contact')}
                         </div>
                     </Link>
 
@@ -102,7 +104,7 @@ export default function MobileProfileDropDown() {
                         className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100"
                     >
                         <VscSignOut className="text-lg" />
-                        Logout
+                        {t('profile.logout')}
                     </div>
                 </div>
             )}

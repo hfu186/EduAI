@@ -46,6 +46,9 @@
     "sweetalert2-react-content": "^5.1.1",
     "swiper": "^11.0.4",
     "video-react": "^0.16.0"
+    ,
+    "i18next": "^23.0.0",
+    "react-i18next": "^13.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

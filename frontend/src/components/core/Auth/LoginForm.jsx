@@ -5,8 +5,10 @@ import { login } from "../../../services/operations/authAPI"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { FaUserCircle, FaLock, FaEnvelope } from "react-icons/fa"
 import { HiSparkles } from "react-icons/hi2"
+import { useTranslation } from 'react-i18next'
 
 function LoginForm() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [formData, setFormData] = useState({
@@ -42,13 +44,13 @@ function LoginForm() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-[#1FA2FF]/5 via-transparent to-[#A6FFCB]/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
-        
+      <div className="relative z-10 grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-10">
+
         {/* LEFT SIDE: FORM */}
-        <div className="glass-bg rounded-3xl p-8 sm:p-10 lg:p-12 shadow-2xl border border-white/5 backdrop-blur-xl relative overflow-hidden group">
+        <div className="group relative overflow-hidden rounded-3xl border border-white/5 bg-richblack-900/50 p-7 shadow-2xl backdrop-blur-xl sm:p-8 lg:p-9">
           {/* Subtle shine effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-          
+
           <div className="space-y-7 relative">
             {/* Header */}
             <div className="text-center space-y-3">
@@ -56,10 +58,10 @@ function LoginForm() {
                 <FaUserCircle className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold gradient_color tracking-tight">
-                Welcome Back
+                {t('auth.login.welcome')}
               </h2>
               <p className="text-richblack-300 text-sm sm:text-base">
-                Login to continue your learning journey
+                {t('auth.login.subtitle')}
               </p>
             </div>
 
@@ -68,7 +70,7 @@ function LoginForm() {
               <div className="space-y-2">
                 <label className="lable-style flex items-center gap-2">
                   <FaEnvelope className="w-3.5 h-3.5 text-richblack-400" />
-                  Email Address <span className="text-pink-400">*</span>
+                  {t('auth.label.email')} <span className="text-pink-400">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -77,7 +79,7 @@ function LoginForm() {
                     name="email"
                     value={email}
                     onChange={handleOnChange}
-                    placeholder="you@example.com"
+                    placeholder={t('auth.placeholder.email')}
                     className="form-style w-full text-base !py-3.5 !pl-4 !pr-4 rounded-xl border border-richblack-600 focus:border-[#12D8FA]/50 focus:ring-2 focus:ring-[#12D8FA]/20 transition-all duration-300 bg-richblack-800/50"
                   />
                 </div>
@@ -87,7 +89,7 @@ function LoginForm() {
               <div className="space-y-2">
                 <label className="lable-style flex items-center gap-2">
                   <FaLock className="w-3.5 h-3.5 text-richblack-400" />
-                  Password <span className="text-pink-400">*</span>
+                  {t('auth.label.password')} <span className="text-pink-400">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -96,7 +98,7 @@ function LoginForm() {
                     name="password"
                     value={password}
                     onChange={handleOnChange}
-                    placeholder="••••••••"
+                    placeholder={t('auth.placeholder.password')}
                     className="form-style w-full text-base !py-3.5 !pl-4 !pr-12 rounded-xl border border-richblack-600 focus:border-[#12D8FA]/50 focus:ring-2 focus:ring-[#12D8FA]/20 transition-all duration-300 bg-richblack-800/50"
                   />
                   <button
@@ -115,11 +117,11 @@ function LoginForm() {
 
               {/* Forgot Password */}
               <div className="flex justify-end">
-                <Link 
-                  to="/forgot-password" 
+                <Link
+                  to="/forgot-password"
                   className="text-sm text-caribbeangreen-200 hover:text-caribbeangreen-100 transition-colors duration-200 hover:underline underline-offset-2"
                 >
-                  Forgot Password?
+                  {t('auth.forgot_password')}
                 </Link>
               </div>
 
@@ -136,10 +138,10 @@ function LoginForm() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Logging in...
+                      {t('auth.button.logging_in')}
                     </>
                   ) : (
-                    "Login"
+                    t('auth.button.login')
                   )}
                 </span>
                 {/* Shine effect on hover */}
@@ -149,19 +151,19 @@ function LoginForm() {
               {/* Divider */}
               <div className="relative flex items-center py-2">
                 <div className="flex-grow border-t border-richblack-600"></div>
-                <span className="flex-shrink mx-4 text-richblack-400 text-xs uppercase tracking-wider">or</span>
+                <span className="flex-shrink mx-4 text-richblack-400 text-xs uppercase tracking-wider">{t('auth.divider.or')}</span>
                 <div className="flex-grow border-t border-richblack-600"></div>
               </div>
 
               {/* Sign Up Link */}
               <div className="text-center">
                 <p className="text-sm text-richblack-300">
-                  Don't have an account?{" "}
-                  <Link 
-                    to="/signup" 
+                  {t('auth.signup.prompt')}{" "}
+                  <Link
+                    to="/signup"
                     className="font-semibold gradient_color hover:underline underline-offset-2 transition-all"
                   >
-                    Create one now
+                    {t('auth.signup.link')}
                   </Link>
                 </p>
               </div>
@@ -171,63 +173,56 @@ function LoginForm() {
 
         {/* RIGHT SIDE: DECORATION */}
         <div className="hidden lg:block">
-          <div className="glass-bg rounded-3xl p-10 xl:p-12 shadow-2xl border border-white/5 backdrop-blur-xl relative overflow-hidden">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-richblack-900/60 p-8 shadow-2xl backdrop-blur-xl xl:p-9">
             {/* Decorative gradient orb */}
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br from-[#1FA2FF]/30 to-[#A6FFCB]/20 rounded-full blur-3xl" />
-            
-            <div className="space-y-8 relative">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-gradient-to-br from-[#1FA2FF]/25 to-[#A6FFCB]/15 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -left-16 h-48 w-48 rounded-full bg-gradient-to-tr from-[#12D8FA]/15 to-transparent blur-3xl" />
+
+            <div className="relative space-y-6">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#1FA2FF]/15 to-[#12D8FA]/15 border border-[#12D8FA]/20">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#12D8FA]/25 bg-gradient-to-r from-[#1FA2FF]/10 to-[#12D8FA]/10 px-3.5 py-1.5">
                 <HiSparkles className="w-4 h-4 text-[#12D8FA]" />
-                <span className="text-sm font-medium text-[#12D8FA]">Premium Learning Platform</span>
-              </div>
-              
-              {/* Title */}
-              <h3 className="text-4xl xl:text-5xl font-bold text-richblack-5 leading-tight tracking-tight">
-                Continue Your{" "}
-                <span className="gradient_color">Journey</span>
-              </h3>
-              
-              {/* Description */}
-              <div className="space-y-2">
-                <p className="text-lg text-richblack-200 leading-relaxed">
-                  Access thousands of courses and enhance your skills with expert-led content.
-                </p>
-                <p className="text-base gradient_color font-semibold">
-                  Your personalized dashboard awaits!
-                </p>
+                <span className="text-sm font-medium text-[#12D8FA]">{t('auth.right.badge')}</span>
               </div>
 
-              {/* Features List */}
-              <div className="space-y-5 pt-4">
-                {[
-                  {
-                    title: "Track Your Progress",
-                    desc: "Monitor your learning journey and achievements in real-time",
-                    gradient: "from-[#1FA2FF] to-[#12D8FA]",
-                  },
-                  {
-                    title: "Access Anywhere",
-                    desc: "Learn on any device, anytime, anywhere — fully responsive",
-                    gradient: "from-[#12D8FA] to-[#A6FFCB]",
-                  },
-                  {
-                    title: "Expert Instructors",
-                    desc: "Learn from industry professionals with real-world experience",
-                    gradient: "from-[#A6FFCB] to-[#1FA2FF]",
-                  },
-                ].map((feature, idx) => (
-                  <div 
-                    key={idx} 
-                    className="flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors duration-300 group/feature"
-                  >
-                    <div className={`w-2.5 h-2.5 rounded-full bg-gradient-to-r ${feature.gradient} mt-1.5 shrink-0 group-hover/feature:scale-125 transition-transform duration-300`} />
-                    <div>
-                      <h4 className="text-richblack-5 font-semibold text-base">{feature.title}</h4>
-                      <p className="text-sm text-richblack-400 mt-0.5 leading-relaxed">{feature.desc}</p>
+              {/* Title */}
+              <h3 className="text-4xl font-bold leading-tight tracking-tight text-richblack-5 ">
+                {t('auth.right.title_part1')} {" "}
+                <span className="gradient_color">{t('auth.right.title_part2')}</span>
+              </h3>
+
+              {/* Description */}
+              <div className="space-y-1">
+                <p className="text-sm text-richblack-200 leading-relaxed">
+                  {t('auth.right.desc1')}
+                </p>
+                <p className="text-base gradient_color font-semibold">
+                  {t('auth.right.desc2')}
+                </p>
+                {[0, 1, 2].map((idx) => {
+                  const gradients = [
+                    "from-[#1FA2FF] to-[#12D8FA]",
+                    "from-[#12D8FA] to-[#A6FFCB]",
+                    "from-[#A6FFCB] to-[#1FA2FF]",
+                  ];
+                  const title = t(`auth.features.${idx}.title`);
+                  const desc = t(`auth.features.${idx}.desc`);
+                  const gradient = gradients[idx];
+
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors duration-300 group/feature"
+                    >
+                      <div className={`w-2.5 h-2.5 rounded-full bg-gradient-to-r ${gradient} mt-1.5 shrink-0 group-hover/feature:scale-125 transition-transform duration-300`} />
+                      <div>
+                        <h4 className="text-richblack-5 font-semibold text-base">{title}</h4>
+                        <p className="text-sm text-richblack-400 mt-0.5 leading-relaxed">{desc}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           </div>

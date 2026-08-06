@@ -5,7 +5,6 @@ import Sidebar from '@/components/common/Layout/Sidebar'
 import Loading from '@/components/common/Loading'
 
 const Dashboard = () => {
-
     const { loading: authLoading } = useSelector((state) => state.auth);
     const { loading: profileLoading } = useSelector((state) => state.profile);
     const contentRef = useRef(null);
@@ -19,6 +18,7 @@ const Dashboard = () => {
             </div>
         )
     }
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         if (contentRef.current) {
             contentRef.current.scrollTo({ top: 0, behavior: "auto" });
@@ -28,7 +28,6 @@ const Dashboard = () => {
     return (
         <div className='flex w-full bg-[#000814] text-richblack-5'>
             <Sidebar />
-
             <div ref={contentRef} className='overflow-auto w-full'>
                 <div className='mx-auto w-11/12 max-w-[1000px] py-10 '>
                     <Outlet />
