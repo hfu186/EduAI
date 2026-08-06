@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaArrowRight, FaBrain, FaSearch, FaLightbulb, FaBookOpen, FaGraduationCap, FaChalkboardTeacher, FaCheckCircle, FaPlay } from "react-icons/fa";
+import { FaArrowRight, FaBrain, FaSearch, FaLightbulb, FaBookOpen, FaGraduationCap, FaChalkboardTeacher, FaPlay } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
@@ -11,8 +11,6 @@ import ExploreMore from "@/components/core/HomePage/ExploreMore";
 import Footer from '@/components/common/Layout/Footer';
 import Course_Slider from "@/components/core/Catalog/Course_Slider";
 import { getAllCourses } from "@/services/operations/courseDetailsAPI";
-import heroFrame from "@/assets/Images/frame.png";
-import progressImage from "@/assets/Images/Know_your_progress.png";
 
 const quickLinks = [
   { icon: FaSearch, text: "Search Catalog", link: "/all-courses/" },
@@ -28,7 +26,6 @@ const stats = [
   { icon: <FaChalkboardTeacher />, label: "Expert Mentors", value: "200+" },
 ];
 
-const trustSignals = ["RAG-powered answers", "Course-based quizzes", "Mentor-ready workflows"];
 
 const Home = () => {
   const [courses, setCourses] = useState([]);
@@ -104,19 +101,34 @@ const Home = () => {
                 <div className="rounded-lg bg-yellow-50 px-3 py-1 text-xs font-bold text-richblack-900">Live</div>
               </div>
               <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_0.8fr]">
-                <div className="rounded-lg bg-richblack-900 p-4">
-                  <img src={heroFrame} alt="Interactive course workspace" className="h-[220px] w-full object-contain sm:h-[280px]" />
+                <div className="rounded-sm bg-richblack-900 p-4">
+                  <img
+                    src="https://img.magnific.com/free-photo/it-specialist-checking-code-computer-dark-office-night_1098-18699.jpg?semt=ais_hybrid&w=740&q=80"
+                    alt="Interactive course workspace"
+                    className="h-[220px] w-full object-cover sm:h-[280px]"
+                  />
                 </div>
+
                 <div className="flex flex-col gap-3">
                   <div className="rounded-lg border border-blue-100/20 bg-blue-200/10 p-4">
                     <p className="text-xs font-semibold uppercase text-blue-100">AI Tutor</p>
-                    <p className="mt-2 text-sm text-richblack-100">Answers grounded in your lessons and slides.</p>
+                    <p className="mt-2 text-sm text-richblack-100">
+                      Answers grounded in your lessons and slides.
+                    </p>
                   </div>
+
                   <div className="rounded-lg border border-yellow-50/20 bg-yellow-50/10 p-4">
                     <p className="text-xs font-semibold uppercase text-yellow-50">Practice</p>
-                    <p className="mt-2 text-sm text-richblack-100">Quizzes generated from real course material.</p>
+                    <p className="mt-2 text-sm text-richblack-100">
+                      Quizzes generated from real course material.
+                    </p>
                   </div>
-                  <img src={progressImage} alt="Progress tracking preview" className="mt-auto h-[110px] w-full rounded-lg bg-richblack-900 object-contain p-3" />
+
+                  <img
+                    src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80"
+                    alt="Progress tracking preview"
+                    className="mt-auto h-[110px] w-full rounded-lg bg-richblack-900 object-cover p-3"
+                  />
                 </div>
               </div>
             </div>
@@ -178,8 +190,7 @@ const Home = () => {
           subheading={"Our integrated environment allows you to practice while you learn, with AI suggestions for debugging and optimization."}
           ctabtn1={{ btnText: "Try Interactive Coding", linkto: "/signup", active: true }}
           ctabtn2={{ btnText: "View Documentation", linkto: "/login", active: false }}
-          codeblock={`function welcomeToEduSpace() {\n  const goal = "Intelligent Learning";\n  const tools = ["Llama 3.1", "RAG", "Gemini"];\n  console.log(\`Unlocking \${goal} using \${tools.join(", ")}\`);\n}\nwelcomeToEduSpace();`}
-          codeColor={"text-blue-100"}
+          codeblock={`function startLearning() {\n  const skills = ["JavaScript", "React", "Node.js"];\n  console.log("Building real projects...");\n  return skills.map(skill => skill + " ✓");\n}\n\nstartLearning();`} codeColor={"text-blue-100"}
           backgroundGradient={"code-block2-grad"}
         />
       </section>
