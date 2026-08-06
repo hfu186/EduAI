@@ -19,7 +19,8 @@ export default function EnrolledCourses() {
       const res = await getUserEnrolledCourses(token);
       setEnrolledCourses(Array.isArray(res) ? res : []);
     } catch (error) {
-      console.log("Could not fetch enrolled courses.", error);}
+      console.log("Could not fetch enrolled courses.", error);
+    }
   };
   useEffect(() => {
     getEnrolledCourses();
@@ -46,9 +47,11 @@ export default function EnrolledCourses() {
   }
   if (enrolledCourses?.length == 0) {
     return (
-      <p className="grid h-[50vh] w-full place-content-center text-center text-richblack-5 text-2xl">
-        You have not enrolled in any course yet.
-      </p>)
+      <div className="flex min-h-[calc(100vh-2.5rem-5rem)] flex-1 items-center justify-center">
+        <p className="text-center text-xl text-richblack-5">
+          You have not enrolled in any course yet.
+        </p>
+      </div>)
   }
   return (
     <>
@@ -60,9 +63,6 @@ export default function EnrolledCourses() {
             <p className="w-[45%] px-5 py-3">Course Name</p>
             <p className="flex-1 py-3">Progress</p>
           </div>
-
-
-          {/* loading Skeleton */}
           {!enrolledCourses && <div >
             {sklItem()}
             {sklItem()}
@@ -105,7 +105,6 @@ export default function EnrolledCourses() {
                   <div className=" px-2 py-3">{course?.totalDuration}</div>
 
                   <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
-                    {/* {console.log('Course ============== ', course.progressPercentage)} */}
 
                     <p>Progress: {course.progressPercentage || 0}%</p>
                     <ProgressBar
@@ -116,8 +115,7 @@ export default function EnrolledCourses() {
                   </div>
                 </div>
 
-                {/* only for larger devices */}
-                {/* duration -  progress */}
+      
                 <div className="hidden w-1/5 sm:flex px-2 py-3">{course?.totalDuration}</div>
                 <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
                   <p>Progress: {course.progressPercentage || 0}%</p>

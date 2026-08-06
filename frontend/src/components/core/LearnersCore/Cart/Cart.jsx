@@ -7,7 +7,7 @@ export default function Cart() {
   const {  totalItems } = useSelector((state) => state.cart)
 
   return (
-    <div className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
+    <div className=" min-h-[calc(100vh-2.5rem-5rem)] flex-1 items-center justify-center">
       <h1 className="mb-5 text-3xl font-bold text-richblack-5  text-center sm:text-left ">Cart</h1>
       <p className="border-b border-b-richblack-400 pb-2 font-semibold text-richblack-400">
         {totalItems} Courses in Cart
