@@ -86,8 +86,213 @@
       "mark_all": "Đánh dấu tất cả đã đọc",
       "empty": "Chưa có thông báo"
     }
-  }
-  ,
+  },
+  "pages": {
+    "home": {
+      "badge": "Bắt đầu hành trình chuyên nghiệp của bạn",
+      "hero_part1": "Mở khóa tiềm năng của bạn với",
+      "hero_highlight": "Học thông minh",
+      "hero_description": "Trải nghiệm LMS hiện đại được thiết kế để giúp bạn học hiệu quả hơn với hỗ trợ thông minh và nội dung phù hợp với chương trình học tiêu chuẩn.",
+      "explore_catalog": "Khám phá danh mục",
+      "try_ai_tutor": "Thử trợ lý AI",
+      "workspace_title": "Không gian làm việc EduAI",
+      "workspace_subtitle": "Lộ trình học cá nhân hóa",
+      "live_tag": "Trực tiếp",
+      "feature_heading": "Tại sao học với",
+      "feature_highlight": "Lợi thế AI?",
+      "features": [
+        { "title": "Kiến thức có căn cứ", "desc": "Các câu trả lời được lấy trực tiếp từ tài liệu khóa học, không dựa trên dữ liệu chung chung." },
+        { "title": "Hỗ trợ 24/7", "desc": "Không phải chờ giảng viên. Nhận giải thích ngay lập tức cho các mã phức tạp." },
+        { "title": "Tạo bài kiểm tra tức thì", "desc": "AI thiết kế các bài kiểm tra thực hành phù hợp với tiến trình của bạn." }
+      ],
+      "quick_links": {
+        "search_catalog": "Tìm danh mục",
+        "my_learning": "Lộ trình của tôi",
+        "ai_assessment": "Đánh giá AI",
+        "soft_skills": "Kỹ năng mềm"
+      },
+      "stats": {
+        "published_courses": "Khóa học đã xuất bản",
+        "active_learners": "Người học năng động",
+        "ai_support": "Hỗ trợ AI",
+        "expert_mentors": "Giảng viên chuyên gia"
+      },
+      "code_section": {
+        "heading_part1": "Bắt đầu",
+        "heading_highlight": "Lập trình trong vài giây",
+        "subheading": "Môi trường tích hợp của chúng tôi cho phép bạn thực hành khi học, với gợi ý AI cho gỡ lỗi và tối ưu hóa.",
+        "btn_try": "Thử lập trình tương tác",
+        "btn_view": "Xem tài liệu"
+      },
+      "popular": {
+        "title": "Phổ biến ngay bây giờ",
+        "highlight": "Lộ trình kỹ năng CNTT",
+        "view_all": "Xem tất cả khóa học",
+        "description": "Các khóa học phổ biến nhất được cộng đồng hơn 10.000 người học lựa chọn."
+      }
+    },
+    "about": {
+      "hero_heading": "Thúc đẩy đổi mới trong giáo dục trực tuyến cho một",
+      "hero_highlight": "Tương lai tươi sáng hơn",
+      "hero_description": "EduSpace dẫn đầu trong việc thúc đẩy đổi mới trong giáo dục trực tuyến. Chúng tôi đam mê tạo ra một tương lai tốt đẹp hơn bằng cách cung cấp các khóa học hiện đại, tận dụng công nghệ mới và nuôi dưỡng cộng đồng học tập sôi động.",
+      "founding_title": "Câu chuyện thành lập của chúng tôi",
+      "founding_desc1": "Nền tảng e-learning của chúng tôi ra đời từ một tầm nhìn và niềm đam mê chung để thay đổi giáo dục. Mọi thứ bắt đầu với một nhóm nhà giáo dục, nhà công nghệ và người học suốt đời nhận ra nhu cầu về cơ hội học tập chất lượng cao, linh hoạt và dễ tiếp cận trong một thế giới kỹ thuật số phát triển nhanh chóng.",
+      "founding_desc2": "Là những nhà giáo dục giàu kinh nghiệm, chúng tôi đã chứng kiến trực tiếp những hạn chế và thách thức của hệ thống giáo dục truyền thống. Chúng tôi tin rằng giáo dục không nên bị giới hạn trong bốn bức tường lớp học hoặc bị ràng buộc bởi ranh giới địa lý. Chúng tôi hình dung một nền tảng có thể kết nối những khoảng trống này và trao quyền cho cá nhân ở mọi lĩnh vực để khai phá tiềm năng đầy đủ của họ.",
+      "vision_title": "Tầm nhìn của chúng tôi",
+      "vision_desc": "Với tầm nhìn này, chúng tôi bắt tay vào hành trình tạo ra một nền tảng e-learning sẽ cách mạng hóa cách mọi người học. Đội ngũ chuyên gia tận tâm của chúng tôi làm việc không mệt mỏi để phát triển một nền tảng mạnh mẽ và trực quan, kết hợp công nghệ tiên tiến với nội dung hấp dẫn, tạo nên trải nghiệm học tập năng động và tương tác.",
+      "mission_title": "Sứ mệnh của chúng tôi",
+      "mission_desc": "Sứ mệnh của chúng tôi vượt ra ngoài việc chỉ cung cấp khóa học trực tuyến. Chúng tôi muốn tạo ra một cộng đồng người học sôi động, nơi mọi người có thể kết nối, hợp tác và học hỏi lẫn nhau. Chúng tôi tin rằng tri thức phát triển trong môi trường chia sẻ và đối thoại, và chúng tôi nuôi dưỡng tinh thần hợp tác này thông qua diễn đàn, buổi học trực tiếp và cơ hội kết nối.",
+      "reviews_title": "Nhận xét từ các học viên khác"
+    },
+    "contact": {
+      "page_title": "Liên hệ hỗ trợ EduSpace",
+      "page_description": "Gửi câu hỏi của bạn về khóa học, ghi danh, truy cập tài khoản hoặc hỗ trợ giảng viên. Đội ngũ của chúng tôi sẽ phản hồi bạn sớm nhất có thể.",
+      "reviews_title": "Nhận xét từ các học viên khác"
+    },
+    "page_not_found": {
+      "heading": "404",
+      "title": "Có vẻ như bạn bị lạc",
+      "description": "Trang bạn đang tìm kiếm không tồn tại!",
+      "home_button": "Trang chủ"
+    },
+    "forgot_password": {
+      "title_reset": "Đặt lại mật khẩu",
+      "title_check": "Kiểm tra email",
+      "description_reset": "Đừng lo. Chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu tới email của bạn. Nếu bạn không truy cập được email, chúng ta có thể thử khôi phục tài khoản.",
+      "description_sent": "Chúng tôi đã gửi email đặt lại tới {{email}}",
+      "email_label": "Địa chỉ Email",
+      "email_placeholder": "Nhập địa chỉ email",
+      "submit": "Gửi",
+      "resend": "Gửi lại email",
+      "back_to_login": "Quay lại đăng nhập"
+    },
+    "verify_email": {
+      "title": "Xác minh email",
+      "description": "Một mã xác minh đã được gửi tới bạn. Nhập mã bên dưới",
+      "otp_placeholder": "-",
+      "submit": "Xác minh email",
+      "resend": "Gửi lại",
+      "back_to_signup": "Quay lại đăng ký"
+    },
+    "update_password": {
+      "title": "Chọn mật khẩu mới",
+      "description": "Gần xong rồi. Nhập mật khẩu mới và bạn sẽ sẵn sàng.",
+      "new_password_label": "Mật khẩu mới",
+      "confirm_password_label": "Xác nhận mật khẩu mới",
+      "new_password_placeholder": "Nhập mật khẩu",
+      "confirm_password_placeholder": "Xác nhận mật khẩu",
+      "submit": "Đặt lại mật khẩu",
+      "back_to_login": "Quay lại đăng nhập"
+    },
+    "courses": {
+      "breadcrumb_home": "Trang chủ",
+      "breadcrumb_courses": "Khóa học",
+      "breadcrumb_search": "Tìm kiếm: \"{{query}}\"",
+      "all_courses": "Tất cả khóa học",
+      "summary": "{{count}} khóa học sẵn sàng để bạn khám phá và học hỏi.",
+      "filters": "Bộ lọc",
+      "search": "Tìm kiếm",
+      "search_placeholder": "Tìm...",
+      "sort_by": "Sắp xếp theo",
+      "reset": "Đặt lại",
+      "lowest_price": "Giá thấp nhất",
+      "highest_price": "Giá cao nhất",
+      "ratings": "Đánh giá",
+      "displaying": "Hiển thị {{count}} khóa học",
+      "prev": "Trước",
+      "next": "Tiếp"
+    },
+    "course_details": {
+      "breadcrumb_home": "Trang chủ",
+      "breadcrumb_courses": "Khóa học",
+      "what_youll_learn": "Bạn sẽ học được",
+      "course_content": "Nội dung khóa học",
+      "sections": "{{count}} phần",
+      "lectures": "{{count}} bài giảng",
+      "total_length": "Tổng thời lượng {{duration}}",
+      "collapse_all": "Thu gọn tất cả",
+      "no_content": "Không có nội dung.",
+      "instructor": "Giảng viên",
+      "view_profile": "Xem hồ sơ",
+      "reviews": "Đánh giá",
+      "add_review": "Thêm đánh giá",
+      "rate_course": "Đánh giá khóa học:",
+      "submit_review": "Gửi đánh giá",
+      "no_reviews": "Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!",
+      "money_back": "Bảo đảm hoàn tiền 30 ngày",
+      "course_includes": "Khóa học này bao gồm:",
+      "lifetime_access": "Truy cập trọn đời",
+      "mobile_tv": "Truy cập trên di động và TV",
+      "certificate": "Chứng chỉ hoàn thành",
+      "share": "Chia sẻ",
+      "purchased": "Đã mua",
+      "free": "Miễn phí",
+      "enroll_now": "Ghi danh ngay",
+      "buy_now": "Mua ngay"
+    },
+    "payment": {
+      "checkout": "Thanh toán",
+      "course_summary": "Các khóa học bạn đang mua",
+      "order_summary": "Tóm tắt đơn hàng",
+      "total_courses": "Tổng số khóa học",
+      "total_amount": "Tổng tiền",
+      "checkout_button": "Thanh toán",
+      "back_to_cart": "Quay lại giỏ hàng"
+    },
+    "payment_qr": {
+      "title": "Quét mã QR để thanh toán",
+      "description": "Mở ứng dụng ngân hàng của bạn và quét mã QR bên dưới. Hệ thống sẽ tự động xác nhận khi thanh toán được nhận.",
+      "loading": "Đang tải mã QR...",
+      "open_payment": "Mở trang thanh toán PayOS",
+      "cancel": "Hủy thanh toán",
+      "waiting": "Đang chờ xác nhận từ ngân hàng... Vui lòng không đóng trang này"
+    },
+    "instructors": {
+      "hero_title": "Giảng viên đẳng cấp thế giới",
+      "hero_description": "Học hỏi từ những người giỏi nhất. Giảng viên của chúng tôi là chuyên gia ngành, nhà nghiên cứu và những người đam mê giáo dục cống hiến cho thành công của bạn.",
+      "loading": "Đang tải giảng viên...",
+      "none": "Chưa có giảng viên nào.",
+      "courses_label": "Khóa học",
+      "message_action": "Nhắn tin giảng viên"
+    },
+    "instructor_detail": {
+      "loading": "Đang tải...",
+      "not_found": "Không tìm thấy giảng viên",
+      "about_me": "Về tôi",
+      "contact": "Liên hệ",
+      "courses_by": "Khóa học của {{name}}",
+      "course_plural": "{{count}} khóa học",
+      "course_plural_suffix": "",
+      "no_courses": "Giảng viên này chưa đăng bất kỳ khóa học nào.",
+      "bio_default": "Giảng viên tại EduSpace",
+      "students": "Học viên",
+      "courses": "Khóa học",
+      "reviews": "Đánh giá",
+      "rating": "Đánh giá",
+      "languages": "Tiếng Anh · Tiếng Việt",
+      "about_description": "Xin chào, tôi là {{name}}. Tôi đam mê giảng dạy và giúp học viên đạt được mục tiêu. Khóa học của tôi được thiết kế thực tế và dễ hiểu.",
+      "no_bio": "Chưa có tiểu sử"
+    },
+    "chat": {
+      "messages": "Tin nhắn",
+      "conversations": "{{count}} cuộc trò chuyện",
+      "search_placeholder": "Tìm cuộc trò chuyện...",
+      "no_results": "Không tìm thấy kết quả",
+      "no_conversations": "Chưa có cuộc trò chuyện nào",
+      "search_prompt": "Thử tìm kiếm bằng từ khóa khác",
+      "start_messaging": "Bắt đầu nhắn tin cho giảng viên hoặc bạn cùng lớp"
+    },
+    "footer": {
+      "quick_links": "Liên kết nhanh",
+      "account": "Tài khoản",
+      "support": "Hỗ trợ",
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản",
+      "contact": "Liên hệ",
+      "copyright": "© 2026 EduSpace. Xây dựng cho học trực tuyến hiện đại.",
+      "description": "EduSpace là nền tảng học trực tuyến dành cho học viên, giảng viên và quản trị viên."
+    }
+  },
   "profile": {
     "title": "Hồ sơ của tôi",
     "edit_profile": "Chỉnh sửa hồ sơ",

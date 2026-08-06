@@ -230,7 +230,7 @@ const Navbar = () => {
         </Link>
 
         {/* CENTER NAV LINKS */}
-        <ul className="hidden  lg:flex items-center gap-7 text-s font-semibold absolute left-1/2 -translate-x-1/2">
+        <ul className="hidden text-m lg:flex items-center gap-7 font-semibold absolute left-1/2 -translate-x-1/2">
           {NavbarLinks.map((link, index) => (
             <li key={index}>
               {link.title === "Catalog" ? (

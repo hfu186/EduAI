@@ -3,6 +3,7 @@ import { FaArrowRight, FaBrain, FaSearch, FaLightbulb, FaBookOpen, FaGraduationC
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 import HighlightText from '@/components/core/HomePage/HighlightText';
 import CTAButton from "@/components/core/HomePage/Button";
@@ -12,24 +13,23 @@ import Footer from '@/components/common/Layout/Footer';
 import Course_Slider from "@/components/core/Catalog/Course_Slider";
 import { getAllCourses } from "@/services/operations/courseDetailsAPI";
 
-const quickLinks = [
-  { icon: FaSearch, text: "Search Catalog", link: "/all-courses/" },
-  { icon: FaBookOpen, text: "My Learning", link: "/dashboard/enrolled-courses" },
-  { icon: FaBrain, text: "AI Assessment", link: "/dashboard/ai-practice" },
-  { icon: FaLightbulb, text: "Soft Skills", link: "/catalog/soft-skills" },
-];
-
-const stats = [
-  { label: "Published Courses", value: "500+", icon: <FaBookOpen /> },
-  { label: "Active Learners", value: "10K+", icon: <FaGraduationCap /> },
-  { label: "AI Support", value: "24/7", icon: <FaBrain /> },
-  { icon: <FaChalkboardTeacher />, label: "Expert Mentors", value: "200+" },
-];
-
-
 const Home = () => {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState([]);
   const dispatch = useDispatch();
+  const quickLinks = [
+    { icon: FaSearch, text: t("pages.home.quick_links.search_catalog"), link: "/all-courses/" },
+    { icon: FaBookOpen, text: t("pages.home.quick_links.my_learning"), link: "/dashboard/enrolled-courses" },
+    { icon: FaBrain, text: t("pages.home.quick_links.ai_assessment"), link: "/dashboard/ai-practice" },
+    { icon: FaLightbulb, text: t("pages.home.quick_links.soft_skills"), link: "/catalog/soft-skills" },
+  ];
+
+  const stats = [
+    { label: t("pages.home.stats.published_courses"), value: "500+", icon: <FaBookOpen /> },
+    { label: t("pages.home.stats.active_learners"), value: "10K+", icon: <FaGraduationCap /> },
+    { label: t("pages.home.stats.ai_support"), value: "24/7", icon: <FaBrain /> },
+    { icon: <FaChalkboardTeacher />, label: t("pages.home.stats.expert_mentors"), value: "200+" },
+  ];
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -62,30 +62,30 @@ const Home = () => {
               className="group inline-flex items-center gap-2.5 rounded-full border border-caribbeangreen-100/30 bg-caribbeangreen-100/10 px-4 py-1.5 text-sm font-medium text-caribbeangreen-50 transition-all duration-300 hover:border-caribbeangreen-100/60 hover:bg-caribbeangreen-100/15"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-caribbeangreen-100"></span>
-              Start Your Professional Journey
+              {t("pages.home.badge")}
               <FaArrowRight className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
 
             <div className="space-y-5">
               <h1 className="max-w-[800px] text-xl font-extrabold leading-[1.1] tracking-tight text-richblack-5 sm:text-5xl lg:text-5xl">
-                Unlock Your Potential with <HighlightText text={"Smart Learning"} />    </h1>
+                {t("pages.home.hero_part1")} <HighlightText text={t("pages.home.hero_highlight")} />
+              </h1>
 
               <p className="max-w-[680px] text-base leading-7 text-richblack-300 md:text-lg">
-                Experience a modern LMS designed to help you learn more effectively
-                with smart support and content aligned with standard academic programs.
+                {t("pages.home.hero_description")}
               </p>
             </div>
 
             {/* Main Buttons */}
             <div className="flex flex-wrap items-center gap-4">
               <CTAButton active={true} linkto="/all-courses">
-                Explore Catalog
+                {t("pages.home.explore_catalog")}
               </CTAButton>
 
               <CTAButton active={false} linkto="/signup">
                 <span className="flex items-center gap-2">
                   <FaPlay className="text-xs" />
-                  Try AI Tutor
+                  {t("pages.home.try_ai_tutor")}
                 </span>
               </CTAButton>
             </div>
@@ -140,16 +140,16 @@ const Home = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
 
           <div className="lg:col-span-5 space-y-8">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-caribbeangreen-100">Learning built for momentum</p>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-caribbeangreen-100">{t("pages.home.feature_heading")}</p>
             <h2 className="text-3xl font-bold text-richblack-5 leading-tight sm:text-4xl">
-              Why Learn with our <br />
-              <HighlightText text={"AI Advantage?"} />
+              {t("pages.home.feature_heading")} <br />
+              <HighlightText text={t("pages.home.feature_highlight")} />
             </h2>
             <div className="space-y-6">
               {[
-                { title: "Grounded Knowledge", desc: "Responses are derived directly from course PDFs, not generic data.", icon: <FaBookOpen className="text-yellow-50" /> },
-                { title: "24/7 AI Assistance", desc: "Never wait for an instructor. Get instant explanations for complex code.", icon: <FaBrain className="text-pink-200" /> },
-                { title: "Instant Quiz Gen", desc: "AI designs practice tests tailored to your learning progress.", icon: <FaLightbulb className="text-caribbeangreen-100" /> }
+                { title: t("pages.home.features.0.title"), desc: t("pages.home.features.0.desc"), icon: <FaBookOpen className="text-yellow-50" /> },
+                { title: t("pages.home.features.1.title"), desc: t("pages.home.features.1.desc"), icon: <FaBrain className="text-pink-200" /> },
+                { title: t("pages.home.features.2.title"), desc: t("pages.home.features.2.desc"), icon: <FaLightbulb className="text-caribbeangreen-100" /> }
               ].map((item, i) => (
                 <div key={i} className="flex gap-4 rounded-lg border border-richblack-700/60 bg-richblack-800/45 p-4 transition-colors hover:border-richblack-600 hover:bg-richblack-800">
                   <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-richblack-900 text-xl">{item.icon}</div>
@@ -184,12 +184,12 @@ const Home = () => {
           position={"lg:flex-row"}
           heading={
             <div className='text-3xl font-bold'>
-              Start <HighlightText text={"Coding in Seconds"} />
+              {t("pages.home.code_section.heading_part1")} <HighlightText text={t("pages.home.code_section.heading_highlight")} />
             </div>
           }
-          subheading={"Our integrated environment allows you to practice while you learn, with AI suggestions for debugging and optimization."}
-          ctabtn1={{ btnText: "Try Interactive Coding", linkto: "/signup", active: true }}
-          ctabtn2={{ btnText: "View Documentation", linkto: "/login", active: false }}
+          subheading={t("pages.home.code_section.subheading")}
+          ctabtn1={{ btnText: t("pages.home.code_section.btn_try"), linkto: "/signup", active: true }}
+          ctabtn2={{ btnText: t("pages.home.code_section.btn_view"), linkto: "/login", active: false }}
           codeblock={`function startLearning() {\n  const skills = ["JavaScript", "React", "Node.js"];\n  console.log("Building real projects...");\n  return skills.map(skill => skill + " ✓");\n}\n\nstartLearning();`} codeColor={"text-blue-100"}
           backgroundGradient={"code-block2-grad"}
         />
@@ -213,16 +213,16 @@ const Home = () => {
         <section className="mx-auto w-full max-w-maxContentTab lg:max-w-maxContent px-4 py-20">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div className="space-y-4">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-50">Popular right now</p>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-50">{t("pages.home.popular.title")}</p>
               <h2 className="text-3xl font-bold text-white leading-tight sm:text-4xl">
-                Trending <HighlightText text={"IT Skill Tracks"} />
+                {t("pages.home.popular.title")} <HighlightText text={t("pages.home.popular.highlight")} />
               </h2>
               <p className="text-richblack-400 max-w-[600px] text-lg">
-                The most popular courses chosen by our community of 10,000+ learners.
+                {t("pages.home.popular.description")}
               </p>
             </div>
             <Link to="/all-courses" className="text-yellow-50 font-bold flex items-center gap-2 hover:underline pb-2">
-              View All Courses <FaArrowRight />
+              {t("pages.home.popular.view_all")} <FaArrowRight />
             </Link>
           </div>
           <Course_Slider Courses={trendingCourses} />
