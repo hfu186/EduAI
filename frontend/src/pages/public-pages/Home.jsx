@@ -141,8 +141,8 @@ const Home = () => {
 
           <div className="lg:col-span-5 space-y-8">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-caribbeangreen-100">{t("pages.home.feature_heading")}</p>
-            <h2 className="text-3xl font-bold text-richblack-5 leading-tight sm:text-4xl">
-              {t("pages.home.feature_heading")} <br />
+            <h2 className="text-4xl font-bold text-richblack-5 leading-tight sm:text-4xl ">
+              {t("pages.home.feature_heading")} 
               <HighlightText text={t("pages.home.feature_highlight")} />
             </h2>
             <div className="space-y-6">
@@ -214,10 +214,10 @@ const Home = () => {
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div className="space-y-4">
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-50">{t("pages.home.popular.title")}</p>
-              <h2 className="text-3xl font-bold text-white leading-tight sm:text-4xl">
+              <h2 className="text-3xl font-bold text-white leading-tight sm:text-3xl">
                 {t("pages.home.popular.title")} <HighlightText text={t("pages.home.popular.highlight")} />
               </h2>
-              <p className="text-richblack-400 max-w-[600px] text-lg">
+              <p className="text-richblack-400 max-w-[600px] text-md">
                 {t("pages.home.popular.description")}
               </p>
             </div>
