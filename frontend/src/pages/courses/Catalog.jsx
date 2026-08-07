@@ -85,17 +85,17 @@ function Catalog() {
   }
 
   return (
-    <div className="bg-richblack-900 min-h-screen">
+    <div className="bg-richblack-900">
       {/* Hero Section */}
-      <div className="box-content bg-richblack-800 px-4 py-16 shadow-inner border-b border-richblack-700">
-        <div className="mx-auto flex max-w-maxContentTab flex-col justify-center gap-4 lg:max-w-maxContent">
+      <div className=" bg-richblack-800 px-4 py-10 shadow-inner border-b border-richblack-700">
+        <div className="mx-auto flex max-w-maxContentTab flex-col justify-center gap-4 md:max-w-maxContent">
           <nav className="flex items-center gap-2 text-sm text-richblack-300 mb-2">
             <span>Home</span> / <span>Catalog</span> /
             <span className="text-yellow-25 font-semibold">
               {catalogPageData?.selectedCategory?.name}
             </span>
           </nav>
-          <h1 className="text-4xl font-extrabold text-richblack-5 sm:text-5xl">
+          <h1 className=" font-extrabold text-richblack-5 sm:text-4xl">
             {catalogPageData?.selectedCategory?.name}
           </h1>
           <p className="max-w-[870px] text-lg text-richblack-200 leading-relaxed italic">
@@ -114,7 +114,7 @@ function Catalog() {
 
         <div className="flex border-b border-richblack-700 text-sm font-medium">
           <button
-            className={`px-6 py-3 transition-all duration-200 ${
+            className={`px-6 py-3 transition-all duration-200 text-lg ${
               active === 1
                 ? "border-b-2 border-yellow-25 text-yellow-25"
                 : "text-richblack-400 hover:text-richblack-50"
@@ -124,7 +124,7 @@ function Catalog() {
             Most Popular
           </button>
           <button
-            className={`px-6 py-3 transition-all duration-200 ${
+            className={`px-6 py-3 transition-all duration-200 text-lg ${
               active === 2
                 ? "border-b-2 border-yellow-25 text-yellow-25"
                 : "text-richblack-400 hover:text-richblack-50"

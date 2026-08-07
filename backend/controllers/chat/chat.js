@@ -11,7 +11,6 @@ exports.createChat = async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing instructorId" });
     }
 
-    // Determine the student and instructor based on the caller's accountType.
     let studentId, actualInstructorId;
     if (req.user.accountType === "Instructor") {
       studentId = req.body.studentId;

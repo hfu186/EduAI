@@ -183,6 +183,7 @@ const Navbar = () => {
     if (!notification.read) {
       try {
         await markNotificationAsRead(token, notification._id);
+        setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
         setNotifications((prev) =>
           prev.map((item) => (item._id === notification._id ? { ...item, read: true } : item))
         );
@@ -397,7 +398,7 @@ const Navbar = () => {
                       notifications.map((notification) => (
                         <button
                           key={notification._id}
-                          onClick={() => handleNotificationClick(notification)}
+                          onClick={() => handleNotificationClick(notification) }
                           className={`block w-full px-4 py-3 text-left transition-colors ${notification.read ? "bg-richblack-800" : "bg-richblack-700/60"}`}
                         >
                           <p className="text-sm font-medium text-richblack-5">{notification.title}</p>

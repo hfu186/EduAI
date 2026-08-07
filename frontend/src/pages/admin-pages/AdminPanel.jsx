@@ -21,6 +21,7 @@ import {
   getAverageOrderValue,
 } from "@/services/operations/adminAPI";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 // ── Custom Tooltip ──────────────────────────────────────────────────────────
 const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }) => {
@@ -111,6 +112,7 @@ const BAR_COLORS = ["#6EE7B7", "#67E8F9", "#A5B4FC", "#FCA5A5", "#FCD34D"];
 
 export default function AdminAnalytics() {
   const { token } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
 
   const [revenue, setRevenue]                   = useState([]);
   const [topCourses, setTopCourses]             = useState([]);
@@ -122,7 +124,7 @@ export default function AdminAnalytics() {
   const fetchData = async () => {
     if (!token) {
       setLoading(false);
-      toast.error("Missing auth token. Please login again.");
+      toast.error(t("pages.admin.analytics.missing_token"));
       return;
     }
 
@@ -146,7 +148,7 @@ export default function AdminAnalytics() {
       const avgValue = avgData.status === "fulfilled" ? avgData.value : 0;
       setAvgOrder(typeof avgValue === "number" ? avgValue : avgValue?.avgOrderValue ?? 0);
     } catch (error) {
-      toast.error("Failed to load admin analytics");
+      toast.error(t("pages.admin.analytics.load_error"));
     } finally {
       setLoading(false);
     }
@@ -183,7 +185,7 @@ export default function AdminAnalytics() {
             boxShadow: "0 0 12px #6EE7B7",
           }} />
           <span style={{ color: "#6EE7B7", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Live Dashboard
+            {t("pages.admin.analytics.live_dashboard")}
           </span>
         </div>
         <h1 style={{
@@ -192,7 +194,7 @@ export default function AdminAnalytics() {
           background: "linear-gradient(135deg, #fff 40%, #555)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         }}>
-          Analytics Overview
+          {t("pages.admin.analytics.analytics_overview")}
         </h1>
       </div>
 
@@ -216,28 +218,28 @@ export default function AdminAnalytics() {
             marginBottom: 32,
           }}>
             <StatCard
-              label="30-Day Revenue"
+              label={t("pages.admin.analytics.kpi.revenue_30d")}
               value={`₫${(totalRevenue / 1e6).toFixed(1)}M`}
               icon="💰"
               accent="#6EE7B7"
-              sub="From paid orders"
+              sub={t("pages.admin.analytics.kpi.from_paid_orders")}
             />
             <StatCard
-              label="Avg Order Value"
+              label={t("pages.admin.analytics.kpi.avg_order_value")}
               value={`₫${Math.round(avgOrder).toLocaleString()}`}
               icon="🎯"
               accent="#67E8F9"
-              sub="Per transaction"
+              sub={t("pages.admin.analytics.kpi.per_transaction")}
             />
             <StatCard
-              label="New Enrollments"
+              label={t("pages.admin.analytics.kpi.new_enrollments")}
               value={totalStudents.toLocaleString()}
               icon="🎓"
               accent="#A5B4FC"
-              sub="Last 30 days"
+              sub={t("pages.admin.analytics.kpi.last_30_days")}
             />
             <StatCard
-              label="Top Course"
+              label={t("pages.admin.analytics.kpi.top_course")}
               value={topCourse.length > 18 ? topCourse.slice(0, 18) + "…" : topCourse}
               icon="🏆"
               accent="#FCD34D"
@@ -251,7 +253,7 @@ export default function AdminAnalytics() {
             gap: 20,
             marginBottom: 20,
           }}>
-            <ChartCard title="Revenue" badge="Last 30 days">
+            <ChartCard title={t("pages.admin.analytics.charts.revenue")} badge={t("pages.admin.analytics.kpi.last_30_days")}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={revenue} margin={{ top: 4, right: 4, left: -10, bottom: 0 }}>
                   <defs>

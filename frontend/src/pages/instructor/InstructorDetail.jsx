@@ -9,12 +9,42 @@ import { formatVND } from "../../utils/formatVND"
 import { FaUserGraduate, FaStar, FaPlayCircle } from "react-icons/fa"
 import { BiWorld } from "react-icons/bi"
 import { MdOutlineRateReview } from "react-icons/md"
-import { HiOutlineUsers } from "react-icons/hi2"
+import { HiOutlineUsers, HiMiniChatBubbleLeftEllipsis } from "react-icons/hi2"
+import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { toast } from "react-hot-toast"
+import { createOrGetChat } from "../../services/operations/chatAPI"
 
 const InstructorDetails = () => {
     const { instructorId } = useParams()
     const [instructor, setInstructor] = useState(null)
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
+    const { token } = useSelector((state) => state.auth)
+    const [chatLoading, setChatLoading] = useState(false)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true)
+            const res = await getInstructorProfile(instructorId)
+            if (res) setInstructor(res)
+            setLoading(false)
+        }
+        fetchData()
+    }, [instructorId])
+
+    const handleMessageClick = async () => {
+        if (chatLoading) return
+        setChatLoading(true)
+        const chat = await createOrGetChat(instructor._id, token)
+        setChatLoading(false)
+
+        if (chat?._id) {
+            navigate(`/chat/${chat._id}`)
+        } else {
+            toast.error("Could not open conversation")
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,6 +92,7 @@ const InstructorDetails = () => {
         { icon: FaStar, value: instructor.stats?.averageRating || 0, label: "Rating" },
     ]
 
+
     return (
         <div className="bg-richblack-900 min-h-screen flex flex-col font-inter text-white">
             {/* ========== HERO ========== */}
@@ -91,9 +122,19 @@ const InstructorDetails = () => {
                                 <span className="inline-block rounded-full border border-yellow-50/30 bg-yellow-50/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-yellow-50">
                                     Instructor
                                 </span>
-                                <h1 className="text-3xl md:text-4xl font-bold tracking-tight capitalize">
-                                    {instructor.firstName} {instructor.lastName}
-                                </h1>
+                                <div className="flex items-center justify-center md:justify-start gap-4">
+                                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight capitalize">
+                                        {instructor.firstName} {instructor.lastName}
+                                    </h1>
+                                    <button
+                                        onClick={handleMessageClick}
+                                        disabled={chatLoading}
+                                        className="flex items-center gap-2 text-sm text-richblack-400 hover:text-yellow-50 transition-colors disabled:opacity-50 disabled:cursor-wait"
+                                    >
+                                        <HiMiniChatBubbleLeftEllipsis className="text-lg" />
+                                        {chatLoading ? "Opening..." : "Message"}
+                                    </button>
+                                </div>
                             </div>
 
                             <p className="text-richblack-300 text-base md:text-lg max-w-2xl leading-relaxed">

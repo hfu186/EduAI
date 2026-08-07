@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoSend, IoArrowBack } from "react-icons/io5";
 import { BsPaperclip } from "react-icons/bs";
 import { getSocket, initSocket } from "../../services/socket";
@@ -9,10 +9,12 @@ import {
   getMessages,
   uploadChatFile,
 } from "../../services/operations/chatAPI";
+import { clearChatUnread } from "../../slices/messageSlice";
 
 const ChatWindow = () => {
   const { chatId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.profile);
 
@@ -28,7 +30,6 @@ const ChatWindow = () => {
   const inputRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // ====================== LOAD DATA + SOCKET ======================
   useEffect(() => {
     if (!chatId || !token) return;
 
@@ -51,6 +52,7 @@ const ChatWindow = () => {
     };
 
     loadData();
+    dispatch(clearChatUnread(chatId));
     socket.emit("joinChat", chatId);
 
     const handleNewMessage = (msg) => {
@@ -73,9 +75,8 @@ const ChatWindow = () => {
       socket.off("newMessage", handleNewMessage);
       socket.off("userTyping", handleTyping);
     };
-  }, [chatId, token, user?._id]);
+  }, [chatId, dispatch, token, user?._id]);
 
-  // Automatically scroll to the latest message.
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typingUser]);
@@ -87,7 +88,6 @@ const ChatWindow = () => {
         : chat.student
       : null;
 
-  // ====================== SEND MESSAGE ======================
   const handleSend = () => {
     if (!text.trim()) return;
     const socket = getSocket();
@@ -140,8 +140,8 @@ const ChatWindow = () => {
     return (
       <div className="w-full h-[calc(100vh-3.5rem)] bg-richblack-900 flex flex-col">
         <div className="flex items-center gap-3 p-4 border-b border-richblack-700">
-          <div className="w-6 h-6 bg-richblack-700 rounded animate-pulse" />
-          <div className="w-10 h-10 rounded-full bg-richblack-700 animate-pulse" />
+          <div className="w-6 h-4 bg-richblack-700 rounded animate-pulse" />
+          <div className="w-10 h-6 rounded-full bg-richblack-700 animate-pulse" />
           <div className="h-4 w-32 bg-richblack-700 rounded animate-pulse" />
         </div>
         <div className="flex-1 flex items-center justify-center text-richblack-400">
@@ -170,8 +170,7 @@ const ChatWindow = () => {
   }
 
   return (
-    <div className="w-full h-[calc(100vh-3.5rem)] bg-richblack-900 flex flex-col overflow-hidden pt-5">
-      {/* ===== HEADER ===== */}
+    <div className="w-full h-[calc(90vh-4rem)] bg-richblack-900 flex flex-col overflow-hidden ">
       <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-richblack-700 bg-richblack-900">
         <button
           onClick={() => navigate("/chat")}
@@ -202,8 +201,8 @@ const ChatWindow = () => {
       </div>
 
       {/* ===== MESSAGES ===== */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-3">
-        {messages.length === 0 ? (
+          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-3">        
+            {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-20 h-20 rounded-full bg-richblack-800 flex items-center justify-center mb-4">
               <span className="text-3xl">💬</span>
@@ -321,7 +320,7 @@ const ChatWindow = () => {
       </div>
 
       {/* ===== INPUT ===== */}
-      <div className="flex-shrink-0 px-4 py-3 border-t border-richblack-700 bg-richblack-900">
+      <div className="px-4 py-3 border-t border-richblack-700 bg-richblack-900">
         <div className="flex items-center gap-2">
           {/* File attachment button */}
           <input

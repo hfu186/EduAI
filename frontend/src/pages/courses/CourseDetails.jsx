@@ -434,28 +434,41 @@ function CourseDetails() {
                         <div className="sticky top-[100px] z-20">
                             <div className="bg-richblack-800 border border-richblack-700 rounded-2xl overflow-hidden shadow-2xl p-1">
                                 <div className="relative rounded-xl overflow-hidden group">
-                                    <Img src={thumbnail} alt="course thumbnail" className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    <Img
+                                        src={thumbnail}
+                                        alt="course thumbnail"
+                                        className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
                                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer backdrop-blur-[2px]">
                                         <FaPlayCircle className="text-5xl text-white drop-shadow-lg transform scale-90 group-hover:scale-110 transition-transform duration-300" />
                                     </div>
                                 </div>
-                                <div className="p-6 space-y-2">
-                                    <div className="text-3xl font-bold text-richblack-5 text-center ">
+
+                                <div className="p-6 space-y-4">
+                                    {/* Price / Purchased status */}
+                                    <div className="text-center">
                                         {isEnrolled ? (
-                                            <span className="text-caribbeangreen-200 flex items-center gap-2">
-                                                <FaCheckCircle /> Purchased
+                                            <span className="inline-flex items-center gap-2 text-caribbeangreen-200 font-bold text-2xl">
+                                                <FaCheckCircle className="text-xl" />
+                                                Purchased
                                             </span>
+                                        ) : price === 0 ? (
+                                            <span className="text-3xl font-bold text-caribbeangreen-200">Free</span>
                                         ) : (
-                                            formatVND(price) === 0 ? "Free" : `${formatVND(price)} `
+                                            <span className="text-3xl font-bold text-richblack-5">
+                                                {formatVND(price)}
+                                            </span>
                                         )}
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4 mt-4">
+
+                                    {/* Action buttons */}
+                                    <div className={`grid gap-3 ${isEnrolled || price === 0 ? "grid-cols-1" : "grid-cols-2"}`}>
                                         <button
                                             onClick={handleCourseAction}
-                                            className={`w-full  px-4 rounded-xl font-bold text-richblack-900 transition-all duration-200 shadow-lg transform hover:-translate-y-1
-      ${isEnrolled
-                                                    ? "bg-gradient-to-r from-caribbeangreen-200 to-caribbeangreen-300 hover:from-caribbeangreen-300 hover:to-caribbeangreen-400"
-                                                    : "bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200"
+                                            className={`w-full py-3 px-4 rounded-xl font-bold text-richblack-900 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]
+                            ${isEnrolled
+                                                    ? "bg-gradient-to-r from-caribbeangreen-200 to-caribbeangreen-300 hover:from-caribbeangreen-300 hover:to-caribbeangreen-400 shadow-caribbeangreen-200/20"
+                                                    : "bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200 shadow-yellow-50/20"
                                                 }`}
                                         >
                                             {isEnrolled
@@ -468,29 +481,48 @@ function CourseDetails() {
                                         {!isEnrolled && price > 0 && (
                                             <button
                                                 onClick={handleAddToCart}
-                                                className="w-full py-3 px-6 rounded-xl border border-richblack-600 bg-richblack-700 font-bold text-richblack-5 transition-all hover:bg-richblack-600"
+                                                className="w-full py-3 px-6 rounded-xl border border-richblack-600 bg-richblack-700 font-bold text-richblack-5 transition-all hover:bg-richblack-600 hover:border-richblack-500 active:scale-[0.98]"
                                             >
                                                 Add to Cart
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-center text-xs text-richblack-300">30-Day Money-Back Guarantee</p>
+
+                                    {/* Guarantee — only relevant before purchase */}
+                                    {!isEnrolled && (
+                                        <p className="text-center text-xs text-richblack-300">
+                                            30-Day Money-Back Guarantee
+                                        </p>
+                                    )}
+
+                                    {/* Includes list */}
                                     <div className="space-y-3 pt-4 border-t border-richblack-700">
                                         <p className="text-richblack-5 font-semibold text-sm">This course includes:</p>
-                                        <div className="space-y-2 text-sm text-caribbeangreen-100">
-                                            <div className="flex items-center gap-2"><MdAccessTime /><span>Lifetime access</span></div>
-                                            <div className="flex items-center gap-2"><HiOutlineGlobeAlt /><span>Access on Mobile and TV</span></div>
-                                            <div className="flex items-center gap-2"><BiInfoCircle /><span>Certificate of completion</span></div>
+                                        <div className="space-y-2.5 text-sm text-richblack-100">
+                                            <div className="flex items-center gap-2.5">
+                                                <MdAccessTime className="text-caribbeangreen-200 text-base flex-shrink-0" />
+                                                <span>Lifetime access</span>
+                                            </div>
+                                            <div className="flex items-center gap-2.5">
+                                                <HiOutlineGlobeAlt className="text-caribbeangreen-200 text-base flex-shrink-0" />
+                                                <span>Access on Mobile and TV</span>
+                                            </div>
+                                            <div className="flex items-center gap-2.5">
+                                                <BiInfoCircle className="text-caribbeangreen-200 text-base flex-shrink-0" />
+                                                <span>Certificate of completion</span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    {/* Share */}
                                     <div className="flex items-center justify-center gap-2 text-richblack-200 cursor-pointer hover:text-caribbeangreen-200 transition-colors pt-2">
-                                        <HiShare /> <span className="text-sm font-medium">Share</span>
+                                        <HiShare />
+                                        <span className="text-sm font-medium">Share</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 

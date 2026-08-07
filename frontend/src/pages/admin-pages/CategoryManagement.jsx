@@ -7,6 +7,7 @@ import {
   deleteCategory,
 } from "@/services/operations/adminAPI";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const AdminCategoryManager = () => {
   const [categories, setCategories] = useState([]);
@@ -16,6 +17,7 @@ const AdminCategoryManager = () => {
   const [formData, setFormData] = useState({ name: "", description: "" });
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const { token } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
 
   const getCategories = async () => {
     setLoading(true);
@@ -47,7 +49,7 @@ const AdminCategoryManager = () => {
     e.preventDefault();
 
     if (!formData.name.trim() || !formData.description.trim()) {
-      toast.error("Please fill all fields");
+      toast.error(t("pages.admin.category_management.fill_all_fields"));
       return;
     }
 
@@ -57,7 +59,7 @@ const AdminCategoryManager = () => {
         setCategories((prev) =>
           prev.map((item) => (item._id === editingCategoryId ? updated : item))
         );
-        toast.success("Category updated");
+        toast.success(t("pages.admin.category_management.updated"));
         setEditingCategoryId(null);
         setFormData({ name: "", description: "" });
       }
@@ -67,7 +69,7 @@ const AdminCategoryManager = () => {
     const created = await createCategory(formData, token);
     if (created) {
       setCategories((prev) => [created, ...prev]);
-      toast.success("Category created");
+      toast.success(t("pages.admin.category_management.created"));
       setFormData({ name: "", description: "" });
     }
   };
@@ -82,14 +84,14 @@ const AdminCategoryManager = () => {
 
   const handleDelete = async (categoryId) => {
     const confirmDelete = window.confirm(
-      "Delete this category? It will fail if this category still has courses."
+      t("pages.admin.category_management.delete_confirm")
     );
     if (!confirmDelete) return;
 
     const success = await deleteCategory(categoryId, token);
     if (success) {
       setCategories((prev) => prev.filter((item) => item._id !== categoryId));
-      toast.success("Category deleted");
+      toast.success(t("pages.admin.category_management.deleted"));
     }
   };
 
@@ -99,7 +101,7 @@ const AdminCategoryManager = () => {
   };
 
   if (loading)
-    return <div className="grid min-h-[450px] place-items-center">Loading...</div>;
+    return <div className="grid min-h-[450px] place-items-center">{t("pages.admin.category_management.loading")}</div>;
 
   const filteredCategories = categories.filter((item) => {
     const keyword = searchTerm.trim().toLowerCase();
@@ -115,9 +117,9 @@ const AdminCategoryManager = () => {
   return (
     <div className="space-y-6">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h1 className="text-2xl font-semibold text-richblack-5">Category Management</h1>
+        <h1 className="text-2xl font-semibold text-richblack-5">{t("pages.admin.category_management.title")}</h1>
         <p className="text-sm text-richblack-300 mt-1">
-          Add, edit, and delete categories for course organization.
+          {t("pages.admin.category_management.description")}
         </p>
       </div>
 
@@ -125,11 +127,11 @@ const AdminCategoryManager = () => {
         <div className="xl:col-span-2 rounded-xl border border-richblack-700 bg-richblack-800 overflow-hidden">
           <div className="border-b border-richblack-700 p-3 flex flex-col md:flex-row md:items-center gap-3">
             <div className="rounded-md bg-richblack-700/60 px-3 py-2 text-sm text-richblack-100">
-              Total categories: <span className="font-semibold">{categories.length}</span>
+              {t("pages.admin.category_management.total_categories")}: <span className="font-semibold">{categories.length}</span>
             </div>
             <input
               type="text"
-              placeholder="Search by name or description..."
+              placeholder={t("pages.admin.category_management.search_placeholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="md:ml-auto w-full md:w-80 bg-richblack-900 border border-richblack-700 rounded-md p-2.5 text-richblack-5 outline-none"
@@ -164,7 +166,7 @@ const AdminCategoryManager = () => {
               ))
             ) : (
               <p className="text-center py-10 text-richblack-300">
-                No categories match your search.
+                {t("pages.admin.category_management.no_results")}
               </p>
             )}
           </div>
@@ -173,10 +175,10 @@ const AdminCategoryManager = () => {
         <div className="rounded-xl border border-richblack-700 bg-richblack-800 p-4 space-y-4">
           <div>
             <p className="text-xs uppercase tracking-wide text-richblack-300">
-              {editingCategoryId ? "Edit Category" : "Create Category"}
+              {editingCategoryId ? t("pages.admin.category_management.edit_title") : t("pages.admin.category_management.create_title")}
             </p>
             <h3 className="text-lg font-semibold text-richblack-5 mt-1">
-              {editingCategoryId ? "Update Category Details" : "Add New Category"}
+              {editingCategoryId ? t("pages.admin.category_management.edit_subtitle") : t("pages.admin.category_management.create_subtitle")}
             </h3>
           </div>
 
@@ -184,14 +186,14 @@ const AdminCategoryManager = () => {
             <input
               type="text"
               name="name"
-              placeholder="Category name"
+              placeholder={t("pages.admin.category_management.form_name")}
               value={formData.name}
               onChange={handleInputChange}
               className="w-full bg-richblack-900 border border-richblack-700 rounded-md p-3 text-richblack-5 outline-none"
             />
             <textarea
               name="description"
-              placeholder="Description"
+              placeholder={t("pages.admin.category_management.form_description")}
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
@@ -210,7 +212,7 @@ const AdminCategoryManager = () => {
                   onClick={resetForm}
                   className="bg-richblack-700 text-richblack-5 rounded-md px-4 py-2 hover:bg-richblack-600 transition-all"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
               )}
             </div>
@@ -218,7 +220,7 @@ const AdminCategoryManager = () => {
 
           <div className="border-t border-richblack-700 pt-4">
             <p className="text-xs uppercase tracking-wide text-richblack-300 mb-2">
-              Selected Category
+              {t("pages.admin.category_management.selected_category")}
             </p>
             {selectedCategory ? (
               <div className="space-y-3">
@@ -233,7 +235,7 @@ const AdminCategoryManager = () => {
                     onClick={() => handleEdit(selectedCategory)}
                     className="flex-1 bg-richblack-700 hover:bg-richblack-600 text-richblack-5 text-sm px-3 py-2 rounded-md transition-all"
                   >
-                    Edit Selected
+                    {t("pages.admin.category_management.edit_selected")}
                   </button>
                   <button
                     onClick={() => handleDelete(selectedCategory._id)}

@@ -3,6 +3,7 @@ import { getInstructorRequests, getInstructors, reviewInstructorRequest } from "
 import { getInstructorProfile } from "@/services/operations/profileAPI";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function InstructorList() {
   const [requests, setRequests] = useState([]);
@@ -10,6 +11,7 @@ export default function InstructorList() {
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [, setProfileLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
 
   const fetchData = async () => {
     const [reqRes, insRes] = await Promise.all([
@@ -28,7 +30,7 @@ export default function InstructorList() {
     setProfileLoading(true);
     const data = await getInstructorProfile(instructorId);
     if (!data) {
-      toast.error("Unable to load instructor profile");
+      toast.error(t("pages.admin.instructor_management.load_profile_error"));
       setProfileLoading(false);
       return;
     }
@@ -39,7 +41,7 @@ export default function InstructorList() {
   const handleReview = async (userId, decision) => {
     const result = await reviewInstructorRequest(userId, decision, token);
     if (result?.success) {
-      toast.success(decision === "approved" ? "Request approved successfully" : "Request rejected successfully");
+      toast.success(decision === "approved" ? t("pages.admin.instructor_management.approved") : t("pages.admin.instructor_management.rejected"));
       fetchData();
     }
   };
@@ -47,18 +49,18 @@ export default function InstructorList() {
   return (
     <div className="space-y-6">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h2 className="text-2xl font-bold text-richblack-5">  Instructor Request Management
+        <h2 className="text-2xl font-bold text-richblack-5">{t("pages.admin.instructor_management.title")}
         </h2>
         <p className="text-sm text-richblack-300 mt-1">
-          Review user profiles and approve or reject instructor applications.
+          {t("pages.admin.instructor_management.description")}
         </p>
       </div>
 
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h3 className="text-lg font-semibold text-richblack-5 mb-3">  Pending Requests
+        <h3 className="text-lg font-semibold text-richblack-5 mb-3">{t("pages.admin.instructor_management.pending_requests")}
         </h3>
         {requests.length === 0 ? (
-          <p className="text-sm text-richblack-400">  There are no pending instructor requests.
+          <p className="text-sm text-richblack-400">{t("pages.admin.instructor_management.no_pending")}
           </p>
         ) : (
           <div className="space-y-3">
@@ -74,19 +76,19 @@ export default function InstructorList() {
                       onClick={() => openInstructorProfile(req._id)}
                       className="rounded-md bg-richblack-700 px-3 py-2 text-sm text-richblack-5 hover:bg-richblack-600"
                     >
-                      View profile
+                      {t("pages.admin.instructor_management.view_profile")}
                     </button>
                     <button
                       onClick={() => handleReview(req._id, "rejected")}
                       className="rounded-md border border-richblack-600 px-3 py-2 text-sm text-richblack-300 hover:bg-richblack-700"
                     >
-                      Reject
+                      {t("pages.admin.instructor_management.reject")}
                     </button>
                     <button
                       onClick={() => handleReview(req._id, "approved")}
                       className="rounded-md bg-yellow-500 px-3 py-2 text-sm font-semibold text-richblack-900 hover:bg-yellow-400"
                     >
-                      Approve
+                      {t("pages.admin.instructor_management.approve")}
                     </button>
                   </div>
                 </div>
@@ -97,7 +99,7 @@ export default function InstructorList() {
       </div>
 
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h3 className="text-lg font-semibold text-richblack-5 mb-3">Instructor List</h3>
+        <h3 className="text-lg font-semibold text-richblack-5 mb-3">{t("pages.admin.instructor_management.instructor_list")}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {instructors.map((ins) => (
             <div key={ins._id} className="bg-richblack-900 border border-richblack-700 p-4 rounded-xl text-center">
@@ -107,7 +109,7 @@ export default function InstructorList() {
               <div className="mt-4 pt-4 border-t border-richblack-700 flex justify-around">
                 <div>
                   <p className="text-yellow-50 font-bold text-xl">{ins.courses?.length || 0}</p>
-                  <p className="text-xs text-richblack-300">Courses</p>
+                  <p className="text-xs text-richblack-300">{t("pages.admin.instructor_management.courses")}</p>
                 </div>
               </div>
               <button
@@ -132,31 +134,31 @@ export default function InstructorList() {
                 onClick={() => setSelectedInstructor(null)}
                 className="text-richblack-300 hover:text-richblack-5"
               >
-                Close
+                {t("common.close")}
               </button>
             </div>
 
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="bg-richblack-900 rounded-lg p-4 border border-richblack-700">
-                <p className="text-richblack-300">Email</p>
+                <p className="text-richblack-300">{t("profile.personal.email")}</p>
                 <p className="text-richblack-5">{selectedInstructor.email}</p>
               </div>
               <div className="bg-richblack-900 rounded-lg p-4 border border-richblack-700">
-                <p className="text-richblack-300">Phone Number</p>
+                <p className="text-richblack-300">{t("profile.personal.phone")}</p>
                 <p className="text-richblack-5">
                   {selectedInstructor.additionalDetails?.contactNumber || "N/A"}
                 </p>
               </div>
               <div className="bg-richblack-900 rounded-lg p-4 border border-richblack-700">
-                <p className="text-richblack-300">Bio</p>
+                <p className="text-richblack-300">{t("profile.about.title")}</p>
                 <p className="text-richblack-5">
-                  {selectedInstructor.additionalDetails?.about || "No bio provided"}
+                  {selectedInstructor.additionalDetails?.about || t("pages.admin.instructor_management.no_bio")}
                 </p>
               </div>
               <div className="bg-richblack-900 rounded-lg p-4 border border-richblack-700">
-                <p className="text-richblack-300">Statistics</p>
+                <p className="text-richblack-300">{t("pages.admin.instructor_management.statistics")}</p>
                 <p className="text-richblack-5">
-                  Courses: {selectedInstructor.stats?.totalCourses || 0} | Students: {selectedInstructor.stats?.totalStudents || 0}
+                  {t("pages.admin.instructor_management.courses")}: {selectedInstructor.stats?.totalCourses || 0} | {t("pages.admin.instructor_management.students")}: {selectedInstructor.stats?.totalStudents || 0}
                 </p>
               </div>
             </div>

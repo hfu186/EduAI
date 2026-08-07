@@ -6,12 +6,14 @@ import {
 } from "@/services/operations/adminAPI";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const { token } = useSelector((state) => state.auth);
+  const { t } = useTranslation();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -37,7 +39,7 @@ export default function UserManagement() {
 
   const handleDeleteUser = async (userId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user? This action cannot be undone."
+      t("pages.admin.user_management.delete_confirm")
     );
 
     if (!confirmDelete) return;
@@ -45,24 +47,24 @@ export default function UserManagement() {
     try {
       const res = await deleteUser(userId, token);
       if (res) {
-        toast.success("User deleted successfully");
+        toast.success(t("pages.admin.user_management.deleted"));
         fetchUsers(); // Refresh list
       }
     } catch (error) {
-      toast.error("Failed to delete user");
+      toast.error(t("pages.admin.user_management.delete_error"));
       console.error(error);
     }
   };
 
   const handlePromoteUser = async (userId) => {
     const confirmPromote = window.confirm(
-      "Promote this user to Instructor?"
+      t("pages.admin.user_management.promote_confirm")
     );
     if (!confirmPromote) return;
 
     const res = await promoteUser(userId, token);
     if (res?.success) {
-      toast.success("User promoted to instructor");
+      toast.success(t("pages.admin.user_management.promoted"));
       fetchUsers();
     }
   };
@@ -83,9 +85,9 @@ export default function UserManagement() {
   return (
     <div className="space-y-6">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
-        <h2 className="text-2xl font-semibold text-richblack-5">User Management</h2>
+        <h2 className="text-2xl font-semibold text-richblack-5">{t("pages.admin.user_management.title")}</h2>
         <p className="text-sm text-richblack-300 mt-1">
-          Select a user from the list and manage actions in the detail panel.
+          {t("pages.admin.user_management.description")}
         </p>
       </div>
 
@@ -93,16 +95,16 @@ export default function UserManagement() {
         <div className="xl:col-span-2 rounded-xl border border-richblack-700 bg-richblack-800 overflow-hidden">
           <div className="grid grid-cols-4 gap-2 border-b border-richblack-700 p-3 text-xs">
             <div className="rounded-md bg-richblack-700/60 px-3 py-2 text-richblack-100">
-              Total: <span className="font-semibold">{users.length}</span>
+              {t("pages.admin.user_management.total")}: <span className="font-semibold">{users.length}</span>
             </div>
             <div className="rounded-md bg-richblack-700/60 px-3 py-2 text-richblack-100">
-              Students: <span className="font-semibold">{totalStudents}</span>
+              {t("pages.admin.user_management.students")}: <span className="font-semibold">{totalStudents}</span>
             </div>
             <div className="rounded-md bg-richblack-700/60 px-3 py-2 text-richblack-100">
-              Instructors: <span className="font-semibold">{totalInstructors}</span>
+              {t("pages.admin.user_management.instructors")}: <span className="font-semibold">{totalInstructors}</span>
             </div>
             <div className="rounded-md bg-richblack-700/60 px-3 py-2 text-richblack-100">
-              Admins: <span className="font-semibold">{totalAdmins}</span>
+              {t("pages.admin.user_management.admins")}: <span className="font-semibold">{totalAdmins}</span>
             </div>
           </div>
 
@@ -138,7 +140,7 @@ export default function UserManagement() {
           {selectedUser ? (
             <div className="space-y-4">
               <div>
-                <p className="text-xs uppercase tracking-wide text-richblack-300">Selected User</p>
+                <p className="text-xs uppercase tracking-wide text-richblack-300">{t("pages.admin.user_management.selected_user")}</p>
                 <h3 className="text-lg font-semibold text-richblack-5 mt-1">
                   {selectedUser.firstName} {selectedUser.lastName}
                 </h3>
@@ -146,7 +148,7 @@ export default function UserManagement() {
               </div>
 
               <div className="rounded-lg bg-richblack-900 border border-richblack-700 p-3">
-                <p className="text-xs text-richblack-300">Role</p>
+                <p className="text-xs text-richblack-300">{t("pages.admin.user_management.role")}</p>
                 <span className={`mt-2 inline-block px-2.5 py-1 text-xs rounded-full border ${roleBadgeClass(selectedUser.accountType)}`}>
                   {selectedUser.accountType}
                 </span>
@@ -158,7 +160,7 @@ export default function UserManagement() {
                     onClick={() => handlePromoteUser(selectedUser._id)}
                     className="w-full bg-yellow-50 hover:bg-yellow-100 text-black text-sm px-4 py-2.5 rounded-md transition-all font-semibold"
                   >
-                    Promote to Instructor
+                    {t("pages.admin.user_management.promote_to_instructor")}
                   </button>
                 )}
 
@@ -166,12 +168,12 @@ export default function UserManagement() {
                   onClick={() => handleDeleteUser(selectedUser._id)}
                   className="w-full bg-pink-600 hover:bg-pink-700 text-white text-sm px-4 py-2.5 rounded-md transition-all"
                 >
-                  Delete User
+                  {t("pages.admin.user_management.delete_user")}
                 </button>
               </div>
             </div>
           ) : (
-            <div className="text-sm text-richblack-300">No user selected.</div>
+            <div className="text-sm text-richblack-300">{t("pages.admin.user_management.no_user_selected")}</div>
           )}
         </div>
       </div>

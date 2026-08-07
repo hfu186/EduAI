@@ -4,7 +4,9 @@
     "welcome": "Chào mừng đến EduSpace",
     "change_language": "Thay đổi ngôn ngữ",
     "edit": "Chỉnh sửa",
-    "save": "Lưu"
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "close": "Đóng"
   },
   "nav": {
     "home": "Trang chủ",
@@ -237,7 +239,8 @@
       "total_courses": "Tổng số khóa học",
       "total_amount": "Tổng tiền",
       "checkout_button": "Thanh toán",
-      "back_to_cart": "Quay lại giỏ hàng"
+      "back_to_cart": "Quay lại giỏ hàng",
+      "empty_cart": "Giỏ hàng của bạn đang trống"
     },
     "payment_qr": {
       "title": "Quét mã QR để thanh toán",
@@ -245,7 +248,73 @@
       "loading": "Đang tải mã QR...",
       "open_payment": "Mở trang thanh toán PayOS",
       "cancel": "Hủy thanh toán",
-      "waiting": "Đang chờ xác nhận từ ngân hàng... Vui lòng không đóng trang này"
+      "waiting": "Đang chờ xác nhận từ ngân hàng... Vui lòng không đóng trang này",
+      "creating_gateway": "Đang tạo cổng thanh toán an toàn...",
+      "no_courses_selected": "Chưa chọn khóa học nào",
+      "create_error": "Không thể tạo thanh toán",
+      "payment_success": "Thanh toán thành công! Đang ghi danh bạn vào khóa học...",
+      "total_amount": "Tổng tiền"
+    },
+    "admin": {
+      "category_management": {
+        "title": "Quản lý danh mục",
+        "description": "Tạo, chỉnh sửa và quản lý các danh mục khóa học.",
+        "loading": "Đang tải danh mục...",
+        "fill_all_fields": "Vui lòng điền đầy đủ tên và mô tả.",
+        "created": "Tạo danh mục thành công",
+        "updated": "Cập nhật danh mục thành công",
+        "deleted": "Xóa danh mục thành công",
+        "delete_confirm": "Bạn có chắc chắn muốn xóa danh mục này không?",
+        "total_categories": "Tổng số danh mục",
+        "search_placeholder": "Tìm danh mục...",
+        "no_results": "Không tìm thấy danh mục nào",
+        "edit_title": "Chỉnh sửa danh mục",
+        "edit_subtitle": "Cập nhật danh mục đã chọn",
+        "create_title": "Tạo danh mục",
+        "create_subtitle": "Thêm một danh mục khóa học mới",
+        "form_name": "Tên danh mục",
+        "form_description": "Mô tả danh mục",
+        "selected_category": "Danh mục đã chọn",
+        "edit_selected": "Chỉnh sửa đã chọn",
+        "delete_selected": "Xóa đã chọn",
+        "no_description": "Không có mô tả",
+        "select_category": "Chọn một danh mục từ danh sách."
+      },
+      "instructor_management": {
+        "title": "Quản lý giảng viên",
+        "description": "Duyệt đơn đăng ký giảng viên và quản lý giảng viên đang hoạt động.",
+        "pending_requests": "Yêu cầu chờ duyệt",
+        "no_pending": "Không có yêu cầu giảng viên nào đang chờ.",
+        "view_profile": "Xem hồ sơ",
+        "reject": "Từ chối",
+        "approve": "Duyệt",
+        "instructor_list": "Danh sách giảng viên",
+        "courses": "Khóa học",
+        "students": "Học viên",
+        "statistics": "Thống kê",
+        "no_bio": "Chưa có tiểu sử",
+        "load_profile_error": "Không thể tải hồ sơ giảng viên",
+        "approved": "Yêu cầu giảng viên đã được duyệt",
+        "rejected": "Yêu cầu giảng viên đã bị từ chối"
+      },
+      "user_management": {
+        "title": "Quản lý người dùng",
+        "description": "Quản lý học viên, giảng viên và quản trị viên.",
+        "total": "Tổng",
+        "students": "Học viên",
+        "instructors": "Giảng viên",
+        "admins": "Quản trị viên",
+        "selected_user": "Người dùng đã chọn",
+        "role": "Vai trò",
+        "promote_to_instructor": "Thăng cấp Giảng viên",
+        "delete_user": "Xóa người dùng",
+        "no_user_selected": "Chưa chọn người dùng",
+        "delete_confirm": "Bạn có chắc chắn muốn xóa người dùng này không?",
+        "deleted": "Xóa người dùng thành công",
+        "delete_error": "Xóa người dùng thất bại",
+        "promote_confirm": "Bạn có chắc chắn muốn thăng cấp người dùng này thành giảng viên không?",
+        "promoted": "Thăng cấp người dùng thành công"
+      }
     },
     "instructors": {
       "hero_title": "Giảng viên đẳng cấp thế giới",
