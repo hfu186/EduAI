@@ -20,12 +20,21 @@ export default function Sidebar() {
   const [confirmationModal, setConfirmationModal] = useState(null)
   const { openSideMenu, screenSize } = useSelector((state) => state.sidebar)
   useEffect(() => {
-    const handleResize = () => dispatch(setScreenSize(window.innerWidth))
+    const handleResize = () => dispatch(setScreenSize(window.innerWidth));
 
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    return () => window.removeEventListener('resize', handleResize)
-  })
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (screenSize <= 640) {
+      dispatch(setOpenSideMenu(false));
+    } else {
+      dispatch(setOpenSideMenu(true));
+    }
+  }, [screenSize, dispatch]);
 
   useEffect(() => {
     if (screenSize <= 640) {
@@ -54,9 +63,16 @@ export default function Sidebar() {
         <div className="flex min-w-[230px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 ">
           <div className="flex flex-col mt-6 ">
             {sidebarLinks.map((link) => {
-              if (link.type && user?.accountType !== link.type) return null
+              if (
+                link.type &&
+                  Array.isArray(link.type)
+                  ? !link.type.includes(user?.accountType)
+                  : user?.accountType !== link.type
+              ) {
+                return null;
+              }
               return (
-                <SidebarLink key={link.id} link={link} iconName={link.icon} setOpenSideMenu={setOpenSideMenu} />
+                <SidebarLink key={link.id} link={link} iconName={link.icon} setOpenSenu={setOpenSideMenu} />
               )
             })}
           </div>
@@ -92,8 +108,6 @@ export default function Sidebar() {
           </div>
         </div>
       }
-
-
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
   )
