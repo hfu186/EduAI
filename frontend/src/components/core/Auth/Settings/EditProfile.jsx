@@ -1,6 +1,9 @@
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { RiDeleteBinLine } from "react-icons/ri"
+import { FiUploadCloud } from "react-icons/fi"
 
 import { updateProfile } from "../../../../services/operations/SettingsAPI"
 import IconBtn from "../../../common/IconBtn"
@@ -15,14 +18,63 @@ export default function EditProfile() {
 
   const { register, handleSubmit, formState: { errors } } = useForm()
 
+  const [existingCertificates, setExistingCertificates] = useState(
+    user?.additionalDetails?.certificates || []
+  )
+  const [newCertificateFiles, setNewCertificateFiles] = useState([])
+  const [newCertificatePreviews, setNewCertificatePreviews] = useState([])
+
+  const isInstructor = user?.accountType === "Instructor"
+
+  const handleCertificateSelect = (e) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    setNewCertificateFiles((prev) => [...prev, ...files])
+
+    const previews = files.map((file) => URL.createObjectURL(file))
+    setNewCertificatePreviews((prev) => [...prev, ...previews])
+
+    e.target.value = ""
+  }
+
+  const removeExistingCertificate = (index) => {
+    setExistingCertificates((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const removeNewCertificate = (index) => {
+    setNewCertificateFiles((prev) => prev.filter((_, i) => i !== index))
+    setNewCertificatePreviews((prev) => {
+      URL.revokeObjectURL(prev[index])
+      return prev.filter((_, i) => i !== index)
+    })
+  }
+
   const submitProfileForm = async (data) => {
-    // console.log("Form Data - ", data)
     try {
-      dispatch(updateProfile(token, data))
+      const formData = new FormData()
+      formData.append("firstName", data.firstName)
+      formData.append("lastName", data.lastName)
+      formData.append("dateOfBirth", data.dateOfBirth)
+      formData.append("gender", data.gender)
+      formData.append("contactNumber", data.contactNumber)
+      formData.append("about", data.about)
+
+      if (isInstructor) {
+        formData.append("qualifications", data.qualifications || "")
+        formData.append("experience", data.experience || "")
+        formData.append("existingCertificates", JSON.stringify(existingCertificates))
+        newCertificateFiles.forEach((file) => {
+          formData.append("certificateImages", file)
+        })
+      }
+
+      dispatch(updateProfile(token, formData))
     } catch (error) {
       console.log("ERROR MESSAGE - ", error.message)
     }
   }
+
   return (
     <>
       <form onSubmit={handleSubmit(submitProfileForm)}>
@@ -180,6 +232,107 @@ export default function EditProfile() {
             </div>
           </div>
         </div>
+
+        {/* Qualifications & Experience — chỉ hiện với Instructor */}
+        {isInstructor && (
+          <div className="my-10 flex flex-col gap-y-6 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-6 sm:px-12">
+            <h2 className="text-lg font-semibold text-richblack-5">
+              Qualifications & Experience
+            </h2>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="qualifications" className="lable-style">
+                Qualifications & certifications
+              </label>
+              <textarea
+                id="qualifications"
+                placeholder="e.g. B.Sc in Computer Science, AWS Certified Solutions Architect..."
+                className="form-style min-h-[100px] resize-none"
+                {...register("qualifications")}
+                defaultValue={user?.additionalDetails?.qualifications}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="experience" className="lable-style">
+                Teaching experience
+              </label>
+              <textarea
+                id="experience"
+                placeholder="e.g. 5 years teaching web development at XYZ Academy..."
+                className="form-style min-h-[100px] resize-none"
+                {...register("experience")}
+                defaultValue={user?.additionalDetails?.experience}
+              />
+            </div>
+
+            {/* Certificate images */}
+            <div className="flex flex-col gap-3">
+              <label className="lable-style">
+                Certificate photos <span className="text-richblack-400 font-normal">(builds trust with students)</span>
+              </label>
+
+              <div className="flex flex-wrap gap-4">
+                {existingCertificates.map((url, index) => (
+                  <div key={`existing-${index}`} className="relative group">
+                    <img
+                      src={url}
+                      alt={`Certificate ${index + 1}`}
+                      className="h-28 w-28 rounded-lg object-cover border border-richblack-600"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeExistingCertificate(index)}
+                      className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center rounded-full bg-pink-200 text-richblack-900 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <RiDeleteBinLine size={12} />
+                    </button>
+                  </div>
+                ))}
+
+                {newCertificatePreviews.map((preview, index) => (
+                  <div key={`new-${index}`} className="relative group">
+                    <img
+                      src={preview}
+                      alt={`New certificate ${index + 1}`}
+                      className="h-28 w-28 rounded-lg object-cover border-2 border-yellow-50"
+                    />
+                    <span className="absolute bottom-1 left-1 rounded bg-richblack-900/80 px-1.5 py-0.5 text-[10px] text-yellow-50">
+                      New
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeNewCertificate(index)}
+                      className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center rounded-full bg-pink-200 text-richblack-900 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <RiDeleteBinLine size={12} />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Nút thêm ảnh */}
+                <label
+                  htmlFor="certificateUpload"
+                  className="h-28 w-28 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-richblack-600 text-richblack-400 cursor-pointer hover:border-yellow-50 hover:text-yellow-50 transition-colors"
+                >
+                  <FiUploadCloud size={20} />
+                  <span className="text-xs">Add photo</span>
+                  <input
+                    type="file"
+                    id="certificateUpload"
+                    accept="image/*"
+                    multiple
+                    onChange={handleCertificateSelect}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              <p className="text-xs text-richblack-400">
+                Upload clear photos of your diplomas or certifications. JPG or PNG.
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="flex justify-end gap-2">
           <button

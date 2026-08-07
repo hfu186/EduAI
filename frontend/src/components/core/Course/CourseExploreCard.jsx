@@ -13,7 +13,7 @@ const CourseCard = ({ cardData, currentCard, setCurrentCard }) => {
   const lessons =
     cardData?.courseContent?.length || cardData?.lessonNumber || 0;
 
-  const level = cardData?.level || "Intermediate";
+  const level = cardData?.level || "Beginner";
 
   const isActive = currentCard === heading;
 

@@ -43,8 +43,8 @@ export default function CourseInformationForm() {
       setValue("courseShortDesc", course.courseDescription)
       setValue("coursePrice", course.price)
       setValue("courseBenefits", course.whatYouWillLearn)
-      setValue("courseCategory", course.category._id || course.category) 
-      setValue("courseTags", course.tag) 
+      setValue("courseCategory", course.category._id || course.category)
+      setValue("courseTags", course.tag)
       setValue("courseRequirements", course.instructions)
       setValue("courseImage", course.thumbnail)
     }
@@ -67,57 +67,57 @@ export default function CourseInformationForm() {
   }
 
   const onSubmit = async (data) => {
-  setLoading(true)
+    setLoading(true)
 
-  if (editCourse) {
-    if (isFormUpdated()) {
-      const formData = new FormData()
-      formData.append("courseId", course._id)
-      if (data.courseTitle !== course.courseName) formData.append("courseName", data.courseTitle)
-      if (data.courseShortDesc !== course.courseDescription) formData.append("courseDescription", data.courseShortDesc)
-      if (data.coursePrice !== course.price) formData.append("price", data.coursePrice)
-      if (data.courseBenefits !== course.whatYouWillLearn) formData.append("whatYouWillLearn", data.courseBenefits)
-      if (data.courseCategory !== course.category._id) formData.append("category", data.courseCategory)
-      formData.append("tag", JSON.stringify(data.courseTags || []))
-      formData.append("instructions", JSON.stringify(data.courseRequirements || []))
+    if (editCourse) {
+      if (isFormUpdated()) {
+        const formData = new FormData()
+        formData.append("courseId", course._id)
+        if (data.courseTitle !== course.courseName) formData.append("courseName", data.courseTitle)
+        if (data.courseShortDesc !== course.courseDescription) formData.append("courseDescription", data.courseShortDesc)
+        if (data.coursePrice !== course.price) formData.append("price", data.coursePrice)
+        if (data.courseBenefits !== course.whatYouWillLearn) formData.append("whatYouWillLearn", data.courseBenefits)
+        if (data.courseCategory !== course.category._id) formData.append("category", data.courseCategory)
+        formData.append("tag", JSON.stringify(data.courseTags || []))
+        formData.append("instructions", JSON.stringify(data.courseRequirements || []))
 
-      if (data.courseImage !== course.thumbnail) {
-        formData.append("thumbnailImage", data.courseImage)
+        if (data.courseImage !== course.thumbnail) {
+          formData.append("thumbnailImage", data.courseImage)
+        }
+
+        const result = await editCourseDetails(formData, token)
+        if (result) {
+          dispatch(setStep(2))
+          dispatch(setCourse(result))
+        }
+      } else {
+        toast.error("No changes made to the form")
       }
+      setLoading(false)
+      return
+    }
 
-      const result = await editCourseDetails(formData, token)
-      if (result) {
-        dispatch(setStep(2))
-        dispatch(setCourse(result))
-      }
-    } else {
-      toast.error("No changes made to the form")
+    const formData = new FormData()
+    formData.append("courseName", data.courseTitle)
+    formData.append("courseDescription", data.courseShortDesc)
+    formData.append("price", data.coursePrice)
+    formData.append("whatYouWillLearn", data.courseBenefits)
+    formData.append("category", data.courseCategory)
+    formData.append("status", "Draft")
+    formData.append("tag", JSON.stringify(data.courseTags || []))
+    formData.append("instructions", JSON.stringify(data.courseRequirements || []))
+
+    if (data.courseImage) {
+      formData.append("thumbnailImage", data.courseImage)
+    }
+
+    const result = await addCourseDetails(formData, token)
+    if (result) {
+      dispatch(setStep(2))
+      dispatch(setCourse(result))
     }
     setLoading(false)
-    return
   }
-
-  const formData = new FormData()
-  formData.append("courseName", data.courseTitle)
-  formData.append("courseDescription", data.courseShortDesc)
-  formData.append("price", data.coursePrice)
-  formData.append("whatYouWillLearn", data.courseBenefits)
-  formData.append("category", data.courseCategory)
-  formData.append("status", "Draft")
-  formData.append("tag", JSON.stringify(data.courseTags || []))
-  formData.append("instructions", JSON.stringify(data.courseRequirements || []))
-  
-  if (data.courseImage) {
-    formData.append("thumbnailImage", data.courseImage)
-  }
-
-  const result = await addCourseDetails(formData, token)
-  if (result) {
-    dispatch(setStep(2))
-    dispatch(setCourse(result))
-  }
-  setLoading(false)
-}
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="rounded-md border-richblack-700 bg-richblack-800 p-6 space-y-8">
       {/* Title */}
@@ -127,16 +127,16 @@ export default function CourseInformationForm() {
         {errors.courseTitle && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
       </div>
       <div className="flex flex-col space-y-2">
-  <label>Course Description</label>
+        <label>Course Description</label>
 
-  <textarea
-    {...register("courseShortDesc", {
-      required: true,
-    })}
-    className="form-style min-h-[120px]"
-  />
-</div>
-     
+        <textarea
+          {...register("courseShortDesc", {
+            required: true,
+          })}
+          className="form-style min-h-[120px]"
+        />
+      </div>
+
       {/* Price */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="coursePrice">Price <sup className="text-pink-200">*</sup></label>
@@ -155,14 +155,24 @@ export default function CourseInformationForm() {
         </select>
         {errors.courseCategory && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
       </div>
-
-       <Upload
+      {/* Level */}
+      <div className="flex flex-col space-y-2">
+        <label className="text-sm text-richblack-5" htmlFor="courseLevel">Level <sup className="text-pink-200">*</sup></label>
+        <select {...register("courseLevel", { required: true })} id="courseLevel" className="form-style w-full">
+          <option value="" disabled>Choose a Level</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+        {errors.courseLevel && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
+      </div>
+      <Upload
         name="courseImage"
         label="Course Thumbnail"
         register={register}
         setValue={setValue}
         errors={errors}
-        editData={editCourse ? course?.thumbnail : null} 
+        editData={editCourse ? course?.thumbnail : null}
       />
 
       {/* Benefits */}

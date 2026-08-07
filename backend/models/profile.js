@@ -24,7 +24,11 @@ const profileSchema = new mongoose.Schema({
         type: String,
         trim: true,
         default: ''
-    }
+    },
+    certificates: {
+        type: [String],
+        default: [],
+    },
 
 });
 

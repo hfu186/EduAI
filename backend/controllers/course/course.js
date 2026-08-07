@@ -44,6 +44,7 @@ export const createCourse = async (req, res) => {
       category,
       status = "Draft",
       tag,
+      level,
       instructions,
     } = req.body;
 
@@ -78,6 +79,7 @@ export const createCourse = async (req, res) => {
       price,
       category: categoryDetails._id,
       tag: parsedTag,
+      level: level || "Beginner",
       instructions: parsedInstructions,
       thumbnail: base64Thumbnail,
       status,

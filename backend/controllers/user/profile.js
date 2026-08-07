@@ -21,7 +21,8 @@ exports.updateProfile = async (req, res) => {
       firstName,
       lastName,
       qualifications = '',
-      experience = ''
+      experience = '',
+      existingCertificates = '[]',
     } = req.body;
 
     const userId = req.user.id;
@@ -38,6 +39,7 @@ exports.updateProfile = async (req, res) => {
         contactNumber: null,
         qualifications: null,
         experience: null,
+        certificates: [],
       });
 
       userDetails.additionalDetails = profileDetails._id;
@@ -54,17 +56,60 @@ exports.updateProfile = async (req, res) => {
     profileDetails.contactNumber = contactNumber;
     profileDetails.qualifications = qualifications;
     profileDetails.experience = experience;
+    let parsedExistingCertificates = [];
+    try {
+      parsedExistingCertificates = JSON.parse(existingCertificates);
+    } catch (e) {
+      parsedExistingCertificates = [];
+    }
 
-    // save data to DB
+    let newCertificateUrls = [];
+
+    if (req.files && req.files.certificateImages) {
+      const rawFiles = Array.isArray(req.files.certificateImages)
+        ? req.files.certificateImages
+        : [req.files.certificateImages];
+
+      const ALLOWED_TYPES = ['jpg', 'jpeg', 'png'];
+      const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+
+      for (const file of rawFiles) {
+        const ext = file.name.split('.').pop().toLowerCase();
+
+        if (!ALLOWED_TYPES.includes(ext)) {
+          return res.status(400).json({
+            success: false,
+            message: `File "${file.name}" has an unsupported format`,
+          });
+        }
+
+        if (file.size > MAX_SIZE_BYTES) {
+          return res.status(400).json({
+            success: false,
+            message: `File "${file.name}" exceeds the 10MB limit`,
+          });
+        }
+      }
+
+      for (const file of rawFiles) {
+        const uploaded = await uploadImageToCloudinary(
+          file,
+          process.env.FOLDER_NAME_CERTIFICATES || 'instructor-certificates'
+        );
+        newCertificateUrls.push(uploaded.secure_url);
+      }
+    }
+
+    profileDetails.certificates = [...parsedExistingCertificates, ...newCertificateUrls];
+
+
     await profileDetails.save();
 
     const updatedUserDetails = await User.findById(userId)
       .populate({
         path: 'additionalDetails'
       })
-    // console.log('updatedUserDetails -> ', updatedUserDetails);
 
-    // return response
     res.status(200).json({
       success: true,
       updatedUserDetails,
@@ -239,7 +284,7 @@ exports.requestInstructor = async (req, res) => {
         type: 'course_approved',
         title: 'New instructor request',
         message: `${user.firstName} ${user.lastName} wants to become an instructor.`,
-        link: '/admin',
+        link: '/admin/manage-instructors',
       });
     }
 
@@ -267,14 +312,9 @@ exports.getInstructorRequestStatus = async (req, res) => {
 
 exports.getUserDetails = async (req, res) => {
   try {
-    // extract userId
     const userId = req.user.id;
     console.log('id - ', userId);
-
-    // get user details
-    const userDetails = await User.findById(userId).populate('additionalDetails').exec();
-
-    // return response
+   const userDetails = await User.findById(userId).populate('additionalDetails').exec();
     res.status(200).json({
       success: true,
       data: userDetails,
@@ -305,7 +345,6 @@ exports.updateUserProfileImage = async (req, res) => {
 
     const profileImage = req.files.profileImage;
     const userId = req.user.id;
-
     const base64Image = getFileBase64(profileImage);
     const updatedUserDetails = await User.findByIdAndUpdate(
       userId,
