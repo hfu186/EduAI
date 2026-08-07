@@ -33,7 +33,7 @@ const ExploreMore = ({ allCourses }) => {
   const coursesByLevel = useMemo(() => {
     if (!allCourses) return {};
     return allCourses.reduce((acc, course) => {
-      const level = course?.level || "Beginner"; // fallback nếu course chưa gắn level
+      const level = course?.level   || "Beginner"; // fallback nếu course chưa gắn level
       if (!acc[level]) acc[level] = [];
       acc[level].push(course);
       return acc;

@@ -6,17 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 const CourseCard = ({ cardData, currentCard, setCurrentCard }) => {
   const navigate = useNavigate();
-
-  const heading =
-    cardData?.courseName || cardData?.heading || "Untitled Course";
-
-  const lessons =
-    cardData?.courseContent?.length || cardData?.lessonNumber || 0;
-
+  const heading =cardData?.courseName || cardData?.heading || "Untitled Course";
+  const lessons =cardData?.courseContent?.length || cardData?.lessonNumber || 0;
   const level = cardData?.level || "Beginner";
-
   const isActive = currentCard === heading;
-
   const handleClick = () => {
     setCurrentCard?.(heading);
     navigate(`/course/${cardData?._id}`);

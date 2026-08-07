@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FiSearch, FiX, FiBell } from "react-icons/fi";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineShoppingCart, AiFillMessage } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import {
   getNotifications,
@@ -220,7 +220,7 @@ const Navbar = () => {
         <Link to="/" className="flex-shrink-0">
           <img
             src={EduSpaceLogo}
-            width={180}            
+            width={180}
             height={34}
             alt="EduSpace"
             className="object-contain"
@@ -274,7 +274,7 @@ const Navbar = () => {
         </ul>
 
         {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-2 shrink-0 z-10">
+        <div className="flex items-center gap-1.5 shrink-0 z-10">
 
           <div className="relative" ref={searchRef}>
             {/* Search Icon Button */}
@@ -316,8 +316,8 @@ const Navbar = () => {
                     {suggestions.length > 0 ? (
                       <>
                         <p className="px-4 pt-3 pb-1.5 text-[10px] text-richblack-400 uppercase font-semibold tracking-wider">
-                              {t('navbar.search.results')}
-                            </p>
+                          {t('navbar.search.results')}
+                        </p>
                         {suggestions.map((course) => (
                           <Link
                             key={course._id}
@@ -398,7 +398,7 @@ const Navbar = () => {
                       notifications.map((notification) => (
                         <button
                           key={notification._id}
-                          onClick={() => handleNotificationClick(notification) }
+                          onClick={() => handleNotificationClick(notification)}
                           className={`block w-full px-4 py-3 text-left transition-colors ${notification.read ? "bg-richblack-800" : "bg-richblack-700/60"}`}
                         >
                           <p className="text-sm font-medium text-richblack-5">{notification.title}</p>
@@ -413,12 +413,22 @@ const Navbar = () => {
               )}
             </div>
           )}
-
-          {/* Cart */}
-          {user && user?.accountType !== "Instructor" && (
+          {user && user?.accountType === "Student" && (
             <Link to="/dashboard/cart" className="relative group">
               <div className="flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 group-hover:bg-richblack-800 group-hover:text-yellow-25 transition-all">
                 <AiOutlineShoppingCart className="text-xl" />
+              </div>
+              {totalItems > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-pink-500 px-1 text-[10px] font-bold text-white">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+          )}
+          {user && user?.accountType === "Admin" || user?.accountType === "Instructor" && (
+            <Link to="/chat" className="relative group">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 group-hover:bg-richblack-800 group-hover:text-yellow-25 transition-all">
+                <AiFillMessage className="text-xl" />
               </div>
               {totalItems > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-pink-500 px-1 text-[10px] font-bold text-white">
@@ -444,7 +454,6 @@ const Navbar = () => {
                 <MobileProfileDropDown />
               </div>
             </div>
-
           )}
           <LocaleSwitcher />
         </div>
