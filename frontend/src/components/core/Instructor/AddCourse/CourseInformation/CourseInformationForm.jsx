@@ -45,6 +45,7 @@ export default function CourseInformationForm() {
       setValue("courseBenefits", course.whatYouWillLearn)
       setValue("courseCategory", course.category._id || course.category)
       setValue("courseTags", course.tag)
+      setValue("courseLevel", course.level)
       setValue("courseRequirements", course.instructions)
       setValue("courseImage", course.thumbnail)
     }
@@ -58,6 +59,7 @@ export default function CourseInformationForm() {
       currentValues.courseTitle !== course.courseName ||
       currentValues.courseShortDesc !== course.courseDescription ||
       currentValues.coursePrice !== course.price ||
+      currentValues.courseLevel !== course.level ||
       currentValues.courseBenefits !== course.whatYouWillLearn ||
       currentValues.courseCategory !== course.category._id ||
       currentValues.courseImage !== course.thumbnail
@@ -78,6 +80,8 @@ export default function CourseInformationForm() {
         if (data.coursePrice !== course.price) formData.append("price", data.coursePrice)
         if (data.courseBenefits !== course.whatYouWillLearn) formData.append("whatYouWillLearn", data.courseBenefits)
         if (data.courseCategory !== course.category._id) formData.append("category", data.courseCategory)
+        if (data.courseLevel !== course.level) formData.append("level", data.courseLevel)
+
         formData.append("tag", JSON.stringify(data.courseTags || []))
         formData.append("instructions", JSON.stringify(data.courseRequirements || []))
 
@@ -99,6 +103,7 @@ export default function CourseInformationForm() {
 
     const formData = new FormData()
     formData.append("courseName", data.courseTitle)
+    formData.append("level", data.courseLevel)
     formData.append("courseDescription", data.courseShortDesc)
     formData.append("price", data.coursePrice)
     formData.append("whatYouWillLearn", data.courseBenefits)
