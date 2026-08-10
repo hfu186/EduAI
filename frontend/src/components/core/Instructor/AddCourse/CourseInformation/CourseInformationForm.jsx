@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-hot-toast"
 import { MdNavigateNext } from "react-icons/md"
-
 import {
   addCourseDetails,
   editCourseDetails,
@@ -79,7 +78,7 @@ export default function CourseInformationForm() {
         if (data.courseShortDesc !== course.courseDescription) formData.append("courseDescription", data.courseShortDesc)
         if (data.coursePrice !== course.price) formData.append("price", data.coursePrice)
         if (data.courseBenefits !== course.whatYouWillLearn) formData.append("whatYouWillLearn", data.courseBenefits)
-        if (data.courseCategory !== course.category._id) formData.append("category", data.courseCategory)
+        if (data.courseCategory !== course.category) formData.append("category", data.courseCategory)
         if (data.courseLevel !== course.level) formData.append("level", data.courseLevel)
 
         formData.append("tag", JSON.stringify(data.courseTags || []))
@@ -154,6 +153,7 @@ export default function CourseInformationForm() {
         <label className="text-sm text-richblack-5" htmlFor="courseCategory">Category <sup className="text-pink-200">*</sup></label>
         <select {...register("courseCategory", { required: true })} id="courseCategory" className="form-style w-full">
           <option value="" disabled>Choose a Category</option>
+          
           {!loading && courseCategories.map((category, index) => (
             <option key={index} value={category?._id}>{category?.name}</option>
           ))}
