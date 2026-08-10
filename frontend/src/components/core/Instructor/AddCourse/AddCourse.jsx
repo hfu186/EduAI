@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import RenderSteps from "./RenderSteps"
 
-
-
 export default function AddCourse() {
 
   useEffect(() => {

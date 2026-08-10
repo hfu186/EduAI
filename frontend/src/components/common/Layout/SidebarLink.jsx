@@ -4,21 +4,17 @@ import { useDispatch, useSelector } from "react-redux"
 import { NavLink, matchPath, useLocation } from "react-router-dom"
 import { resetCourseState } from "../../../slices/courseSlice"
 import { setOpenSideMenu } from "../../../slices/sidebarSlice"
-
-
+import { useTranslation } from "react-i18next"
 
 export default function SidebarLink({ link, iconName }) {
-const Icon = Icons[iconName];
- const location = useLocation()
+  const Icon = Icons[iconName];
+  const location = useLocation()
   const dispatch = useDispatch()
-
+  const { t } = useTranslation();
   const { openSideMenu, screenSize } = useSelector(state => state.sidebar)
-
   const matchRoute = (route) => {
     return matchPath({ path: route }, location.pathname)
   }
-
-
   const handleClick = () => {
     dispatch(resetCourseState())
     if (openSideMenu && screenSize <= 640) dispatch(setOpenSideMenu(false))
@@ -38,10 +34,9 @@ const Icon = Icons[iconName];
           }`}
       >
       </span>
-
       <div className="flex items-center gap-x-2">
         <Icon className="text-lg" />
-        <span>{link.name}</span>
+        <span>{t(`sidebar.${link.name}`)}</span>      
       </div>
 
     </NavLink>

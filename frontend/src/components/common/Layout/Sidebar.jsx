@@ -10,18 +10,18 @@ import Loading from './../../common/Loading';
 import { HiMenuAlt1 } from 'react-icons/hi'
 import { IoMdClose } from 'react-icons/io'
 import { setOpenSideMenu, setScreenSize } from "../../../slices/sidebarSlice";
-
+import { useTranslation } from "react-i18next";
 
 export default function Sidebar() {
   const { user, loading: profileLoading } = useSelector((state) => state.profile)
   const { loading: authLoading } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { t } = useTranslation();
   const [confirmationModal, setConfirmationModal] = useState(null)
   const { openSideMenu, screenSize } = useSelector((state) => state.sidebar)
   useEffect(() => {
     const handleResize = () => dispatch(setScreenSize(window.innerWidth));
-
     window.addEventListener("resize", handleResize);
     handleResize();
 
@@ -81,7 +81,7 @@ export default function Sidebar() {
 
           <div className="flex flex-col">
             <SidebarLink
-              link={{ name: "Settings", path: "/dashboard/settings" }}
+              link={{ name: "settings", path: "/dashboard/settings" }}
               iconName={"VscSettingsGear"}
               setOpenSideMen={setOpenSideMenu}
             />
@@ -89,22 +89,20 @@ export default function Sidebar() {
             <button
               onClick={() =>
                 setConfirmationModal({
-                  text1: "Are you sure ?",
-                  text2: "You will be logged out of your account.",
-                  btn1Text: "Logout",
-                  btn2Text: "Cancel",
+                  text1: t("sidebar.logout_confirm"),
+                  text2: t("sidebar.logout_message"),
+                  btn1Text: t("sidebar.logout"),
+                  btn2Text: t("common.cancel"),
                   btn1Handler: () => dispatch(logout(navigate)),
                   btn2Handler: () => setConfirmationModal(null),
                 })
               }
-              className=" "
             >
               <div className="flex items-center gap-x-2 px-8 py-2 text-sm font-medium text-richblack-300 hover:bg-richblack-700 relative">
                 <VscSignOut className="text-lg" />
-                <span>Logout</span>
+                <span>{t("sidebar.logout")}</span>
               </div>
             </button>
-
           </div>
         </div>
       }

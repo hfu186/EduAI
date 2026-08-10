@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-hot-toast"
 import { MdNavigateNext } from "react-icons/md"
+import { useTranslation } from "react-i18next"
 import {
   addCourseDetails,
   editCourseDetails,
@@ -10,9 +11,10 @@ import {
 } from "../../../../../services/operations/courseDetailsAPI"
 import { setCourse, setStep } from "../../../../../slices/courseSlice"
 import IconBtn from "../../../../common/IconBtn"
-import Upload from "../Upload" //
+import Upload from "../Upload"
 
 export default function CourseInformationForm() {
+  const { t } = useTranslation()
   const {
     register,
     handleSubmit,
@@ -42,7 +44,7 @@ export default function CourseInformationForm() {
       setValue("courseShortDesc", course.courseDescription)
       setValue("coursePrice", course.price)
       setValue("courseBenefits", course.whatYouWillLearn)
-      setValue("courseCategory", course.category._id || course.category)
+      setValue("courseCategory", course.category?._id || course.category)
       setValue("courseTags", course.tag)
       setValue("courseLevel", course.level)
       setValue("courseRequirements", course.instructions)
@@ -60,11 +62,11 @@ export default function CourseInformationForm() {
       currentValues.coursePrice !== course.price ||
       currentValues.courseLevel !== course.level ||
       currentValues.courseBenefits !== course.whatYouWillLearn ||
-      currentValues.courseCategory !== course.category._id ||
+      currentValues.courseCategory !== (course.category?._id || course.category) ||
       currentValues.courseImage !== course.thumbnail
     )
       return true
-    else return false
+    return false
   }
 
   const onSubmit = async (data) => {
@@ -74,32 +76,37 @@ export default function CourseInformationForm() {
       if (isFormUpdated()) {
         const formData = new FormData()
         formData.append("courseId", course._id)
-        if (data.courseTitle !== course.courseName) formData.append("courseName", data.courseTitle)
-        if (data.courseShortDesc !== course.courseDescription) formData.append("courseDescription", data.courseShortDesc)
-        if (data.coursePrice !== course.price) formData.append("price", data.coursePrice)
-        if (data.courseBenefits !== course.whatYouWillLearn) formData.append("whatYouWillLearn", data.courseBenefits)
-        if (data.courseCategory !== course.category) formData.append("category", data.courseCategory)
-        if (data.courseLevel !== course.level) formData.append("level", data.courseLevel)
 
+        if (data.courseTitle !== course.courseName)
+          formData.append("courseName", data.courseTitle)
+        if (data.courseShortDesc !== course.courseDescription)
+          formData.append("courseDescription", data.courseShortDesc)
+        if (data.coursePrice !== course.price)
+          formData.append("price", data.coursePrice)
+        if (data.courseBenefits !== course.whatYouWillLearn)
+          formData.append("whatYouWillLearn", data.courseBenefits)
+        if (data.courseCategory !== (course.category?._id || course.category))
+          formData.append("category", data.courseCategory)
+        if (data.courseLevel !== course.level)
+          formData.append("level", data.courseLevel)
         formData.append("tag", JSON.stringify(data.courseTags || []))
         formData.append("instructions", JSON.stringify(data.courseRequirements || []))
-
         if (data.courseImage !== course.thumbnail) {
           formData.append("thumbnailImage", data.courseImage)
         }
-
         const result = await editCourseDetails(formData, token)
         if (result) {
           dispatch(setStep(2))
           dispatch(setCourse(result))
         }
       } else {
-        toast.error("No changes made to the form")
+        toast.error(t("courseForm.no_changes"))
       }
       setLoading(false)
       return
     }
 
+    // Create new course
     const formData = new FormData()
     formData.append("courseName", data.courseTitle)
     formData.append("level", data.courseLevel)
@@ -122,58 +129,123 @@ export default function CourseInformationForm() {
     }
     setLoading(false)
   }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="rounded-md border-richblack-700 bg-richblack-800 p-6 space-y-8">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="rounded-md border border-richblack-700 bg-richblack-800 p-6 space-y-8"
+    >
       {/* Title */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseTitle">Course Title <sup className="text-pink-200">*</sup></label>
-        <input id="courseTitle" placeholder="Enter Course Title" {...register("courseTitle", { required: true })} className="w-full form-style" />
-        {errors.courseTitle && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
-      </div>
-      <div className="flex flex-col space-y-2">
-        <label>Course Description</label>
-
-        <textarea
-          {...register("courseShortDesc", {
-            required: true,
-          })}
-          className="form-style min-h-[120px]"
+        <label className="text-sm text-richblack-5" htmlFor="courseTitle">
+          {t(`courseForm.title`)} <sup className="text-pink-200">*</sup>
+        </label>
+        <input
+          id="courseTitle"
+          placeholder={t("courseForm.title_placeholder")}
+          {...register("courseTitle", { required: true })}
+          className="w-full form-style"
         />
+        {errors.courseTitle && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {t("courseForm.required")}
+          </span>
+        )}
+      </div>
+
+      {/* Description */}
+      <div className="flex flex-col space-y-2">
+        <label className="text-sm text-richblack-5" htmlFor="courseShortDesc">
+          {t("courseForm.description")} <sup className="text-pink-200">*</sup>
+        </label>
+        <textarea
+          id="courseShortDesc"
+          placeholder={t("courseForm.description_placeholder")}
+          {...register("courseShortDesc", { required: true })}
+          className="form-style min-h-[120px] w-full"
+        />
+        {errors.courseShortDesc && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {t("courseForm.required")}
+          </span>
+        )}
       </div>
 
       {/* Price */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="coursePrice">Price <sup className="text-pink-200">*</sup></label>
-        <input id="coursePrice" placeholder="Enter Price" {...register("coursePrice", { required: true, valueAsNumber: true })} className="form-style w-full" />
-        {errors.coursePrice && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
+        <label className="text-sm text-richblack-5" htmlFor="coursePrice">
+          {t("courseForm.price")} <sup className="text-pink-200">*</sup>
+        </label>
+        <input
+          id="coursePrice"
+          placeholder={t("courseForm.price_placeholder")}
+          {...register("coursePrice", { required: true, valueAsNumber: true })}
+          className="form-style w-full"
+        />
+        {errors.coursePrice && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {t("courseForm.required")}
+          </span>
+        )}
       </div>
 
       {/* Category */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseCategory">Category <sup className="text-pink-200">*</sup></label>
-        <select {...register("courseCategory", { required: true })} id="courseCategory" className="form-style w-full">
-          <option value="" disabled>Choose a Category</option>
-          
-          {!loading && courseCategories.map((category, index) => (
-            <option key={index} value={category?._id}>{category?.name}</option>
-          ))}
+        <label className="text-sm text-richblack-5" htmlFor="courseCategory">
+          {t("courseForm.category")} <sup className="text-pink-200">*</sup>
+        </label>
+        <select
+          {...register("courseCategory", { required: true })}
+          id="courseCategory"
+          className="form-style w-full"
+          defaultValue=""
+        >
+          <option value="" disabled>
+            {t("courseForm.category_placeholder")}
+          </option>
+          {!loading &&
+            courseCategories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
         </select>
-        {errors.courseCategory && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
+        {errors.courseCategory && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {t("courseForm.required")}
+          </span>
+        )}
       </div>
+
       {/* Level */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseLevel">Level <sup className="text-pink-200">*</sup></label>
-        <select {...register("courseLevel", { required: true })} id="courseLevel" className="form-style w-full">
-          <option value="" disabled>Choose a Level</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
+        <label className="text-sm text-richblack-5" htmlFor="courseLevel">
+          {t("courseForm.level")} <sup className="text-pink-200">*</sup>
+        </label>
+        <select
+          {...register("courseLevel", { required: true })}
+          id="courseLevel"
+          className="form-style w-full"
+          defaultValue=""
+        >
+          <option value="" disabled>
+            {t("courseForm.level_placeholder")}
+          </option>
+          <option value="Beginner">{t("courseForm.level_beginner")}</option>
+          <option value="Intermediate">{t("courseForm.level_intermediate")}</option>
+          <option value="Advanced">{t("courseForm.level_advanced")}</option>
         </select>
-        {errors.courseLevel && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
+        {errors.courseLevel && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {t("courseForm.required")}
+          </span>
+        )}
       </div>
+
+      {/* Thumbnail */}
       <Upload
         name="courseImage"
-        label="Course Thumbnail"
+        label={t("courseForm.thumbnail")}
         register={register}
         setValue={setValue}
         errors={errors}
@@ -182,19 +254,38 @@ export default function CourseInformationForm() {
 
       {/* Benefits */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseBenefits">Benefits of the course <sup className="text-pink-200">*</sup></label>
-        <textarea id="courseBenefits" placeholder="Enter benefits" {...register("courseBenefits", { required: true })} className="form-style resize-x-none min-h-[130px] w-full" />
-        {errors.courseBenefits && <span className="ml-2 text-xs tracking-wide text-pink-200">Required</span>}
+        <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
+          {t("courseForm.benefits")} <sup className="text-pink-200">*</sup>
+        </label>
+        <textarea
+          id="courseBenefits"
+          placeholder={t("courseForm.benefits_placeholder")}
+          {...register("courseBenefits", { required: true })}
+          className="form-style resize-x-none min-h-[130px] w-full"
+        />
+        {errors.courseBenefits && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {t("courseForm.required")}
+          </span>
+        )}
       </div>
 
       {/* Buttons */}
       <div className="flex justify-end gap-x-2">
         {editCourse && (
-          <button onClick={() => dispatch(setStep(2))} disabled={loading} className="flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900">
-            Continue Without Saving
+          <button
+            type="button"
+            onClick={() => dispatch(setStep(2))}
+            disabled={loading}
+            className="flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900"
+          >
+            {t("courseForm.continue_without_saving")}
           </button>
         )}
-        <IconBtn disabled={loading} text={!editCourse ? "Next" : "Save Changes"}>
+        <IconBtn
+          disabled={loading}
+          text={!editCourse ? t("courseForm.next") : t("courseForm.save_changes")}
+        >
           <MdNavigateNext />
         </IconBtn>
       </div>

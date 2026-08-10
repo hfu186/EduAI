@@ -274,7 +274,7 @@ export default function AdminAnalytics() {
               </ResponsiveContainer>
             </ChartCard>
 
-            <ChartCard title="Enrollment Growth" badge="All time">
+            <ChartCard title={t("pages.admin.analytics.charts.enrollment_growth")} badge="All time">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={enrollGrowth} margin={{ top: 4, right: 4, left: -10, bottom: 0 }}>
                   <defs>
@@ -300,7 +300,7 @@ export default function AdminAnalytics() {
             gridTemplateColumns: "1fr 1fr",
             gap: 20,
           }}>
-            <ChartCard title="Top Selling Courses" badge="By units sold">
+            <ChartCard  title={t("pages.admin.analytics.charts.top_selling_courses")} badge={t("pages.admin.analytics.charts.by_units_sold")}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topCourses} margin={{ top: 4, right: 4, left: -10, bottom: 0 }} barSize={28}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
@@ -317,7 +317,7 @@ export default function AdminAnalytics() {
               </ResponsiveContainer>
             </ChartCard>
 
-            <ChartCard title="Instructor Earnings" badge="Top 5">
+            <ChartCard title={t("pages.admin.analytics.charts.instructor_earnings")} badge="Top 5">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={instructorEarnings} layout="vertical"
                   margin={{ top: 4, right: 16, left: 8, bottom: 0 }} barSize={18}>

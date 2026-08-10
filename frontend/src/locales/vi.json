@@ -17,6 +17,27 @@
     "about us": "Về chúng tôi",
     "contact us": "Liên hệ"
   },
+  "sidebar": {
+  "approve_courses": "Duyệt khóa học",
+  "dashboard": "Bảng điều khiển",
+  "my_profile": "Hồ sơ của tôi",
+  "my_courses": "Khóa học của tôi",
+  "wishlist": "Danh sách yêu thích",
+  "cart": "Giỏ hàng",
+  "add_course": "Thêm khóa học",
+  "admin_panel": "Trang quản trị",
+  "my_courses_instructor": "Khóa học của tôi",
+  "analytics": "Phân tích",
+  "category_management": "Quản lý danh mục",
+  "instructor_management": "Quản lý giảng viên",
+  "user_management": "Quản lý người dùng",
+  "settings": "Cài đặt",
+  "messages": "Tin nhắn",
+  "logout": "Đăng xuất",
+
+  "logout_confirm": "Bạn có chắc chắn không?",
+  "logout_message": "Bạn sẽ được đăng xuất khỏi tài khoản."
+},
   "about": "Về chúng tôi",
   "contact": "Liên hệ",
   "auth": {
@@ -427,5 +448,28 @@
       "dob": "Ngày sinh",
       "add_dob": "Thêm ngày sinh"
     }
+  },
+  "courseForm": {
+    "title": "Tên khóa học",
+    "title_placeholder": "Nhập tên khóa học",
+    "description": "Mô tả khóa học",
+    "description_placeholder": "Nhập mô tả khóa học",
+    "price": "Giá",
+    "price_placeholder": "Nhập giá",
+    "category": "Danh mục",
+    "category_placeholder": "Chọn danh mục",
+    "level": "Cấp độ",
+    "level_placeholder": "Chọn cấp độ",
+    "level_beginner": "Cơ bản",
+    "level_intermediate": "Trung cấp",
+    "level_advanced": "Nâng cao",
+    "thumbnail": "Ảnh đại diện khóa học",
+    "benefits": "Lợi ích của khóa học",
+    "benefits_placeholder": "Nhập lợi ích của khóa học",
+    "required": "Bắt buộc",
+    "continue_without_saving": "Tiếp tục không lưu",
+    "next": "Tiếp theo",
+    "save_changes": "Lưu thay đổi",
+    "no_changes": "Không có thay đổi nào trên form"
   }
 }

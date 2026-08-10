@@ -68,9 +68,18 @@
       "desc2": "Your personalized dashboard awaits!"
     },
     "features": [
-      { "title": "Track Your Progress", "desc": "Monitor your learning journey and achievements in real-time" },
-      { "title": "Access Anywhere", "desc": "Learn on any device, anytime, anywhere — fully responsive" },
-      { "title": "Expert Instructors", "desc": "Learn from industry professionals with real-world experience" }
+      {
+        "title": "Track Your Progress",
+        "desc": "Monitor your learning journey and achievements in real-time"
+      },
+      {
+        "title": "Access Anywhere",
+        "desc": "Learn on any device, anytime, anywhere — fully responsive"
+      },
+      {
+        "title": "Expert Instructors",
+        "desc": "Learn from industry professionals with real-world experience"
+      }
     ]
   },
   "navbar": {
@@ -89,6 +98,27 @@
       "empty": "No notifications yet"
     }
   },
+  "sidebar": {
+  "approve_courses": "Approve Courses",
+  "dashboard": "Dashboard",
+  "my_profile": "My Profile",
+  "my_courses": "My Courses",
+  "wishlist": "Wishlist",
+  "cart": "Cart",
+  "add_course": "Add Course",
+  "admin_panel": "Admin Panel",
+  "my_courses_instructor": "My Courses",
+  "analytics": "Analytics",
+  "category_management": "Category Management",
+  "instructor_management": "Instructor Management",
+  "user_management": "User Management",
+  "settings": "Settings",
+  "messages": "Messages",
+  "logout": "Logout",
+  
+  "logout_confirm": "Are you sure?",
+  "logout_message": "You will be logged out of your account."
+},
   "pages": {
     "home": {
       "badge": "Start Your Professional Journey",
@@ -103,9 +133,18 @@
       "feature_heading": "Why Learn with our",
       "feature_highlight": "AI Advantage?",
       "features": [
-        { "title": "Grounded Knowledge", "desc": "Responses are derived directly from course PDFs, not generic data." },
-        { "title": "24/7 AI Assistance", "desc": "Never wait for an instructor. Get instant explanations for complex code." },
-        { "title": "Instant Quiz Gen", "desc": "AI designs practice tests tailored to your learning progress." }
+        {
+          "title": "Grounded Knowledge",
+          "desc": "Responses are derived directly from course PDFs, not generic data."
+        },
+        {
+          "title": "24/7 AI Assistance",
+          "desc": "Never wait for an instructor. Get instant explanations for complex code."
+        },
+        {
+          "title": "Instant Quiz Gen",
+          "desc": "AI designs practice tests tailored to your learning progress."
+        }
       ],
       "quick_links": {
         "search_catalog": "Search Catalog",
@@ -315,12 +354,11 @@
         "promote_confirm": "Are you sure you want to promote this user to instructor?",
         "promoted": "User promoted successfully"
       },
-    "analytics": { 
+      "analytics": {
         "live_dashboard": "Live Dashboard",
         "title": "Analytics Dashboard",
         "description": "Monitor platform performance, revenue, enrollments, and course sales.",
         "analytics_overview": "Analytics Overview",
-
         "kpi": {
           "revenue_30d": "Revenue (Last 30 Days)",
           "from_paid_orders": "From paid orders",
@@ -330,7 +368,6 @@
           "last_30_days": "In the last 30 days",
           "top_course": "Top-Selling Course"
         },
-
         "charts": {
           "revenue": "Revenue",
           "enrollment_growth": "Enrollment Growth",
@@ -338,7 +375,6 @@
           "by_units_sold": "By units sold",
           "instructor_earnings": "Instructor Earnings"
         },
-
         "time_range": {
           "all_time": "All Time",
           "last_7_days": "Last 7 Days",
@@ -346,14 +382,12 @@
           "last_90_days": "Last 90 Days",
           "this_year": "This Year"
         },
-
         "empty": {
           "no_revenue": "No revenue data available.",
           "no_enrollments": "No enrollment data available.",
           "no_courses": "No course sales data available.",
           "no_instructor_earnings": "No instructor earnings data available."
         },
-
         "loading": "Loading analytics...",
         "error": "Unable to load analytics data"
       }
@@ -425,5 +459,28 @@
       "dob": "Date Of Birth",
       "add_dob": "Add Date Of Birth"
     }
+  },
+  "courseForm": {
+    "title": "Course Title",
+    "title_placeholder": "Enter Course Title",
+    "description": "Course Description",
+    "description_placeholder": "Enter course description",
+    "price": "Price",
+    "price_placeholder": "Enter Price",
+    "category": "Category",
+    "category_placeholder": "Choose a Category",
+    "level": "Level",
+    "level_placeholder": "Choose a Level",
+    "level_beginner": "Beginner",
+    "level_intermediate": "Intermediate",
+    "level_advanced": "Advanced",
+    "thumbnail": "Course Thumbnail",
+    "benefits": "Benefits of the course",
+    "benefits_placeholder": "Enter benefits of the course",
+    "required": "Required",
+    "continue_without_saving": "Continue Without Saving",
+    "next": "Next",
+    "save_changes": "Save Changes",
+    "no_changes": "No changes made to the form"
   }
 }
