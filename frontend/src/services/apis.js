@@ -99,6 +99,7 @@ export const adminEndpoints={
   PROMOTE_USER: BASE_URL + "/admin/promote-user",
   GET_ALL_COURSES: BASE_URL + "/admin/all-courses",
   APPROVE_COURSE: BASE_URL + "/admin/approve-course",
+  GET_ALL_INSTRUCTORS: BASE_URL + "/admin/get-instructor",
   GET_INSTRUCTOR_REQUESTS: BASE_URL + "/admin/instructor-requests",
   REVIEW_INSTRUCTOR_REQUEST: BASE_URL + "/admin/instructor-requests",
   GET_ADMIN_STATS: BASE_URL + "/admin/stats",

@@ -29,6 +29,7 @@ router.patch("/promote-user/:userId", auth, isAdmin, promoteUserToInstructor);
 router.get("/instructor-requests", auth, isAdmin, getInstructorRequests);
 router.patch("/instructor-requests/:userId", auth, isAdmin, reviewInstructorRequest);
 router.get("/all-courses", auth, isAdmin, getAllCourses);
+router.get("/get-instructor",auth, isAdmin, getInstructors);
 router.post("/approve-course", auth, isAdmin, approveCourse);
 router.get("/stats", auth, isAdmin, getAdminStats);
 router.get("/revenue-stats", auth, isAdmin, getTotalRevenue);
