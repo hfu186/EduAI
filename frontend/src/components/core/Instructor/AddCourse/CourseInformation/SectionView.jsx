@@ -16,7 +16,6 @@ export default function SectionView({ section }) {
   const dispatch = useDispatch()
   const { course } = useSelector((state) => state.course)
   const { token } = useSelector((state) => state.auth)
-
   const [editSectionName, setEditSectionName] = useState(null)
   const [viewSubSection, setViewSubSection] = useState(null)
   const [addSubSection, setAddSubSection] = useState(null)
@@ -27,8 +26,6 @@ export default function SectionView({ section }) {
   const handleToggle = () => {
     setViewSubSection(viewSubSection === section._id ? null : section._id)
   }
-
-  // Delete Section
   const handleDeleteSection = async () => {
     const result = await deleteSection({
       sectionId: section._id,
