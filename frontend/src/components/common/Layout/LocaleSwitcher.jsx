@@ -17,7 +17,6 @@ export default function LocaleSwitcher() {
       className="inline-flex items-center rounded-full border border-richblack-600 bg-richblack-800 p-1"
       aria-label={t("common.change_language")}
     >
-      <div className="inline-flex items-center gap-1 rounded-full border border-richblack-600 bg-richblack-800 p-1">
         <button
           type="button"
           onClick={() => changeLocale("vi")}
@@ -48,6 +47,5 @@ export default function LocaleSwitcher() {
           />
         </button>
       </div>
-    </div>
   );
 }
