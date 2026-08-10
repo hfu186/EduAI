@@ -83,7 +83,7 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-screen">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
         <h2 className="text-2xl font-semibold text-richblack-5">{t("pages.admin.user_management.title")}</h2>
         <p className="text-sm text-richblack-300 mt-1">
@@ -108,7 +108,7 @@ export default function UserManagement() {
             </div>
           </div>
 
-          <div className="max-h-[520px] overflow-y-auto">
+          <div className=" overflow-y-auto">
             {users.map((user) => (
               <button
                 key={user._id}

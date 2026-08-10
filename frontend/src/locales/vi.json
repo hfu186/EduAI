@@ -314,6 +314,48 @@
         "delete_error": "Xóa người dùng thất bại",
         "promote_confirm": "Bạn có chắc chắn muốn thăng cấp người dùng này thành giảng viên không?",
         "promoted": "Thăng cấp người dùng thành công"
+      },
+      "analytics": {
+        "live_dashboard": "Bảng điều khiển trực tiếp",
+        "title": "Bảng điều khiển phân tích",
+        "description": "Theo dõi hiệu suất nền tảng, doanh thu, lượt đăng ký và doanh số khóa học.",
+        "analytics_overview": "Tổng quan phân tích",
+
+        "kpi": {
+          "revenue_30d": "Doanh thu (30 ngày qua)",
+          "from_paid_orders": "Từ các đơn hàng đã thanh toán",
+          "avg_order_value": "Giá trị đơn hàng trung bình",
+          "per_transaction": "Mỗi giao dịch",
+          "new_enrollments": "Lượt đăng ký mới",
+          "last_30_days": "Trong 30 ngày qua",
+          "top_course": "Khóa học bán chạy nhất"
+        },
+
+        "charts": {
+          "revenue": "Doanh thu",
+          "enrollment_growth": "Tăng trưởng lượt đăng ký",
+          "top_selling_courses": "Các khóa học bán chạy nhất",
+          "by_units_sold": "Theo số lượng đã bán",
+          "instructor_earnings": "Thu nhập của giảng viên"
+        },
+
+        "time_range": {
+          "all_time": "Tất cả thời gian",
+          "last_7_days": "7 ngày qua",
+          "last_30_days": "30 ngày qua",
+          "last_90_days": "90 ngày qua",
+          "this_year": "Năm nay"
+        },
+
+        "empty": {
+          "no_revenue": "Không có dữ liệu doanh thu.",
+          "no_enrollments": "Không có dữ liệu đăng ký.",
+          "no_courses": "Không có dữ liệu bán khóa học.",
+          "no_instructor_earnings": "Không có dữ liệu thu nhập của giảng viên."
+        },
+
+        "loading": "Đang tải dữ liệu phân tích...",
+        "error": "Không thể tải dữ liệu phân tích"
       }
     },
     "instructors": {

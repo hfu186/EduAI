@@ -73,7 +73,7 @@ export default function InstructorList() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen">
       {/* Header */}
       <div className="bg-richblack-800 border border-richblack-700 rounded-2xl p-6">
         <h2 className="text-2xl md:text-3xl font-bold text-richblack-5">

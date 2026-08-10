@@ -124,14 +124,14 @@ export default function CourseApproval() {
 
   if (loading)
     return (
-      <div className="grid place-items-center min-h-[50vh]">
+      <div className="grid place-items-center h-[1000vh]">
         <div className="spinner"></div>
       </div>
     );
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-richblack-800 p-6 rounded-2xl border border-richblack-700">
+    <div className="space-y-8 animate-fadeIn px-4 md:px-8 lg:px-12 py-6 min-h-screen">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         <div>
           <h2 className="text-2xl font-bold text-richblack-5">
             Moderation Portal

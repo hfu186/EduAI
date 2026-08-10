@@ -314,6 +314,48 @@
         "delete_error": "Failed to delete the user",
         "promote_confirm": "Are you sure you want to promote this user to instructor?",
         "promoted": "User promoted successfully"
+      },
+    "analytics": { 
+        "live_dashboard": "Live Dashboard",
+        "title": "Analytics Dashboard",
+        "description": "Monitor platform performance, revenue, enrollments, and course sales.",
+        "analytics_overview": "Analytics Overview",
+
+        "kpi": {
+          "revenue_30d": "Revenue (Last 30 Days)",
+          "from_paid_orders": "From paid orders",
+          "avg_order_value": "Average Order Value",
+          "per_transaction": "Per transaction",
+          "new_enrollments": "New Enrollments",
+          "last_30_days": "In the last 30 days",
+          "top_course": "Top-Selling Course"
+        },
+
+        "charts": {
+          "revenue": "Revenue",
+          "enrollment_growth": "Enrollment Growth",
+          "top_selling_courses": "Top-Selling Courses",
+          "by_units_sold": "By units sold",
+          "instructor_earnings": "Instructor Earnings"
+        },
+
+        "time_range": {
+          "all_time": "All Time",
+          "last_7_days": "Last 7 Days",
+          "last_30_days": "Last 30 Days",
+          "last_90_days": "Last 90 Days",
+          "this_year": "This Year"
+        },
+
+        "empty": {
+          "no_revenue": "No revenue data available.",
+          "no_enrollments": "No enrollment data available.",
+          "no_courses": "No course sales data available.",
+          "no_instructor_earnings": "No instructor earnings data available."
+        },
+
+        "loading": "Loading analytics...",
+        "error": "Unable to load analytics data"
       }
     },
     "instructors": {

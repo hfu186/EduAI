@@ -115,7 +115,7 @@ const AdminCategoryManager = () => {
   const selectedCategory = categories.find((item) => item._id === selectedCategoryId);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen">
       <div className="bg-richblack-800 border border-richblack-700 rounded-xl p-4">
         <h1 className="text-2xl font-semibold text-richblack-5">{t("pages.admin.category_management.title")}</h1>
         <p className="text-sm text-richblack-300 mt-1">
@@ -138,7 +138,7 @@ const AdminCategoryManager = () => {
             />
           </div>
 
-          <div className="max-h-[540px] overflow-y-auto">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {filteredCategories.length > 0 ? (
               filteredCategories.map((category) => (
                 <button
