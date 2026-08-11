@@ -93,7 +93,7 @@ export default function CourseContent() {
                 </div>
                 <div className="text-center px-4 border-r border-richblack-600">
                     <p className="text-2xl font-bold text-caribbeangreen-50 flex items-center justify-center gap-1">
-                         {courseData?.price === 0 ? "Free" : `₹${formatVND(courseData?.price)}`}
+                         {courseData?.price === 0 ? "Free" : `${formatVND(courseData?.price)}`}
                     </p>
                     <p className="text-xs text-richblack-300 uppercase">Price</p>
                 </div>

@@ -16,7 +16,7 @@ export default function RenderTotalAmount() {
       return;
     }
 
-    navigate("/payment/qr", {
+    navigate("/payment", {
       state: { courses: cart },
     });
   };

@@ -8,12 +8,13 @@
     "cancel": "Hủy",
     "close": "Đóng"
   },
-    "cart": {
+  "cart": {
     "courses_in_cart": "khóa trong giỏ",
     "empty": "Không có khóa nào trong giỏ hàng",
-    "title":"Giỏ hàng",
-    "remove":"Xóa"
-    },
+    "title": "Giỏ hàng",
+    "remove": "Xóa",
+    "reviews_count": "{{count}} đánh giá"
+  },
   "nav": {
     "home": "Trang chủ",
     "courses": "Khóa học",
@@ -24,29 +25,28 @@
     "contact us": "Liên hệ"
   },
   "sidebar": {
-  "approve_courses": "Duyệt khóa học",
-  "dashboard": "Bảng điều khiển",
-  "my_profile": "Hồ sơ của tôi",
-  "my_courses": "Khóa học của tôi",
-  "wishlist": "Danh sách yêu thích",
-  "learning_stats": "Thống kê",
-  "enrolled_courses": "Khóa học của tôi",
-  "instructor_request": "Trở thành giảng viên",
-  "cart": "Giỏ hàng",
-  "add_course": "Thêm khóa học",
-  "admin_panel": "Trang quản trị",
-  "my_courses_instructor": "Khóa học của tôi",
-  "analytics": "Phân tích",
-  "category_management": "Quản lý danh mục",
-  "instructor_management": "Quản lý giảng viên",
-  "user_management": "Quản lý người dùng",
-  "settings": "Cài đặt",
-  "messages": "Tin nhắn",
-  "logout": "Đăng xuất",
-
-  "logout_confirm": "Bạn có chắc chắn không?",
-  "logout_message": "Bạn sẽ được đăng xuất khỏi tài khoản."
-},
+    "approve_courses": "Duyệt khóa học",
+    "dashboard": "Bảng điều khiển",
+    "my_profile": "Hồ sơ của tôi",
+    "my_courses": "Khóa học của tôi",
+    "wishlist": "Danh sách yêu thích",
+    "learning_stats": "Thống kê",
+    "enrolled_courses": "Khóa học của tôi",
+    "instructor_request": "Trở thành giảng viên",
+    "cart": "Giỏ hàng",
+    "add_course": "Thêm khóa học",
+    "admin_panel": "Trang quản trị",
+    "my_courses_instructor": "Khóa học của tôi",
+    "analytics": "Phân tích",
+    "category_management": "Quản lý danh mục",
+    "instructor_management": "Quản lý giảng viên",
+    "user_management": "Quản lý người dùng",
+    "settings": "Cài đặt",
+    "messages": "Tin nhắn",
+    "logout": "Đăng xuất",
+    "logout_confirm": "Bạn có chắc chắn không?",
+    "logout_message": "Bạn sẽ được đăng xuất khỏi tài khoản."
+  },
   "about": "Về chúng tôi",
   "contact": "Liên hệ",
   "auth": {
@@ -98,9 +98,18 @@
       "desc2": "Bảng điều khiển cá nhân của bạn đang chờ!"
     },
     "features": [
-      { "title": "Theo dõi tiến trình", "desc": "Theo dõi hành trình học và thành tựu của bạn theo thời gian thực" },
-      { "title": "Truy cập mọi nơi", "desc": "Học trên mọi thiết bị, bất cứ lúc nào, ở bất kỳ đâu — hoàn toàn tương thích" },
-      { "title": "Giảng viên chuyên gia", "desc": "Học từ các chuyên gia trong ngành với kinh nghiệm thực tiễn" }
+      {
+        "title": "Theo dõi tiến trình",
+        "desc": "Theo dõi hành trình học và thành tựu của bạn theo thời gian thực"
+      },
+      {
+        "title": "Truy cập mọi nơi",
+        "desc": "Học trên mọi thiết bị, bất cứ lúc nào, ở bất kỳ đâu — hoàn toàn tương thích"
+      },
+      {
+        "title": "Giảng viên chuyên gia",
+        "desc": "Học từ các chuyên gia trong ngành với kinh nghiệm thực tiễn"
+      }
     ]
   },
   "navbar": {
@@ -120,6 +129,32 @@
     }
   },
   "pages": {
+    "learning_dashboard": {
+      "title": "Bảng điều khiển học tập",
+      "subtitle": "Theo dõi tiến độ học tập và duy trì thói quen học tập đều đặn.",
+      "streak_days": "Chuỗi {{count}} ngày",
+      "days": "Ngày",
+      "stats": {
+        "streak": "Chuỗi học tập",
+        "courses": "Khóa học",
+        "avg_progress": "Tiến độ trung bình",
+        "completed": "Đã hoàn thành"
+      },
+      "my_courses": "Khóa học của tôi",
+      "table": {
+        "course_info": "Thông tin khóa học",
+        "status": "Trạng thái",
+        "progress": "Tiến độ"
+      },
+      "status": {
+        "finished": "Đã hoàn thành",
+        "learning": "Đang học"
+      },
+      "completion": "Mức độ hoàn thành",
+      "empty": "Bạn chưa đăng ký khóa học nào.",
+      "explore_catalog": "Khám phá khóa học",
+      "course": "khóa học"
+    },
     "home": {
       "badge": "Bắt đầu hành trình chuyên nghiệp của bạn",
       "hero_part1": "Đánh thức tiềm năng của bạn bằng",
@@ -137,9 +172,18 @@
       "feature_heading": "Tại sao học với",
       "feature_highlight": "Lợi thế AI?",
       "features": [
-        { "title": "Kiến thức có căn cứ", "desc": "Các câu trả lời được lấy trực tiếp từ tài liệu khóa học, không dựa trên dữ liệu chung chung." },
-        { "title": "Hỗ trợ 24/7", "desc": "Không phải chờ giảng viên. Nhận giải thích ngay lập tức cho các mã phức tạp." },
-        { "title": "Tạo bài kiểm tra tức thì", "desc": "AI thiết kế các bài kiểm tra thực hành phù hợp với tiến trình của bạn." }
+        {
+          "title": "Kiến thức có căn cứ",
+          "desc": "Các câu trả lời được lấy trực tiếp từ tài liệu khóa học, không dựa trên dữ liệu chung chung."
+        },
+        {
+          "title": "Hỗ trợ 24/7",
+          "desc": "Không phải chờ giảng viên. Nhận giải thích ngay lập tức cho các mã phức tạp."
+        },
+        {
+          "title": "Tạo bài kiểm tra tức thì",
+          "desc": "AI thiết kế các bài kiểm tra thực hành phù hợp với tiến trình của bạn."
+        }
       ],
       "quick_links": {
         "search_catalog": "Tìm danh mục",
@@ -165,7 +209,37 @@
         "highlight": "Lộ trình kỹ năng CNTT",
         "view_all": "Xem tất cả khóa học",
         "description": "Các khóa học phổ biến nhất được cộng đồng hơn 10.000 người học lựa chọn."
+      },
+      "learning_path": {
+        "label": "Lộ trình học tập của bạn",
+        "heading_part1": "Tiến bộ theo",
+        "heading_highlight": "Tốc độ của riêng bạn",
+        "description": "Ba giai đoạn, một hướng đi: tiến về phía trước. Hãy chọn vị trí hiện tại của bạn và khám phá bước tiếp theo.",
+        "levels": {
+          "beginner": "Cơ bản",
+          "intermediate": "Trung cấp",
+          "advanced": "Nâng cao"
+        },
+        "course_count": "{{count}} khóa học",
+        "beginner": {
+          "title": "Nền tảng",
+          "tagline": "Không cần kinh nghiệm trước đó. Xây dựng kiến thức và thói quen nền tảng mà bạn sẽ sử dụng trong mọi lĩnh vực tiếp theo."
+        },
+        "intermediate": {
+          "title": "Ứng dụng",
+          "tagline": "Bạn đã nắm được cú pháp. Bây giờ hãy xây dựng các dự án thực tế và bắt đầu đưa ra những quyết định về kiến trúc."
+        },
+        "advanced": {
+          "title": "Chuyên sâu",
+          "tagline": "Nâng cao kiến thức về tối ưu hiệu suất, thiết kế hệ thống và xử lý những tình huống phức tạp tạo nên sự khác biệt của một chuyên gia."
+        }
       }
+    },
+    "enrolled_courses": {
+      "title": "Khóa học đã đăng ký",
+      "empty": "Bạn chưa đăng ký khóa học nào.",
+      "course_name": "Tên khóa học",
+      "progress": "Tiến độ"
     },
     "about": {
       "hero_heading": "Thúc đẩy đổi mới trong giáo dục trực tuyến cho một",
@@ -394,7 +468,6 @@
         "title": "Bảng điều khiển phân tích",
         "description": "Theo dõi hiệu suất nền tảng, doanh thu, lượt đăng ký và doanh số khóa học.",
         "analytics_overview": "Tổng quan phân tích",
-
         "kpi": {
           "revenue_30d": "Doanh thu (30 ngày qua)",
           "from_paid_orders": "Từ các đơn hàng đã thanh toán",
@@ -404,7 +477,6 @@
           "last_30_days": "Trong 30 ngày qua",
           "top_course": "Khóa học bán chạy nhất"
         },
-
         "charts": {
           "revenue": "Doanh thu",
           "enrollment_growth": "Tăng trưởng lượt đăng ký",
@@ -412,7 +484,6 @@
           "by_units_sold": "Theo số lượng đã bán",
           "instructor_earnings": "Thu nhập của giảng viên"
         },
-
         "time_range": {
           "all_time": "Tất cả thời gian",
           "last_7_days": "7 ngày qua",
@@ -420,22 +491,50 @@
           "last_90_days": "90 ngày qua",
           "this_year": "Năm nay"
         },
-
         "empty": {
           "no_revenue": "Không có dữ liệu doanh thu.",
           "no_enrollments": "Không có dữ liệu đăng ký.",
           "no_courses": "Không có dữ liệu bán khóa học.",
           "no_instructor_earnings": "Không có dữ liệu thu nhập của giảng viên."
         },
-
         "loading": "Đang tải dữ liệu phân tích...",
         "error": "Không thể tải dữ liệu phân tích",
         "missing_token": "Thiếu mã xác thực",
         "load_error": "Không thể tải dữ liệu phân tích"
       }
     },
+    "instructor_request": {
+      "badge": "Trở thành giảng viên",
+      "title": "Gửi đơn đăng ký giảng viên",
+      "description": "Vui lòng hoàn thành biểu mẫu bên dưới với thông tin cá nhân, bằng cấp và kinh nghiệm giảng dạy. Đội ngũ của chúng tôi sẽ xem xét hồ sơ và thông báo kết quả cho bạn.",
+      "first_name": "Tên",
+      "last_name": "Họ",
+      "email": "Địa chỉ Email",
+      "phone": "Số điện thoại",
+      "about": "Giới thiệu bản thân",
+      "about_placeholder": "Hãy giới thiệu bản thân và giải thích lý do bạn muốn trở thành giảng viên.",
+      "qualifications": "Bằng cấp / Chứng chỉ",
+      "qualifications_placeholder": "Ví dụ: Cử nhân Công nghệ thông tin, Chứng chỉ Google UX Design...",
+      "experience": "Kinh nghiệm giảng dạy / Chuyên môn",
+      "experience_placeholder": "Mô tả kinh nghiệm giảng dạy hoặc kinh nghiệm làm việc chuyên môn của bạn.",
+      "documents": "Tài liệu xác thực (CV, Chứng chỉ...)",
+      "upload_hint": "Nhấn để tải lên PDF, JPG hoặc PNG — tối đa {{size}}MB mỗi tệp",
+      "remove": "Xóa",
+      "submit": "Gửi đơn đăng ký",
+      "submitting": "Đang gửi...",
+      "cancel": "Hủy",
+      "success": "Đơn đăng ký giảng viên của bạn đã được gửi thành công.",
+      "errors": {
+        "login_required": "Vui lòng đăng nhập trước.",
+        "document_required": "Vui lòng đính kèm ít nhất một tài liệu xác thực (CV, chứng chỉ...).",
+        "file_too_large": "\"{{name}}\" vượt quá {{size}}MB.",
+        "invalid_file_type": "\"{{name}}\" không đúng định dạng. Vui lòng tải lên PDF, JPG hoặc PNG.",
+        "submit_failed": "Không thể gửi đơn đăng ký giảng viên.",
+        "submit_error": "Đã xảy ra lỗi khi gửi đơn đăng ký."
+      }
+    },
     "instructors": {
-      "hero_title": "Giảng viên đẳng cấp thế giới",
+      "hero_title": "Giảng viên trình độ cao",
       "hero_description": "Học hỏi từ những người giỏi nhất. Giảng viên của chúng tôi là chuyên gia ngành, nhà nghiên cứu và những người đam mê giáo dục cống hiến cho thành công của bạn.",
       "loading": "Đang tải giảng viên...",
       "none": "Chưa có giảng viên nào.",
@@ -453,8 +552,8 @@
       "no_courses": "Giảng viên này chưa đăng bất kỳ khóa học nào.",
       "bio_default": "Giảng viên tại EduSpace",
       "students": "Học viên",
-       "badge": "Giảng viên",
-      "message":"Nhắn tin",
+      "badge": "Giảng viên",
+      "message": "Nhắn tin",
       "course_count": "khóa học",
       "qualifications": "Chứng nhận & Chứng chỉ",
       "teaching_experience": "Kinh nghiệm",
@@ -535,5 +634,36 @@
     "next": "Tiếp theo",
     "save_changes": "Lưu thay đổi",
     "no_changes": "Không có thay đổi nào trên form"
+  },
+  "common": {
+    "viewAll": "Xem tất cả"
+  },
+  "instructor": {
+    "greeting": "Xin chào {{name}}",
+    "subtitle": "Hãy bắt đầu một điều gì đó mới",
+    "yourCourses": "Các khóa học của bạn",
+    "visualize": "Biểu đồ",
+    "notEnoughData": "Chưa đủ dữ liệu để hiển thị biểu đồ",
+    "statistics": "Thống kê",
+    "totalCourses": "Tổng số khóa học",
+    "totalStudents": "Tổng số học viên",
+    "totalIncome": "Tổng thu nhập",
+    "students": "{{count}} học viên",
+    "noCourses": "Bạn chưa tạo khóa học nào",
+    "createCourse": "Tạo khóa học"
+  },
+    "instructorCourses": {
+    "title": "Khóa học của tôi",
+    "addCourse": "Thêm khóa học",
+    "loading": "Đang tải khóa học..."
+  },
+   "myCourses": {
+    "title": "Khóa học của tôi",
+    "addCourse": "Thêm khóa học",
+    "loading": "Đang tải khóa học...",
+    "loginRequired": "Vui lòng đăng nhập để xem các khóa học của bạn",
+    "noCourses": "Bạn chưa tạo khóa học nào",
+    "createFirst": "Tạo khóa học đầu tiên"
   }
+
 }
