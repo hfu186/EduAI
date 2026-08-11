@@ -8,6 +8,12 @@
     "cancel": "Hủy",
     "close": "Đóng"
   },
+    "cart": {
+    "courses_in_cart": "khóa trong giỏ",
+    "empty": "Không có khóa nào trong giỏ hàng",
+    "title":"Giỏ hàng",
+    "remove":"Xóa"
+    },
   "nav": {
     "home": "Trang chủ",
     "courses": "Khóa học",
@@ -447,6 +453,11 @@
       "no_courses": "Giảng viên này chưa đăng bất kỳ khóa học nào.",
       "bio_default": "Giảng viên tại EduSpace",
       "students": "Học viên",
+       "badge": "Giảng viên",
+      "message":"Nhắn tin",
+      "course_count": "khóa học",
+      "qualifications": "Chứng nhận & Chứng chỉ",
+      "teaching_experience": "Kinh nghiệm",
       "courses": "Khóa học",
       "reviews": "Đánh giá",
       "rating": "Đánh giá",

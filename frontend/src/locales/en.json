@@ -8,6 +8,12 @@
     "cancel": "Cancel",
     "close": "Close"
   },
+  "cart": {
+    "courses_in_cart": "courses in Cart",
+    "empty": "Your cart is empty",
+    "title":"Cart",
+    "remove":"Remove"
+    },
   "nav": {
     "home": "Home",
     "courses": "Courses",
@@ -456,10 +462,15 @@
       "contact": "Contact",
       "courses_by": "Courses by {{name}}",
       "course_plural": "{{count}} course",
+      "badge": "Instructor",
+      "message":"Message",
+      "qualifications": "Qualifications",
+      "teaching_experience": "Teaching Experience",
       "course_plural_suffix": "s",
       "no_courses": "This instructor hasn't published any courses yet.",
       "bio_default": "Instructor at EduSpace",
       "students": "Students",
+      "course_count": "courses",
       "courses": "Courses",
       "reviews": "Reviews",
       "rating": "Rating",
