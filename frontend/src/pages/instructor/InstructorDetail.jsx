@@ -14,8 +14,10 @@ import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { toast } from "react-hot-toast"
 import { createOrGetChat } from "../../services/operations/chatAPI"
+import { useTranslation } from "react-i18next"
 
 const InstructorDetails = () => {
+    const { t } = useTranslation()
     const { instructorId } = useParams()
     const [instructor, setInstructor] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -42,7 +44,7 @@ const InstructorDetails = () => {
         if (chat?._id) {
             navigate(`/chat/${chat._id}`)
         } else {
-            toast.error("Could not open conversation")
+            toast.error(t("pages.instructor_detail.open_conversation_error"))
         }
     }
 
@@ -61,7 +63,7 @@ const InstructorDetails = () => {
             <div className="min-h-screen flex justify-center items-center bg-richblack-900 text-richblack-200">
                 <div className="flex flex-col items-center gap-3">
                     <div className="h-10 w-10 animate-spin rounded-full border-2 border-richblack-700 border-t-yellow-50" />
-                    <p className="text-sm text-richblack-400">Loading instructor profile...</p>
+                    <p className="text-sm text-richblack-400">{t("pages.instructor_detail.loading_profile")}</p>
                 </div>
             </div>
         )
@@ -70,7 +72,7 @@ const InstructorDetails = () => {
     if (!instructor) {
         return (
             <div className="min-h-screen flex justify-center items-center bg-richblack-900 text-richblack-200">
-                Instructor not found
+                {t("pages.instructor_detail.not_found")}
             </div>
         )
     }
@@ -86,10 +88,10 @@ const InstructorDetails = () => {
         instructor.additionalDetails?.experience
 
     const statItems = [
-        { icon: FaUserGraduate, value: instructor.stats?.totalStudents || 0, label: "Students" },
-        { icon: FaPlayCircle, value: instructor.stats?.totalCourses || 0, label: "Courses" },
-        { icon: MdOutlineRateReview, value: instructor.stats?.totalReviews || 0, label: "Reviews" },
-        { icon: FaStar, value: instructor.stats?.averageRating || 0, label: "Rating" },
+        { icon: FaUserGraduate, value: instructor.stats?.totalStudents || 0, label: t("pages.instructor_detail.students") },
+        { icon: FaPlayCircle, value: instructor.stats?.totalCourses || 0, label: t("pages.instructor_detail.courses") },
+        { icon: MdOutlineRateReview, value: instructor.stats?.totalReviews || 0, label: t("pages.instructor_detail.reviews") },
+        { icon: FaStar, value: instructor.stats?.averageRating || 0, label: t("pages.instructor_detail.rating") },
     ]
 
 
@@ -120,7 +122,7 @@ const InstructorDetails = () => {
                         <div className="flex-1 text-center md:text-left space-y-4 w-full">
                             <div className="space-y-2">
                                 <span className="inline-block rounded-full border border-yellow-50/30 bg-yellow-50/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-yellow-50">
-                                    Instructor
+                                    {t("pages.instructor_detail.badge")}
                                 </span>
                                 <div className="flex items-center justify-center md:justify-start gap-4">
                                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight capitalize">
@@ -132,14 +134,14 @@ const InstructorDetails = () => {
                                         className="flex items-center gap-2 text-sm text-richblack-400 hover:text-yellow-50 transition-colors disabled:opacity-50 disabled:cursor-wait"
                                     >
                                         <HiMiniChatBubbleLeftEllipsis className="text-lg" />
-                                        {chatLoading ? "Opening..." : "Message"}
+                                        {chatLoading ? t("pages.instructor_detail.opening_message") : t("pages.instructor_detail.message")}
                                     </button>
                                 </div>
                             </div>
 
                             <p className="text-richblack-300 text-base md:text-lg max-w-2xl leading-relaxed">
                                 {instructor.additionalDetails?.about ||
-                                    "Instructor at EduSpace"}
+                                    t("pages.instructor_detail.bio_default")}
                             </p>
 
                             {/* Stat pills */}
@@ -160,7 +162,7 @@ const InstructorDetails = () => {
 
                             <div className="flex items-center gap-2 text-richblack-400 text-sm justify-center md:justify-start pt-1">
                                 <BiWorld className="text-base" />
-                                <span>English &middot; Vietnamese</span>
+                                <span>{t("pages.instructor_detail.languages")}</span>
                             </div>
                         </div>
                     </div>
@@ -175,12 +177,10 @@ const InstructorDetails = () => {
                         <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
                             <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
                                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
-                                About me
+                                {t("pages.instructor_detail.about_me")}
                             </h3>
                             <p className="text-richblack-300 text-sm leading-relaxed">
-                                Hi, I'm {instructor.firstName}. I am passionate about teaching
-                                and helping students achieve their goals. My courses are
-                                designed to be practical and easy to understand.
+                                {t("pages.instructor_detail.about_description", { name: instructor.firstName })}
                             </p>
                         </div>
 
@@ -188,7 +188,7 @@ const InstructorDetails = () => {
                             <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
                                 <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
                                     <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
-                                    Qualifications & certifications
+                                    {t("pages.instructor_detail.qualifications")}
                                 </h3>
                                 <p className="whitespace-pre-line text-sm leading-relaxed text-richblack-300">
                                     {qualifications}
@@ -200,7 +200,7 @@ const InstructorDetails = () => {
                             <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
                                 <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
                                     <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
-                                    Teaching experience
+                                    {t("pages.instructor_detail.teaching_experience")}
                                 </h3>
                                 <p className="whitespace-pre-line text-sm leading-relaxed text-richblack-300">
                                     {experience}
@@ -211,7 +211,7 @@ const InstructorDetails = () => {
                         <div className="rounded-2xl border border-richblack-700 bg-richblack-800/80 p-5 transition-colors hover:border-richblack-600">
                             <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-richblack-25">
                                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
-                                Contact
+                                {t("pages.instructor_detail.contact")}
                             </h3>
                             <p className="break-all text-sm text-richblack-300">
                                 {instructor.email}
@@ -224,12 +224,11 @@ const InstructorDetails = () => {
                         <div className="mb-6 flex items-center justify-between">
                             <h2 className="flex items-center gap-3 text-xl md:text-2xl font-bold">
                                 <span className="h-6 w-1 rounded-full bg-yellow-50" />
-                                Courses by {instructor.firstName}
+                                {t("pages.instructor_detail.courses_by", { name: instructor.firstName })}
                             </h2>
                             {instructor.courses?.length > 0 && (
                                 <span className="rounded-full border border-richblack-700 bg-richblack-800 px-3 py-1 text-xs text-richblack-300">
-                                    {instructor.courses.length} course
-                                    {instructor.courses.length > 1 ? "s" : ""}
+                                    {t("pages.instructor_detail.course_count", { count: instructor.courses.length })}
                                 </span>
                             )}
                         </div>
@@ -238,7 +237,7 @@ const InstructorDetails = () => {
                             <div className="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-richblack-700 bg-richblack-800/40 py-16 text-center">
                                 <FaPlayCircle className="text-3xl text-richblack-600" />
                                 <p className="text-richblack-300">
-                                    This instructor hasn't published any courses yet.
+                                    {t("pages.instructor_detail.no_courses")}
                                 </p>
                             </div>
                         ) : (
@@ -287,7 +286,7 @@ const InstructorDetails = () => {
                                                     )}
                                                 </div>
                                                 <span className="rounded-full bg-richblack-900 px-2.5 py-1 text-sm font-semibold text-yellow-50">
-                                                    {course.price === 0 ? "Free" : formatVND(course.price)}
+                                                    {course.price === 0 ? t("pages.course_details.free") : formatVND(course.price)}
                                                 </span>
                                             </div>
                                         </div>

@@ -31,14 +31,14 @@ export const sidebarLinks = [
   },
   {
     id: 5,
-    name: "Enrolled Courses",
+    name: "enrolled_courses",
     path: "/dashboard/enrolled-courses",
     type: ACCOUNT_TYPE.STUDENT,
     icon: "VscMortarBoard",
   },
   {
     id: 6,
-    name: "Learning Stats",
+    name: "learning_stats",
     path: "/dashboard/learning-stats",
     type: ACCOUNT_TYPE.STUDENT,
     icon: "VscGraphLine",
@@ -46,7 +46,7 @@ export const sidebarLinks = [
 
   {
     id: 8,
-    name: "Instructor Request",
+    name: "instructor_request",
     path: "/dashboard/request-instructor",
     type: ACCOUNT_TYPE.STUDENT,
     icon: "VscAccount",

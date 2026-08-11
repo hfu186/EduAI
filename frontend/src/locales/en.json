@@ -105,7 +105,10 @@
   "my_courses": "My Courses",
   "wishlist": "Wishlist",
   "cart": "Cart",
+  "enrolled_courses": "Enrolled Courses",
   "add_course": "Add Course",
+  "learning_stats": "Learning Stats",
+  "instructor_request": "Instructor Request",
   "admin_panel": "Admin Panel",
   "my_courses_instructor": "My Courses",
   "analytics": "Analytics",
@@ -130,6 +133,10 @@
       "workspace_title": "EduAI workspace",
       "workspace_subtitle": "Personalized learning path",
       "live_tag": "Live",
+      "ai_tutor_title": "AI Tutor",
+      "ai_tutor_desc": "Answers grounded in your lessons and slides.",
+      "practice_title": "Practice",
+      "practice_desc": "Quizzes generated from real course material.",
       "feature_heading": "Why Learn with our",
       "feature_highlight": "AI Advantage?",
       "features": [
@@ -228,6 +235,7 @@
     "courses": {
       "breadcrumb_home": "Home",
       "breadcrumb_courses": "Courses",
+      "breadcrumb_catalog": "Catalog",
       "breadcrumb_search": "Search: \"{{query}}\"",
       "all_courses": "All Courses",
       "summary": "{{count}} courses available for you to explore and learn from.",
@@ -243,9 +251,29 @@
       "prev": "Prev",
       "next": "Next"
     },
+    "catalog": {
+      "no_courses_found": "No courses found",
+      "no_category_courses": "We could not find any courses for this category yet.",
+      "default_description": "Empower your future with professional courses.",
+      "get_started": "Courses to get you started",
+      "most_popular": "Most Popular",
+      "newest": "Newest",
+      "no_courses_in_category": "No courses found in this category.",
+      "check_out": "Check out",
+      "courses": "courses",
+      "top_selling_courses": "Top Selling Courses"
+    },
     "course_details": {
       "breadcrumb_home": "Home",
       "breadcrumb_courses": "Courses",
+      "course_name_fallback": "Course Name",
+      "description_fallback": "Description not available",
+      "admin_fallback": "Admin",
+      "review_count": "{{count}} reviews",
+      "student_count": "{{count}} students",
+      "language": "English",
+      "created_by": "Created by",
+      "last_updated": "Last updated: {{date}}",
       "what_youll_learn": "What you'll learn",
       "course_content": "Course Content",
       "sections": "{{count}} sections",
@@ -259,6 +287,11 @@
       "add_review": "Add a Review",
       "rate_course": "Rate this course:",
       "submit_review": "Submit Review",
+      "submitting_review": "Submitting...",
+      "review_placeholder": "Share your thoughts about this course...",
+      "review_added": "Review added successfully!",
+      "rating_value": "{{rating}}/5 Stars",
+      "anonymous_user": "Anonymous User",
       "no_reviews": "No reviews yet. Be the first to review!",
       "money_back": "30-Day Money-Back Guarantee",
       "course_includes": "This course includes:",
@@ -268,8 +301,22 @@
       "share": "Share",
       "purchased": "Purchased",
       "free": "Free",
+      "go_to_course": "Go to Course",
+      "add_to_cart": "Add to Cart",
       "enroll_now": "Enroll Now",
-      "buy_now": "Buy Now"
+      "buy_now": "Buy Now",
+      "login_required_title": "You are not logged in!",
+      "login_required_purchase": "Please login to purchase or access the course.",
+      "login_required_cart": "Please login to add to cart.",
+      "enrolled_success": "Enrolled successfully!",
+      "instructor_about_fallback": "Experienced instructor ready to help you learn.",
+      "errors": {
+        "select_rating": "Please select a star rating!",
+        "write_review": "Please write a review!",
+        "instructor_cannot_buy": "Instructors cannot buy courses.",
+        "enroll_failed": "Enroll failed",
+        "system_error": "System error"
+      }
     },
     "payment": {
       "checkout": "Checkout",
@@ -389,7 +436,9 @@
           "no_instructor_earnings": "No instructor earnings data available."
         },
         "loading": "Loading analytics...",
-        "error": "Unable to load analytics data"
+        "error": "Unable to load analytics data",
+        "missing_token": "Missing authentication token",
+        "load_error": "Unable to load analytics data"
       }
     },
     "instructors": {
@@ -425,7 +474,11 @@
       "no_results": "No results found",
       "no_conversations": "No conversations yet",
       "search_prompt": "Try searching with another keyword",
-      "start_messaging": "Start messaging your instructors or classmates"
+      "start_messaging": "Start messaging your instructors or classmates",
+      "just_now": "Just now",
+      "minutes": "minutes ago",
+      "try_search": "Try searching with another keyword",
+      "start_conversation": "Start a conversation"
     },
     "footer": {
       "quick_links": "Quick Links",
@@ -440,6 +493,8 @@
   },
   "profile": {
     "title": "My Profile",
+    "edit_profile": "Edit Profile",
+    "personal_info": "Personal Information",
     "dashboard": "Dashboard",
     "logout": "Logout",
     "about": {

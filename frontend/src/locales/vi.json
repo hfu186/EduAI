@@ -23,6 +23,9 @@
   "my_profile": "Hồ sơ của tôi",
   "my_courses": "Khóa học của tôi",
   "wishlist": "Danh sách yêu thích",
+  "learning_stats": "Thống kê",
+  "enrolled_courses": "Khóa học của tôi",
+  "instructor_request": "Trở thành giảng viên",
   "cart": "Giỏ hàng",
   "add_course": "Thêm khóa học",
   "admin_panel": "Trang quản trị",
@@ -121,6 +124,10 @@
       "workspace_title": "Không gian làm việc EduAI",
       "workspace_subtitle": "Lộ trình học cá nhân hóa",
       "live_tag": "Trực tiếp",
+      "ai_tutor_title": "Trợ lý AI",
+      "ai_tutor_desc": "Câu trả lời dựa trên bài học và slide của bạn.",
+      "practice_title": "Luyện tập",
+      "practice_desc": "Bài kiểm tra được tạo từ tài liệu thật của khóa học.",
       "feature_heading": "Tại sao học với",
       "feature_highlight": "Lợi thế AI?",
       "features": [
@@ -210,6 +217,7 @@
     "courses": {
       "breadcrumb_home": "Trang chủ",
       "breadcrumb_courses": "Khóa học",
+      "breadcrumb_catalog": "Danh mục",
       "breadcrumb_search": "Tìm kiếm: \"{{query}}\"",
       "all_courses": "Tất cả khóa học",
       "summary": "{{count}} khóa học sẵn sàng để bạn khám phá và học hỏi.",
@@ -225,9 +233,29 @@
       "prev": "Trước",
       "next": "Tiếp"
     },
+    "catalog": {
+      "no_courses_found": "Không tìm thấy khóa học",
+      "no_category_courses": "Chưa có khóa học nào cho danh mục này.",
+      "default_description": "Trao quyền cho tương lai của bạn với các khóa học chuyên nghiệp.",
+      "get_started": "Khóa học giúp bạn bắt đầu",
+      "most_popular": "Phổ biến nhất",
+      "newest": "Mới nhất",
+      "no_courses_in_category": "Không tìm thấy khóa học trong danh mục này.",
+      "check_out": "Khám phá",
+      "courses": "khóa học",
+      "top_selling_courses": "Khóa học bán chạy"
+    },
     "course_details": {
       "breadcrumb_home": "Trang chủ",
       "breadcrumb_courses": "Khóa học",
+      "course_name_fallback": "Tên khóa học",
+      "description_fallback": "Chưa có mô tả",
+      "admin_fallback": "Quản trị viên",
+      "review_count": "{{count}} đánh giá",
+      "student_count": "{{count}} học viên",
+      "language": "Tiếng Anh",
+      "created_by": "Tạo bởi",
+      "last_updated": "Cập nhật lần cuối: {{date}}",
       "what_youll_learn": "Bạn sẽ học được",
       "course_content": "Nội dung khóa học",
       "sections": "{{count}} phần",
@@ -241,6 +269,11 @@
       "add_review": "Thêm đánh giá",
       "rate_course": "Đánh giá khóa học:",
       "submit_review": "Gửi đánh giá",
+      "submitting_review": "Đang gửi...",
+      "review_placeholder": "Chia sẻ cảm nhận của bạn về khóa học này...",
+      "review_added": "Thêm đánh giá thành công!",
+      "rating_value": "{{rating}}/5 sao",
+      "anonymous_user": "Người dùng ẩn danh",
       "no_reviews": "Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!",
       "money_back": "Bảo đảm hoàn tiền 30 ngày",
       "course_includes": "Khóa học này bao gồm:",
@@ -250,8 +283,22 @@
       "share": "Chia sẻ",
       "purchased": "Đã mua",
       "free": "Miễn phí",
+      "go_to_course": "Vào khóa học",
+      "add_to_cart": "Thêm vào giỏ hàng",
       "enroll_now": "Ghi danh ngay",
-      "buy_now": "Mua ngay"
+      "buy_now": "Mua ngay",
+      "login_required_title": "Bạn chưa đăng nhập!",
+      "login_required_purchase": "Vui lòng đăng nhập để mua hoặc truy cập khóa học.",
+      "login_required_cart": "Vui lòng đăng nhập để thêm vào giỏ hàng.",
+      "enrolled_success": "Ghi danh thành công!",
+      "instructor_about_fallback": "Giảng viên giàu kinh nghiệm sẵn sàng hỗ trợ bạn học tập.",
+      "errors": {
+        "select_rating": "Vui lòng chọn số sao đánh giá!",
+        "write_review": "Vui lòng viết đánh giá!",
+        "instructor_cannot_buy": "Giảng viên không thể mua khóa học.",
+        "enroll_failed": "Ghi danh thất bại",
+        "system_error": "Lỗi hệ thống"
+      }
     },
     "payment": {
       "checkout": "Thanh toán",
@@ -376,7 +423,9 @@
         },
 
         "loading": "Đang tải dữ liệu phân tích...",
-        "error": "Không thể tải dữ liệu phân tích"
+        "error": "Không thể tải dữ liệu phân tích",
+        "missing_token": "Thiếu mã xác thực",
+        "load_error": "Không thể tải dữ liệu phân tích"
       }
     },
     "instructors": {
@@ -412,7 +461,11 @@
       "no_results": "Không tìm thấy kết quả",
       "no_conversations": "Chưa có cuộc trò chuyện nào",
       "search_prompt": "Thử tìm kiếm bằng từ khóa khác",
-      "start_messaging": "Bắt đầu nhắn tin cho giảng viên hoặc bạn cùng lớp"
+      "start_messaging": "Bắt đầu nhắn tin cho giảng viên hoặc bạn cùng lớp",
+      "just_now": "Vừa xong",
+      "minutes": "phút trước",
+      "try_search": "Thử tìm kiếm bằng từ khóa khác",
+      "start_conversation": "Bắt đầu cuộc trò chuyện"
     },
     "footer": {
       "quick_links": "Liên kết nhanh",

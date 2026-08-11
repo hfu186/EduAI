@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { getAllCourses } from "../../services/operations/courseDetailsAPI";
 import Course_Card from "../../components/core/Catalog/Course_Card";
 import GetAvgRating from "../../utils/avgRating"
@@ -16,6 +17,7 @@ import { BiReset } from "react-icons/bi";
 
 const AllCourses = () => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   const [courses, setCourses] = useState([]);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -84,15 +86,14 @@ const AllCourses = () => {
       <div className="box-content bg-richblack-800 px-4 py-10 shadow-inner">
         <div className="mx-auto flex max-w-maxContentTab flex-col justify-center gap-4 lg:max-w-maxContent">
           <nav className="flex items-center gap-2 text-sm text-richblack-300 mb-2">
-            <span>Home</span> / <span>Courses</span> /
+            <span>{t("pages.courses.breadcrumb_home")}</span> / <span>{t("pages.courses.breadcrumb_courses")}</span> /
             <span className="text-yellow-25 font-semibold">
-              {searchQuery ? `Search: "${searchQuery}"` : "All Courses"}
+              {searchQuery ? t("pages.courses.breadcrumb_search", { query: searchQuery }) : t("pages.courses.all_courses")}
             </span>
           </nav>
 
           <p className="max-w-[870px] text-lg text-richblack-200 leading-relaxed italic">
-            {filteredCourses.length} courses available for you to explore and
-            learn from.
+            {t("pages.courses.summary", { count: filteredCourses.length })}
           </p>
         </div>
       </div>
@@ -104,7 +105,7 @@ const AllCourses = () => {
           onClick={() => setShowMobileFilter(!showMobileFilter)}
         >
           <span className="flex items-center gap-2">
-            <FiFilter /> Filters{" "}
+            <FiFilter /> {t("pages.courses.filters")}{" "}
           </span>
           {showMobileFilter ? <FiChevronUp /> : <FiChevronDown />}
         </button>
@@ -115,12 +116,12 @@ const AllCourses = () => {
           <div className="sticky top-24 space-y-6">
             {/* Search Box */}
             <div className="bg-richblack-800 p-5 rounded-2xl border border-richblack-700 shadow-xl">
-              <h3 className="text-lg font-bold mb-4">Search</h3>
+              <h3 className="text-lg font-bold mb-4">{t("pages.courses.search")}</h3>
               <div className="flex items-center gap-3 bg-richblack-900 border border-richblack-600 rounded-xl px-4 py-3 focus-within:border-yellow-50 transition-all">
                 <FiSearch className="text-richblack-400" />
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder={t("pages.courses.search_placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="bg-transparent w-full outline-none text-sm"
@@ -138,33 +139,33 @@ const AllCourses = () => {
             <div className="bg-richblack-800 p-5 rounded-2xl border border-richblack-700 shadow-xl space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-richblack-700">
                 <h3 className="text-lg font-bold flex items-center gap-2">
-                  <FiFilter className="text-yellow-50" /> Filters
+                  <FiFilter className="text-yellow-50" /> {t("pages.courses.filters")}
                 </h3>
                 <button
                   onClick={resetFilters}
                   className="text-xs text-yellow-50 hover:underline flex items-center gap-1 font-medium"
                 >
-                  <BiReset /> Reset
+                  <BiReset /> {t("pages.courses.reset")}
                 </button>
               </div>
 
               {/* Sort */}
               <div>
                 <p className="text-sm text-richblack-300 font-semibold mb-3 uppercase">
-                  Sort by
+                  {t("pages.courses.sort_by")}
                 </p>
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => setSortBy("price-low")}
                     className={`flex items-center gap-2 p-3 rounded-xl border text-xs font-bold transition-all ${sortBy === "price-low" ? "bg-yellow-50/10 border-yellow-50 text-yellow-50" : "bg-richblack-900 border-richblack-700 text-richblack-300"}`}
                   >
-                    <FaSortAmountUp /> Lowest Price
+                    <FaSortAmountUp /> {t("pages.courses.lowest_price")}
                   </button>
                   <button
                     onClick={() => setSortBy("price-high")}
                     className={`flex items-center gap-2 p-3 rounded-xl border text-xs font-bold transition-all ${sortBy === "price-high" ? "bg-yellow-50/10 border-yellow-50 text-yellow-50" : "bg-richblack-900 border-richblack-700 text-richblack-300"}`}
                   >
-                    <FaSortAmountDown /> Highest Price
+                    <FaSortAmountDown /> {t("pages.courses.highest_price")}
                   </button>
                 </div>
               </div>
@@ -172,7 +173,7 @@ const AllCourses = () => {
               {/* Ratings */}
               <div>
                 <p className="text-sm text-richblack-300 font-semibold mb-3 uppercase">
-                  Ratings
+                  {t("pages.courses.ratings")}
                 </p>
                 <div className="space-y-2">
                   {[4, 3, 2, 1].map((star) => (
@@ -210,11 +211,7 @@ const AllCourses = () => {
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-center mb-6 bg-richblack-800 p-4 rounded-xl border border-richblack-700">
             <p className="text-richblack-200 text-sm">
-              Displaying{" "}
-              <span className="text-white font-bold">
-                {filteredCourses.length}
-              </span>{" "}
-              courses
+              {t("pages.courses.displaying", { count: filteredCourses.length })}
             </p>
           </div>
 
@@ -237,7 +234,7 @@ const AllCourses = () => {
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 className="px-4 py-2 bg-richblack-800 rounded"
               >
-                Prev
+                {t("pages.courses.prev")}
               </button>
 
               {[...Array(totalPages)].map((_, i) => (
@@ -259,7 +256,7 @@ const AllCourses = () => {
                 }
                 className="px-4 py-2 bg-richblack-800 rounded"
               >
-                Next
+                {t("pages.courses.next")}
               </button>
             </div>
           )}

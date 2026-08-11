@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Footer from "@/components/common/Layout/Footer";
 import Course_Card from "@/components/core/Catalog/Course_Card";
 import Course_Slider from "@/components/core/Catalog/Course_Slider";
@@ -10,6 +11,7 @@ import { FiAlertCircle, FiBookOpen } from "react-icons/fi";
 
 function Catalog() {
   const { catalogName } = useParams();
+  const { t } = useTranslation();
   const [active, setActive] = useState(1); // 1: Popular, 2: Newest
   const [catalogPageData, setCatalogPageData] = useState(null);
   const [categoryId, setCategoryId] = useState("");
@@ -76,9 +78,9 @@ function Catalog() {
     return (
       <div className="flex flex-col gap-4 min-h-[60vh] justify-center items-center bg-richblack-900 text-white">
         <FiAlertCircle size={50} className="text-pink-200" />
-        <h2 className="text-3xl font-bold">No Courses found</h2>
+        <h2 className="text-3xl font-bold">{t("pages.catalog.no_courses_found")}</h2>
         <p className="text-richblack-300">
-          We could not find any courses for this category yet.
+          {t("pages.catalog.no_category_courses")}
         </p>
       </div>
     );
@@ -90,7 +92,7 @@ function Catalog() {
       <div className=" bg-richblack-800 px-4 py-10 shadow-inner border-b border-richblack-700">
         <div className="mx-auto flex max-w-maxContentTab flex-col justify-center gap-4 md:max-w-maxContent">
           <nav className="flex items-center gap-2 text-sm text-richblack-300 mb-2">
-            <span>Home</span> / <span>Catalog</span> /
+            <span>{t("pages.courses.breadcrumb_home")}</span> / <span>{t("pages.courses.breadcrumb_catalog")}</span> /
             <span className="text-yellow-25 font-semibold">
               {catalogPageData?.selectedCategory?.name}
             </span>
@@ -100,7 +102,7 @@ function Catalog() {
           </h1>
           <p className="max-w-[870px] text-lg text-richblack-200 leading-relaxed italic">
             {catalogPageData?.selectedCategory?.description ||
-              "Empower your future with professional courses."}
+              t("pages.catalog.default_description")}
           </p>
         </div>
       </div>
@@ -109,7 +111,7 @@ function Catalog() {
       <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
         <div className="flex items-center gap-2 text-2xl font-bold text-richblack-5 mb-6">
           <FiBookOpen className="text-yellow-50" />
-          <span>Courses to get you started</span>
+          <span>{t("pages.catalog.get_started")}</span>
         </div>
 
         <div className="flex border-b border-richblack-700 text-sm font-medium">
@@ -121,7 +123,7 @@ function Catalog() {
             }`}
             onClick={() => setActive(1)}
           >
-            Most Popular
+            {t("pages.catalog.most_popular")}
           </button>
           <button
             className={`px-6 py-3 transition-all duration-200 text-lg ${
@@ -131,7 +133,7 @@ function Catalog() {
             }`}
             onClick={() => setActive(2)}
           >
-            Newest
+            {t("pages.catalog.newest")}
           </button>
         </div>
 
@@ -140,7 +142,7 @@ function Catalog() {
             <Course_Slider Courses={displayCourses} />
           ) : (
             <p className="py-10 text-center text-richblack-400 italic">
-              No courses found in this category.
+              {t("pages.catalog.no_courses_in_category")}
             </p>
           )}
         </div>
@@ -150,11 +152,11 @@ function Catalog() {
       {catalogPageData?.differentCategory?.courses?.length > 0 && (
         <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent border-t border-richblack-800">
           <h2 className="text-2xl font-bold text-richblack-5 mb-8">
-            Check out{" "}
+            {t("pages.catalog.check_out")}{" "}
             <span className="text-yellow-50">
               {catalogPageData?.differentCategory?.name}
             </span>{" "}
-            courses
+            {t("pages.catalog.courses")}
           </h2>
           <Course_Slider
             Courses={catalogPageData?.differentCategory?.courses}
@@ -166,7 +168,7 @@ function Catalog() {
       {catalogPageData?.mostSellingCourses?.length > 0 && (
         <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent border-t border-richblack-800">
           <h2 className="text-2xl font-bold text-richblack-5 mb-8 uppercase tracking-widest">
-            Top Selling Courses
+            {t("pages.catalog.top_selling_courses")}
           </h2>
           <div className="py-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">

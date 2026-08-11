@@ -7,10 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { sendOtp, signUp } from "../../services/operations/authAPI";
 import { useNavigate } from "react-router-dom";
 import Loading from '../../components/common/Loading';
+import { useTranslation } from "react-i18next";
 
 
 function VerifyEmail() {
   const [otp, setOtp] = useState("");
+  const { t } = useTranslation();
   const { signupData, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,10 +39,10 @@ function VerifyEmail() {
           :
           (
             <div className="max-w-[500px] p-4 lg:p-8">
-              <h1 className="text-richblack-5 font-semibold text-[1.875rem] leading-[2.375rem]">Verify Email</h1>
+              <h1 className="text-richblack-5 font-semibold text-[1.875rem] leading-[2.375rem]">{t("pages.verify_email.title")}</h1>
 
               <p className="text-[1.125rem] leading-[1.625rem] my-4 text-richblack-100">
-                A verification code has been sent to you. Enter the code below
+                {t("pages.verify_email.description")}
               </p>
 
               <form onSubmit={handleVerifyAndSignup}>
@@ -51,7 +53,7 @@ function VerifyEmail() {
                   renderInput={(props) => (
                     <input
                       {...props}
-                      placeholder="-"
+                      placeholder={t("pages.verify_email.otp_placeholder")}
                       style={{
                         boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
                       }}
@@ -68,14 +70,14 @@ function VerifyEmail() {
                   type="submit"
                   className="w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900"
                 >
-                  Verify Email
+                  {t("pages.verify_email.submit")}
                 </button>
               </form>
 
               <div className="mt-6 flex items-center justify-between">
                 <Link to="/signup">
                   <p className="text-richblack-5 flex items-center gap-x-2">
-                    <BiArrowBack /> Back To Signup
+                    <BiArrowBack /> {t("pages.verify_email.back_to_signup")}
                   </p>
                 </Link>
 
@@ -84,7 +86,7 @@ function VerifyEmail() {
                   onClick={() => dispatch(sendOtp(signupData.email, navigate), setOtp(''))}
                 >
                   <RxCountdownTimer />
-                  Resend it
+                  {t("pages.verify_email.resend")}
                 </button>
               </div>
             </div>

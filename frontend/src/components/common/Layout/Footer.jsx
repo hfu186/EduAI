@@ -1,31 +1,34 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ImGithub, ImLinkedin2 } from "react-icons/im";
 import EduSpaceLogo from "@/assets/Logo/Logo-Full-Light.png";
 const quickLinks = [
-  { title: "Home", link: "/" },
-  { title: "About", link: "/about" },
-  { title: "All Courses", link: "/all-courses" },
-  { title: "Instructors", link: "/profile/all-instructors" },
+  { titleKey: "nav.home", link: "/" },
+  { titleKey: "nav.about us", link: "/about" },
+  { titleKey: "pages.courses.all_courses", link: "/all-courses" },
+  { titleKey: "nav.instructors", link: "/profile/all-instructors" },
 ];
 
 const accountLinks = [
-  { title: "Login", link: "/login" },
-  { title: "Sign Up", link: "/signup" },
-  { title: "Dashboard", link: "/dashboard/my-profile" },
+  { titleKey: "auth.button.login", link: "/login" },
+  { titleKey: "auth.signup.title", link: "/signup" },
+  { titleKey: "profile.dashboard", link: "/dashboard/my-profile" },
 ];
 
 const supportLinks = [
-  { title: "Contact Us", link: "/contact" },
-  { title: "Forgot Password", link: "/forgot-password" },
+  { titleKey: "nav.contact us", link: "/contact" },
+  { titleKey: "auth.forgot_password", link: "/forgot-password" },
 ];
 
 const bottomLinks = [
-  { title: "Privacy Policy", link: "/privacy-policy" },
-  { title: "Terms", link: "/terms" },
-  { title: "Contact", link: "/contact" },
+  { titleKey: "pages.footer.privacy", link: "/privacy-policy" },
+  { titleKey: "pages.footer.terms", link: "/terms" },
+  { titleKey: "pages.footer.contact", link: "/contact" },
 ];
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-richblack-800 mx-7 rounded-3xl mb-10">
       <div className="w-11/12 max-w-maxContent text-richblack-400 mx-auto py-12">
@@ -33,38 +36,38 @@ const Footer = () => {
           <div className="space-y-3">
             <img src={EduSpaceLogo} alt="EduSpace" className="h-10 w-auto object-contain" />
             <p className="text-sm text-richblack-300">
-              EduSpace is an online learning platform for students, instructors, and administrators.
+              {t("pages.footer.description")}
             </p>
           </div>
 
           <div>
-            <h2 className="text-richblack-50 font-semibold text-base mb-3">Quick Links</h2>
+            <h2 className="text-richblack-50 font-semibold text-base mb-3">{t("pages.footer.quick_links")}</h2>
             <div className="space-y-2">
               {quickLinks.map((item) => (
-                <Link key={item.title} to={item.link} className="block text-sm hover:text-richblack-50 transition-all duration-200">
-                  {item.title}
+                <Link key={item.titleKey} to={item.link} className="block text-sm hover:text-richblack-50 transition-all duration-200">
+                  {t(item.titleKey)}
                 </Link>
               ))}
             </div>
           </div>
 
           <div>
-            <h2 className="text-richblack-50 font-semibold text-base mb-3">Account</h2>
+            <h2 className="text-richblack-50 font-semibold text-base mb-3">{t("pages.footer.account")}</h2>
             <div className="space-y-2">
               {accountLinks.map((item) => (
-                <Link key={item.title} to={item.link} className="block text-sm hover:text-richblack-50 transition-all duration-200">
-                  {item.title}
+                <Link key={item.titleKey} to={item.link} className="block text-sm hover:text-richblack-50 transition-all duration-200">
+                  {t(item.titleKey)}
                 </Link>
               ))}
             </div>
           </div>
 
           <div>
-            <h2 className="text-richblack-50 font-semibold text-base mb-3">Support</h2>
+            <h2 className="text-richblack-50 font-semibold text-base mb-3">{t("pages.footer.support")}</h2>
             <div className="space-y-2">
               {supportLinks.map((item) => (
-                <Link key={item.title} to={item.link} className="block text-sm hover:text-richblack-50 transition-all duration-200">
-                  {item.title}
+                <Link key={item.titleKey} to={item.link} className="block text-sm hover:text-richblack-50 transition-all duration-200">
+                  {t(item.titleKey)}
                 </Link>
               ))}
             </div>
@@ -74,9 +77,9 @@ const Footer = () => {
         <div className="pt-6 text-sm flex flex-col lg:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-center lg:text-left">
             {bottomLinks.map((item, index) => (
-              <div key={item.title} className="flex items-center">
+              <div key={item.titleKey} className="flex items-center">
                 <Link to={item.link} className="hover:text-richblack-50 transition-all duration-200">
-                  {item.title}
+                  {t(item.titleKey)}
                 </Link>
                 {index !== bottomLinks.length - 1 && (
                   <span className="mx-2 text-richblack-700">|</span>
@@ -86,7 +89,7 @@ const Footer = () => {
           </div>
 
           <div className="text-center">
-            <span>© 2026 EduSpace. Built for modern online learning.</span>
+            <span>{t("pages.footer.copyright")}</span>
           </div>
 
           <div className="flex items-center">

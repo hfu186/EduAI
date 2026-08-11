@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { BiInfoCircle, BiChevronRight } from "react-icons/bi"
 import { HiOutlineGlobeAlt, HiShare } from "react-icons/hi"
 import { useDispatch, useSelector } from "react-redux"
@@ -21,6 +22,7 @@ import { MdOutlineVerified, MdLanguage, MdAccessTime, MdRateReview } from 'react
 import { FaCheckCircle, FaUsers, FaPlayCircle, FaStar } from 'react-icons/fa'
 
 function CourseDetails() {
+    const { t } = useTranslation()
     const { user } = useSelector((state) => state.profile)
     const { token } = useSelector((state) => state.auth)
     const { loading } = useSelector((state) => state.profile)
@@ -90,11 +92,11 @@ function CourseDetails() {
 
     const handleReviewSubmit = async () => {
         if (userRating === 0) {
-            toast.error("Please select a star rating!");
+            toast.error(t("pages.course_details.errors.select_rating"));
             return;
         }
         if (userReview.trim() === "") {
-            toast.error("Please write a review!");
+            toast.error(t("pages.course_details.errors.write_review"));
             return;
         }
 
@@ -107,7 +109,7 @@ function CourseDetails() {
             }, token);
 
             if (res) {
-                toast.success("Review added successfully!")
+                toast.success(t("pages.course_details.review_added"))
                 setUserRating(0);
                 setUserReview("");
                 await fectchCourseDetailsData();
@@ -120,15 +122,15 @@ function CourseDetails() {
 
     const handleCourseAction = async () => {
         if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-            toast.error("Instructors cannot buy courses")
+            toast.error(t("pages.course_details.errors.instructor_cannot_buy"))
             return
         }
         if (!token) {
             setConfirmationModal({
-                text1: "You are not logged in!",
-                text2: "Please login to purchase or access the course.",
-                btn1Text: "Login",
-                btn2Text: "Cancel",
+                text1: t("pages.course_details.login_required_title"),
+                text2: t("pages.course_details.login_required_purchase"),
+                btn1Text: t("auth.button.login"),
+                btn2Text: t("common.cancel"),
                 btn1Handler: () => navigate("/login"),
                 btn2Handler: () => setConfirmationModal(null),
             })
@@ -142,13 +144,13 @@ function CourseDetails() {
             try {
                 const res = await enrollFreeCourse(courseId, token)
                 if (res?.success) {
-                    toast.success("Enrolled Successfully 🎉")
+                    toast.success(t("pages.course_details.enrolled_success"))
                     fectchCourseDetailsData();
                 } else {
-                    toast.error(res?.message || "Enroll failed")
+                    toast.error(res?.message || t("pages.course_details.errors.enroll_failed"))
                 }
             } catch (err) {
-                toast.error("System Error")
+                toast.error(t("pages.course_details.errors.system_error"))
             }
             return;
         }
@@ -162,7 +164,7 @@ function CourseDetails() {
 
     const handleAddToCart = () => {
         if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-            toast.error("Instructors cannot buy courses.")
+            toast.error(t("pages.course_details.errors.instructor_cannot_buy"))
             return
         }
         if (token) {
@@ -170,10 +172,10 @@ function CourseDetails() {
             return
         }
         setConfirmationModal({
-            text1: "You are not logged in!",
-            text2: "Please login to add to cart.",
-            btn1Text: "Login",
-            btn2Text: "Cancel",
+            text1: t("pages.course_details.login_required_title"),
+            text2: t("pages.course_details.login_required_cart"),
+            btn1Text: t("auth.button.login"),
+            btn2Text: t("common.cancel"),
             btn1Handler: () => navigate("/login"),
             btn2Handler: () => setConfirmationModal(null),
         })
@@ -195,8 +197,8 @@ function CourseDetails() {
     }
 
     const {
-        courseName = "Course Name",
-        courseDescription = "Description not available",
+        courseName = t("pages.course_details.course_name_fallback"),
+        courseDescription = t("pages.course_details.description_fallback"),
         thumbnail,
         price,
         whatYouWillLearn,
@@ -209,7 +211,7 @@ function CourseDetails() {
 
     const instructorName = (instructor?.firstName && instructor?.lastName)
         ? `${instructor.firstName} ${instructor.lastName}`
-        : (instructor?.email || "Admin");
+        : (instructor?.email || t("pages.course_details.admin_fallback"));
 
     const instructorImage = instructor?.image;
 
@@ -220,9 +222,9 @@ function CourseDetails() {
             <div className="bg-richblack-800 border-b border-richblack-700">
                 <div className="mx-auto max-w-7xl px-4 py-4">
                     <div className="flex items-center gap-2 text-richblack-300 text-sm mt-5">
-                        <Link to="/" className="hover:text-yellow-50 transition-colors">Home</Link>
+                        <Link to="/" className="hover:text-yellow-50 transition-colors">{t("pages.course_details.breadcrumb_home")}</Link>
                         <BiChevronRight />
-                        <Link to="/all-courses" className="hover:text-yellow-50 transition-colors">Courses</Link>
+                        <Link to="/all-courses" className="hover:text-yellow-50 transition-colors">{t("pages.course_details.breadcrumb_courses")}</Link>
                         <BiChevronRight />
                         <span className="text-yellow-50 font-medium truncate">{courseName}</span>
                     </div>
@@ -243,20 +245,20 @@ function CourseDetails() {
                                 <div className="flex items-center gap-2 bg-yellow-25/10 px-3 py-1.5 rounded-full border border-yellow-25/20 text-yellow-50">
                                     <span className="font-bold text-yellow-50">{avgReviewCount || 0}</span>
                                     <RatingStars Review_Count={avgReviewCount} Star_Size={14} />
-                                    <span className="text-richblack-200 ml-1">({ratingAndReviews?.length || 0} reviews)</span>
+                                    <span className="text-richblack-200 ml-1">({t("pages.course_details.review_count", { count: ratingAndReviews?.length || 0 })})</span>
                                 </div>
                                 <div className="flex items-center gap-2 bg-blue-100/10 px-3 py-1.5 rounded-full border border-blue-100/20 text-blue-100">
                                     <FaUsers />
-                                    <span>{studentsEnrolled?.length || 0} students</span>
+                                    <span>{t("pages.course_details.student_count", { count: studentsEnrolled?.length || 0 })}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-richblack-300">
                                     <MdLanguage className="text-lg" />
-                                    <span>English</span>
+                                    <span>{t("pages.course_details.language")}</span>
                                 </div>
                             </div>
                             <div className="flex flex-wrap items-center gap-6 pt-2 text-richblack-300 text-sm">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-richblack-400">Created by</span>
+                                    <span className="text-richblack-400">{t("pages.course_details.created_by")}</span>
                                     <Link to={`/instructor/${instructor?._id}`} className="text-richblack-5 hover:underline cursor-pointer font-medium hover:text-caribbeangreen-200 transition-colors flex items-center gap-1">
                                         {instructorName}
                                         <MdOutlineVerified className="text-caribbeangreen-200 text-xs" />
@@ -264,7 +266,7 @@ function CourseDetails() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <BiInfoCircle />
-                                    <span>Last updated: {formattedDate}</span>
+                                    <span>{t("pages.course_details.last_updated", { date: formattedDate })}</span>
                                 </div>
                             </div>
                         </div>
@@ -278,7 +280,7 @@ function CourseDetails() {
 
                     <div className="lg:col-span-8 space-y-10">
                         <div className="border border-richblack-700 bg-richblack-800/40 p-6 rounded-2xl shadow-xl backdrop-blur-md">
-                            <h2 className="text-2xl font-bold text-richblack-5 mb-3">What youll learn</h2>
+                            <h2 className="text-2xl font-bold text-richblack-5 mb-3">{t("pages.course_details.what_youll_learn")}</h2>
                             <div>
                                 {whatYouWillLearn && whatYouWillLearn.split('\n').map((line, index) => (
                                     <div key={index} className="flex items-start gap-3">
@@ -290,17 +292,17 @@ function CourseDetails() {
                         </div>
 
                         <div className="space-y-4">
-                            <h2 className="text-2xl font-bold text-richblack-5">Course Content</h2>
+                            <h2 className="text-2xl font-bold text-richblack-5">{t("pages.course_details.course_content")}</h2>
                             <div className="flex flex-wrap justify-between items-center text-sm text-richblack-300 mb-4 bg-richblack-800/30 p-4 rounded-xl border border-richblack-700/50">
                                 <div className="flex gap-4 flex-wrap">
-                                    <span>{courseContent?.length} sections</span>
+                                    <span>{t("pages.course_details.sections", { count: courseContent?.length })}</span>
                                     <span>•</span>
-                                    <span>{totalNoOfLectures} lectures</span>
+                                    <span>{t("pages.course_details.lectures", { count: totalNoOfLectures })}</span>
                                     <span>•</span>
-                                    <span>{courseData?.totalDuration} total length</span>
+                                    <span>{t("pages.course_details.total_length", { duration: courseData?.totalDuration })}</span>
                                 </div>
                                 <button onClick={() => setIsActive([])} className="text-caribbeangreen-200 font-medium hover:text-caribbeangreen-300 transition-colors">
-                                    Collapse all
+                                    {t("pages.course_details.collapse_all")}
                                 </button>
                             </div>
                             <div className="border border-richblack-700 rounded-xl overflow-hidden bg-richblack-900 shadow-md">
@@ -314,13 +316,13 @@ function CourseDetails() {
                                         />
                                     ))
                                 ) : (
-                                    <div className="p-6 text-center text-richblack-400">No content available.</div>
+                                    <div className="p-6 text-center text-richblack-400">{t("pages.course_details.no_content")}</div>
                                 )}
                             </div>
                         </div>
 
                         <div>
-                            <h2 className="text-2xl font-bold text-richblack-5 mb-6">Instructor</h2>
+                            <h2 className="text-2xl font-bold text-richblack-5 mb-6">{t("pages.course_details.instructor")}</h2>
                             <Link
                                 to={`/instructor/${instructor?._id}`}
                                 className="flex items-start gap-5 p-6 border border-richblack-700 rounded-2xl bg-richblack-800/30 hover:bg-richblack-800/50 transition-all cursor-pointer group"
@@ -336,9 +338,9 @@ function CourseDetails() {
                                         <MdOutlineVerified className="text-caribbeangreen-200" />
                                     </h3>
                                     <p className="text-richblack-300 text-sm mt-1 mb-3 font-medium line-clamp-2">
-                                        {instructor?.additionalDetails?.about || "Experienced Instructor ready to help you learn."}
+                                        {instructor?.additionalDetails?.about || t("pages.course_details.instructor_about_fallback")}
                                     </p>
-                                    <div className="text-sm text-richblack-400 group-hover:underline">View Profile</div>
+                                    <div className="text-sm text-richblack-400 group-hover:underline">{t("pages.course_details.view_profile")}</div>
                                 </div>
                             </Link>
                         </div>
@@ -346,15 +348,15 @@ function CourseDetails() {
                         <div className="pt-4" id="reviews">
                             <h2 className="text-2xl font-bold text-richblack-5 mb-6 flex items-center gap-2">
                                 <MdRateReview className="text-yellow-50" />
-                                Reviews
+                                {t("pages.course_details.reviews")}
                             </h2>
 
                             {isEnrolled && (
                                 <div className="bg-richblack-800/60 p-6 rounded-2xl border border-richblack-700 mb-8 shadow-lg backdrop-blur-sm">
-                                    <h3 className="text-lg font-bold text-richblack-5 mb-4">Add a Review</h3>
+                                    <h3 className="text-lg font-bold text-richblack-5 mb-4">{t("pages.course_details.add_review")}</h3>
                                     <div className="flex flex-col gap-4">
                                         <div className="flex gap-2 items-center mb-2">
-                                            <span className="text-richblack-300 text-sm">Rate this course:</span>
+                                            <span className="text-richblack-300 text-sm">{t("pages.course_details.rate_course")}</span>
                                             <div className="flex gap-1">
                                                 {[1, 2, 3, 4, 5].map((star) => (
                                                     <button
@@ -366,12 +368,12 @@ function CourseDetails() {
                                                     </button>
                                                 ))}
                                             </div>
-                                            <span className="text-yellow-50 font-bold ml-2 text-sm">{userRating > 0 ? `${userRating}/5 Stars` : ""}</span>
+                                            <span className="text-yellow-50 font-bold ml-2 text-sm">{userRating > 0 ? t("pages.course_details.rating_value", { rating: userRating }) : ""}</span>
                                         </div>
                                         <textarea
                                             value={userReview}
                                             onChange={(e) => setUserReview(e.target.value)}
-                                            placeholder="Share your thoughts about this course..."
+                                            placeholder={t("pages.course_details.review_placeholder")}
                                             className="w-full min-h-[120px] bg-richblack-900 text-richblack-5 p-4 rounded-xl border border-richblack-700 focus:outline-none focus:border-yellow-50 transition-all resize-none shadow-inner"
                                         />
                                         <div className="flex justify-end">
@@ -380,7 +382,7 @@ function CourseDetails() {
                                                 disabled={isReviewSubmitting}
                                                 className="bg-yellow-50 text-richblack-900 font-bold px-6 py-2 rounded-lg hover:bg-yellow-100 hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                                             >
-                                                {isReviewSubmitting ? "Submitting..." : "Submit Review"}
+                                                {isReviewSubmitting ? t("pages.course_details.submitting_review") : t("pages.course_details.submit_review")}
                                             </button>
                                         </div>
                                     </div>
@@ -390,7 +392,7 @@ function CourseDetails() {
                             <div className="grid gap-4">
                                 {ratingAndReviews && ratingAndReviews.length > 0 ? (
                                     ratingAndReviews.map((review, index) => {
-                                        const reviewerName = review?.user ? `${review.user.firstName} ${review.user.lastName}` : "Anonymous User";
+                                        const reviewerName = review?.user ? `${review.user.firstName} ${review.user.lastName}` : t("pages.course_details.anonymous_user");
                                         const reviewerImage = review?.user?.image
                                             ? review.user.image
                                             : `https://api.dicebear.com/5.x/initials/svg?seed=${reviewerName}`;
@@ -422,7 +424,7 @@ function CourseDetails() {
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-10 border border-dashed border-richblack-700 rounded-xl bg-richblack-800/20">
                                         <MdRateReview className="text-4xl text-richblack-600 mb-2" />
-                                        <p className="text-richblack-300">No reviews yet. Be the first to review!</p>
+                                        <p className="text-richblack-300">{t("pages.course_details.no_reviews")}</p>
                                     </div>
                                 )}
                             </div>
@@ -450,10 +452,10 @@ function CourseDetails() {
                                         {isEnrolled ? (
                                             <span className="inline-flex items-center gap-2 text-caribbeangreen-200 font-bold text-2xl">
                                                 <FaCheckCircle className="text-xl" />
-                                                Purchased
+                                                {t("pages.course_details.purchased")}
                                             </span>
                                         ) : price === 0 ? (
-                                            <span className="text-3xl font-bold text-caribbeangreen-200">Free</span>
+                                            <span className="text-3xl font-bold text-caribbeangreen-200">{t("pages.course_details.free")}</span>
                                         ) : (
                                             <span className="text-3xl font-bold text-richblack-5">
                                                 {formatVND(price)}
@@ -472,10 +474,10 @@ function CourseDetails() {
                                                 }`}
                                         >
                                             {isEnrolled
-                                                ? "Go to Course"
+                                                ? t("pages.course_details.go_to_course")
                                                 : price === 0
-                                                    ? "Enroll Now"
-                                                    : "Buy Now"}
+                                                    ? t("pages.course_details.enroll_now")
+                                                    : t("pages.course_details.buy_now")}
                                         </button>
 
                                         {!isEnrolled && price > 0 && (
@@ -483,7 +485,7 @@ function CourseDetails() {
                                                 onClick={handleAddToCart}
                                                 className="w-full py-3 px-6 rounded-xl border border-richblack-600 bg-richblack-700 font-bold text-richblack-5 transition-all hover:bg-richblack-600 hover:border-richblack-500 active:scale-[0.98]"
                                             >
-                                                Add to Cart
+                                                {t("pages.course_details.add_to_cart")}
                                             </button>
                                         )}
                                     </div>
@@ -491,25 +493,25 @@ function CourseDetails() {
                                     {/* Guarantee — only relevant before purchase */}
                                     {!isEnrolled && (
                                         <p className="text-center text-xs text-richblack-300">
-                                            30-Day Money-Back Guarantee
+                                            {t("pages.course_details.money_back")}
                                         </p>
                                     )}
 
                                     {/* Includes list */}
                                     <div className="space-y-3 pt-4 border-t border-richblack-700">
-                                        <p className="text-richblack-5 font-semibold text-sm">This course includes:</p>
+                                        <p className="text-richblack-5 font-semibold text-sm">{t("pages.course_details.course_includes")}</p>
                                         <div className="space-y-2.5 text-sm text-richblack-100">
                                             <div className="flex items-center gap-2.5">
                                                 <MdAccessTime className="text-caribbeangreen-200 text-base flex-shrink-0" />
-                                                <span>Lifetime access</span>
+                                                <span>{t("pages.course_details.lifetime_access")}</span>
                                             </div>
                                             <div className="flex items-center gap-2.5">
                                                 <HiOutlineGlobeAlt className="text-caribbeangreen-200 text-base flex-shrink-0" />
-                                                <span>Access on Mobile and TV</span>
+                                                <span>{t("pages.course_details.mobile_tv")}</span>
                                             </div>
                                             <div className="flex items-center gap-2.5">
                                                 <BiInfoCircle className="text-caribbeangreen-200 text-base flex-shrink-0" />
-                                                <span>Certificate of completion</span>
+                                                <span>{t("pages.course_details.certificate")}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -517,7 +519,7 @@ function CourseDetails() {
                                     {/* Share */}
                                     <div className="flex items-center justify-center gap-2 text-richblack-200 cursor-pointer hover:text-caribbeangreen-200 transition-colors pt-2">
                                         <HiShare />
-                                        <span className="text-sm font-medium">Share</span>
+                                        <span className="text-sm font-medium">{t("pages.course_details.share")}</span>
                                     </div>
                                 </div>
                             </div>
@@ -528,14 +530,14 @@ function CourseDetails() {
 
             <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-richblack-800 p-4 border-t border-richblack-700 z-50 flex items-center justify-between gap-4 shadow-[0_-5px_20px_rgba(0,0,0,0.3)]">
                 <div className="font-bold text-white text-lg">
-                    {isEnrolled ? "Purchased" : (formatVND(price) === formatVND(0) ? "Free" : `${formatVND(price)} VND`)}
+                    {isEnrolled ? t("pages.course_details.purchased") : (formatVND(price) === formatVND(0) ? t("pages.course_details.free") : `${formatVND(price)} VND`)}
                 </div>
                 <button
                     onClick={handleCourseAction}
                     className={`py-2 px-4 rounded-lg font-bold text-richblack-900 shadow-md 
                 ${isEnrolled ? "bg-caribbeangreen-200" : "bg-yellow-50"}`}
                 >
-                    {isEnrolled ? "Go to Course" : "Buy Now"}
+                    {isEnrolled ? t("pages.course_details.go_to_course") : t("pages.course_details.buy_now")}
                 </button>
             </div>
 

@@ -95,10 +95,10 @@ const Home = () => {
             <div className="rounded-lg border border-richblack-600 bg-richblack-800/80 p-3 shadow-[0_28px_90px_rgba(0,0,0,0.35)] backdrop-blur">
               <div className="flex items-center justify-between rounded-lg border border-richblack-700 bg-richblack-900 px-4 py-3">
                 <div>
-                  <p className="text-xs font-bold uppercase text-richblack-400">EduAI workspace</p>
-                  <p className="text-sm font-semibold text-richblack-50">Personalized learning path</p>
+                  <p className="text-xs font-bold uppercase text-richblack-400">{t("pages.home.workspace_title")}</p>
+                  <p className="text-sm font-semibold text-richblack-50">{t("pages.home.workspace_subtitle")}</p>
                 </div>
-                <div className="rounded-lg bg-yellow-50 px-3 py-1 text-xs font-bold text-richblack-900">Live</div>
+                <div className="rounded-lg bg-yellow-50 px-3 py-1 text-xs font-bold text-richblack-900">{t("pages.home.live_tag")}</div>
               </div>
               <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_0.8fr]">
                 <div className="rounded-sm bg-richblack-900 p-4">
@@ -111,16 +111,16 @@ const Home = () => {
 
                 <div className="flex flex-col gap-3">
                   <div className="rounded-lg border border-blue-100/20 bg-blue-200/10 p-4">
-                    <p className="text-xs font-semibold uppercase text-blue-100">AI Tutor</p>
+                    <p className="text-xs font-semibold uppercase text-blue-100">{t("pages.home.ai_tutor_title")}</p>
                     <p className="mt-2 text-sm text-richblack-100">
-                      Answers grounded in your lessons and slides.
+                      {t("pages.home.ai_tutor_desc")}
                     </p>
                   </div>
 
                   <div className="rounded-lg border border-yellow-50/20 bg-yellow-50/10 p-4">
-                    <p className="text-xs font-semibold uppercase text-yellow-50">Practice</p>
+                    <p className="text-xs font-semibold uppercase text-yellow-50">{t("pages.home.practice_title")}</p>
                     <p className="mt-2 text-sm text-richblack-100">
-                      Quizzes generated from real course material.
+                      {t("pages.home.practice_desc")}
                     </p>
                   </div>
 
