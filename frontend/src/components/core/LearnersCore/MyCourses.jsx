@@ -3,7 +3,6 @@ import { VscAdd } from "react-icons/vsc"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-
 import { fetchInstructorCourses } from "@/services/operations/courseDetailsAPI"
 import IconBtn from "../../common/IconBtn"
 import CoursesTable from "@/components/core/Instructor/InstructorCourses/CoursesTable"
@@ -11,22 +10,17 @@ import CoursesTable from "@/components/core/Instructor/InstructorCourses/Courses
 export default function MyCourses() {
   const { t } = useTranslation()
   const { token } = useSelector((state) => state.auth)
-
   const navigate = useNavigate()
-
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true)
-
       const result = await fetchInstructorCourses(token)
-
       if (result) {
         setCourses(result)
       }
-
       setLoading(false)
     }
 
@@ -37,12 +31,10 @@ export default function MyCourses() {
     }
   }, [token])
 
-  // Scroll to top
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -57,7 +49,6 @@ export default function MyCourses() {
     )
   }
 
-  // Not logged in
   if (!token) {
     return (
       <div className="min-h-screen flex justify-center items-center text-white">

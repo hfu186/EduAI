@@ -5,6 +5,7 @@
     "change_language": "Change language",
     "edit": "Edit",
     "save": "Save",
+    "viewAll": "View All",
     "cancel": "Cancel",
     "close": "Close"
   },
@@ -506,44 +507,35 @@
       }
     },
     "instructor_request": {
-  "badge": "Become an Instructor",
-  "title": "Submit Your Instructor Application",
-  "description": "Please complete the form below with your personal information, qualifications, and teaching experience. Our team will review your application and notify you of the result.",
-
-  "first_name": "First Name",
-  "last_name": "Last Name",
-  "email": "Email Address",
-  "phone": "Phone Number",
-
-  "about": "About Yourself",
-  "about_placeholder": "Introduce yourself and explain why you want to become an instructor.",
-
-  "qualifications": "Qualifications / Certifications",
-  "qualifications_placeholder": "Example: Bachelor's Degree in Computer Science, Google UX Design Certificate...",
-
-  "experience": "Teaching / Professional Experience",
-  "experience_placeholder": "Describe your teaching experience or relevant professional background.",
-
-  "documents": "Verification Documents (CV, Certificates...)",
-  "upload_hint": "Click to upload PDF, JPG or PNG — max {{size}}MB each",
-
-  "remove": "Remove",
-
-  "submit": "Submit Application",
-  "submitting": "Submitting...",
-  "cancel": "Cancel",
-
-  "success": "Your instructor request has been submitted successfully.",
-
-  "errors": {
-    "login_required": "Please log in first.",
-    "document_required": "Please attach at least one verification document (CV, certificate, etc.).",
-    "file_too_large": "\"{{name}}\" exceeds {{size}}MB.",
-    "invalid_file_type": "\"{{name}}\" has an invalid file format. Please upload PDF, JPG, or PNG.",
-    "submit_failed": "Failed to submit instructor request.",
-    "submit_error": "An error occurred while submitting your request."
-  }
-},
+      "badge": "Become an Instructor",
+      "title": "Submit Your Instructor Application",
+      "description": "Please complete the form below with your personal information, qualifications, and teaching experience. Our team will review your application and notify you of the result.",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "about": "About Yourself",
+      "about_placeholder": "Introduce yourself and explain why you want to become an instructor.",
+      "qualifications": "Qualifications / Certifications",
+      "qualifications_placeholder": "Example: Bachelor's Degree in Computer Science, Google UX Design Certificate...",
+      "experience": "Teaching / Professional Experience",
+      "experience_placeholder": "Describe your teaching experience or relevant professional background.",
+      "documents": "Verification Documents (CV, Certificates...)",
+      "upload_hint": "Click to upload PDF, JPG or PNG — max {{size}}MB each",
+      "remove": "Remove",
+      "submit": "Submit Application",
+      "submitting": "Submitting...",
+      "cancel": "Cancel",
+      "success": "Your instructor request has been submitted successfully.",
+      "errors": {
+        "login_required": "Please log in first.",
+        "document_required": "Please attach at least one verification document (CV, certificate, etc.).",
+        "file_too_large": "\"{{name}}\" exceeds {{size}}MB.",
+        "invalid_file_type": "\"{{name}}\" has an invalid file format. Please upload PDF, JPG, or PNG.",
+        "submit_failed": "Failed to submit instructor request.",
+        "submit_error": "An error occurred while submitting your request."
+      }
+    },
     "instructors": {
       "hero_title": "World-Class Instructors",
       "hero_description": "Learn from the best. Our instructors are industry experts, researchers, and passionate educators dedicated to your success.",
@@ -646,10 +638,6 @@
     "save_changes": "Save Changes",
     "no_changes": "No changes made to the form"
   },
-
-  "common": {
-    "viewAll": "View All"
-  },
   "instructor": {
     "greeting": "Hi {{name}}",
     "subtitle": "Let's start something new",
@@ -664,7 +652,7 @@
     "noCourses": "You have not created any courses yet",
     "createCourse": "Create a course"
   },
-   "instructorCourses": {
+  "instructorCourses": {
     "title": "My Courses",
     "addCourse": "Add Course",
     "loading": "Loading courses..."
@@ -678,4 +666,3 @@
     "createFirst": "Create Your First Course"
   }
 }
-

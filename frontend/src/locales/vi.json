@@ -6,7 +6,8 @@
     "edit": "Chỉnh sửa",
     "save": "Lưu",
     "cancel": "Hủy",
-    "close": "Đóng"
+    "close": "Đóng",
+    "viewAll": "Xem tất cả"
   },
   "cart": {
     "courses_in_cart": "khóa trong giỏ",
@@ -635,9 +636,6 @@
     "save_changes": "Lưu thay đổi",
     "no_changes": "Không có thay đổi nào trên form"
   },
-  "common": {
-    "viewAll": "Xem tất cả"
-  },
   "instructor": {
     "greeting": "Xin chào {{name}}",
     "subtitle": "Hãy bắt đầu một điều gì đó mới",
@@ -652,12 +650,12 @@
     "noCourses": "Bạn chưa tạo khóa học nào",
     "createCourse": "Tạo khóa học"
   },
-    "instructorCourses": {
+  "instructorCourses": {
     "title": "Khóa học của tôi",
     "addCourse": "Thêm khóa học",
     "loading": "Đang tải khóa học..."
   },
-   "myCourses": {
+  "myCourses": {
     "title": "Khóa học của tôi",
     "addCourse": "Thêm khóa học",
     "loading": "Đang tải khóa học...",
@@ -665,5 +663,4 @@
     "noCourses": "Bạn chưa tạo khóa học nào",
     "createFirst": "Tạo khóa học đầu tiên"
   }
-
 }

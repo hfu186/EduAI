@@ -38,9 +38,6 @@ export default function EnrolledCoursesStats() {
     }
   }, [token]);
 
-  // =========================
-  // STATISTICS
-  // =========================
   const totalCourses = enrolledCourses?.length || 0;
 
   const completedCourses =
@@ -63,9 +60,6 @@ export default function EnrolledCoursesStats() {
 
   return (
     <div className="pb-10 text-white">
-      {/* =========================
-          HEADER
-      ========================= */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="mt-10 text-center text-3xl font-bold text-richblack-5 sm:text-left">
@@ -76,8 +70,6 @@ export default function EnrolledCoursesStats() {
             {t("pages.learning_dashboard.subtitle")}
           </p>
         </div>
-
-        {/* Desktop Streak */}
         <div className="hidden items-center gap-2 rounded-full border border-orange-500/30 bg-orange-600/10 px-4 py-2 md:flex">
           <HiFire
             className="animate-pulse text-orange-500"
@@ -91,12 +83,7 @@ export default function EnrolledCoursesStats() {
           </span>
         </div>
       </div>
-
-      {/* =========================
-          STATISTICS CARDS
-      ========================= */}
       <div className="mb-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {/* ================= STREAK ================= */}
         <div className="flex flex-col justify-center gap-2 rounded-2xl border border-orange-500/30 bg-gradient-to-br from-orange-600/20 to-richblack-800 p-6 shadow-[0_0_20px_rgba(234,88,12,0.1)] transition-all duration-300 hover:border-orange-400/50 hover:shadow-[0_0_25px_rgba(234,88,12,0.15)]">
           <div className="flex items-center gap-3 text-orange-400">
             <HiFire
