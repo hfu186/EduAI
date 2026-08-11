@@ -30,7 +30,6 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
 
   if (!assignment) return null;
 
-  // Use the nested deadline value when available.
   const deadlineDate = assignment.assignment?.deadline || assignment.deadline || assignment.dueDate;
   
   const isDeadlinePassed = deadlineDate ? new Date() > new Date(deadlineDate) : false;

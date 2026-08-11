@@ -12,7 +12,7 @@ import { FiAlertCircle, FiBookOpen } from "react-icons/fi";
 function Catalog() {
   const { catalogName } = useParams();
   const { t } = useTranslation();
-  const [active, setActive] = useState(1); // 1: Popular, 2: Newest
+  const [active, setActive] = useState(1); 
   const [catalogPageData, setCatalogPageData] = useState(null);
   const [categoryId, setCategoryId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,7 +37,6 @@ function Catalog() {
   useEffect(() => {
     if (categoryId) {
       const getPageData = async () => {
-        setLoading(true);
         try {
           const res = await getCatalogPageData(categoryId);
           setCatalogPageData(res);
