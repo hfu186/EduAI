@@ -147,6 +147,11 @@ tag
   Required  : false
   Default   : 
 
+level
+  Type      : String
+  Required  : false
+  Default   : Beginner
+
 studentsEnrolled
   Type      : Array
   Required  : false
@@ -267,7 +272,7 @@ otp
 createdAt
   Type      : Date
   Required  : false
-  Default   : 1785293953613
+  Default   : 1787208144139
 
 _id
   Type      : ObjectId
@@ -298,6 +303,21 @@ about
 contactNumber
   Type      : Number
   Required  : false
+
+qualifications
+  Type      : String
+  Required  : false
+  Default   : 
+
+experience
+  Type      : String
+  Required  : false
+  Default   : 
+
+certificates
+  Type      : Array
+  Required  : false
+  Default   : 
 
 _id
   Type      : ObjectId

@@ -8,6 +8,7 @@
     "@payos/node": "^2.0.4",
     "@pinecone-database/pinecone": "^5.1.2",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.3",
     "cloudinary": "^2.8.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

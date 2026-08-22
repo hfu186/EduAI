@@ -92,7 +92,7 @@ const AllCourses = () => {
             </span>
           </nav>
 
-          <p className="max-w-[870px] text-lg text-richblack-200 leading-relaxed italic">
+          <p className="text-lg text-richblack-200 leading-relaxed italic">
             {t("pages.courses.summary", { count: filteredCourses.length })}
           </p>
         </div>

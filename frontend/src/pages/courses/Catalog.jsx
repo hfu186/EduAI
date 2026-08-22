@@ -99,7 +99,7 @@ function Catalog() {
           <h1 className=" font-extrabold text-richblack-5 sm:text-4xl">
             {catalogPageData?.selectedCategory?.name}
           </h1>
-          <p className="max-w-[870px] text-lg text-richblack-200 leading-relaxed italic">
+          <p className=" text-lg text-richblack-200 leading-relaxed italic">
             {catalogPageData?.selectedCategory?.description ||
               t("pages.catalog.default_description")}
           </p>

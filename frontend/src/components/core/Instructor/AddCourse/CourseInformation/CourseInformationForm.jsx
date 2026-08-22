@@ -20,23 +20,33 @@ export default function CourseInformationForm() {
     handleSubmit,
     setValue,
     getValues,
+    watch,
     formState: { errors },
   } = useForm()
 
   const dispatch = useDispatch()
   const { token } = useSelector((state) => state.auth)
   const { course, editCourse } = useSelector((state) => state.course)
+
   const [loading, setLoading] = useState(false)
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [courseCategories, setCourseCategories] = useState([])
+
+  const courseShortDesc = watch("courseShortDesc", "")
+  const courseBenefits = watch("courseBenefits", "")
 
   useEffect(() => {
     const getCategories = async () => {
-      setLoading(true)
-      const categories = await fetchCourseCategories()
-      if (categories.length > 0) {
-        setCourseCategories(categories)
+      setCategoriesLoading(true)
+      try {
+        const categories = await fetchCourseCategories()
+        if (categories.length > 0) setCourseCategories(categories)
+      } catch (err) {
+        console.error("Category fetch error:", err)
+        toast.error(t("courseForm.category_fetch_error", "Failed to load categories"))
+      } finally {
+        setCategoriesLoading(false)
       }
-      setLoading(false)
     }
 
     if (editCourse && course) {
@@ -52,11 +62,11 @@ export default function CourseInformationForm() {
     }
 
     getCategories()
-  }, [editCourse, course, setValue])
+  }, [editCourse, course, setValue, t])
 
   const isFormUpdated = () => {
     const currentValues = getValues()
-    if (
+    return (
       currentValues.courseTitle !== course.courseName ||
       currentValues.courseShortDesc !== course.courseDescription ||
       currentValues.coursePrice !== course.price ||
@@ -65,8 +75,6 @@ export default function CourseInformationForm() {
       currentValues.courseCategory !== (course.category?._id || course.category) ||
       currentValues.courseImage !== course.thumbnail
     )
-      return true
-    return false
   }
 
   const onSubmit = async (data) => {
@@ -94,10 +102,16 @@ export default function CourseInformationForm() {
         if (data.courseImage !== course.thumbnail) {
           formData.append("thumbnailImage", data.courseImage)
         }
-        const result = await editCourseDetails(formData, token)
-        if (result) {
-          dispatch(setStep(2))
-          dispatch(setCourse(result))
+
+        try {
+          const result = await editCourseDetails(formData, token)
+          if (result) {
+            dispatch(setStep(2))
+            dispatch(setCourse(result))
+          }
+        } catch (err) {
+          console.error("Edit course error:", err)
+          toast.error(t("courseForm.update_error", "Failed to update course"))
         }
       } else {
         toast.error(t("courseForm.no_changes"))
@@ -122,10 +136,15 @@ export default function CourseInformationForm() {
       formData.append("thumbnailImage", data.courseImage)
     }
 
-    const result = await addCourseDetails(formData, token)
-    if (result) {
-      dispatch(setStep(2))
-      dispatch(setCourse(result))
+    try {
+      const result = await addCourseDetails(formData, token)
+      if (result) {
+        dispatch(setStep(2))
+        dispatch(setCourse(result))
+      }
+    } catch (err) {
+      console.error("Add course error:", err)
+      toast.error(t("courseForm.create_error", "Failed to create course"))
     }
     setLoading(false)
   }
@@ -133,21 +152,23 @@ export default function CourseInformationForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-md border border-richblack-700 bg-richblack-800 p-6 space-y-8"
+      className="rounded-lg border border-richblack-700 bg-richblack-800 p-6 sm:p-8 space-y-8 shadow-sm"
     >
       {/* Title */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseTitle">
-          {t(`courseForm.title`)} <sup className="text-pink-200">*</sup>
+        <label className="text-sm font-medium text-richblack-5" htmlFor="courseTitle">
+          {t("courseForm.title")} <sup className="text-pink-200">*</sup>
         </label>
         <input
           id="courseTitle"
           placeholder={t("courseForm.title_placeholder")}
           {...register("courseTitle", { required: true })}
-          className="w-full form-style"
+          className={`form-style w-full transition-colors ${
+            errors.courseTitle ? "border-pink-300 focus:border-pink-300" : ""
+          }`}
         />
         {errors.courseTitle && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-1 flex items-center gap-1 text-xs tracking-wide text-pink-200">
             {t("courseForm.required")}
           </span>
         )}
@@ -155,17 +176,22 @@ export default function CourseInformationForm() {
 
       {/* Description */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseShortDesc">
-          {t("courseForm.description")} <sup className="text-pink-200">*</sup>
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-richblack-5" htmlFor="courseShortDesc">
+            {t("courseForm.description")} <sup className="text-pink-200">*</sup>
+          </label>
+          <span className="text-xs text-richblack-400">{courseShortDesc?.length || 0} chars</span>
+        </div>
         <textarea
           id="courseShortDesc"
           placeholder={t("courseForm.description_placeholder")}
           {...register("courseShortDesc", { required: true })}
-          className="form-style min-h-[120px] w-full"
+          className={`form-style min-h-[120px] w-full resize-y transition-colors ${
+            errors.courseShortDesc ? "border-pink-300 focus:border-pink-300" : ""
+          }`}
         />
         {errors.courseShortDesc && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-1 text-xs tracking-wide text-pink-200">
             {t("courseForm.required")}
           </span>
         )}
@@ -173,17 +199,27 @@ export default function CourseInformationForm() {
 
       {/* Price */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="coursePrice">
+        <label className="text-sm font-medium text-richblack-5" htmlFor="coursePrice">
           {t("courseForm.price")} <sup className="text-pink-200">*</sup>
         </label>
-        <input
-          id="coursePrice"
-          placeholder={t("courseForm.price_placeholder")}
-          {...register("coursePrice", { required: true, valueAsNumber: true })}
-          className="form-style w-full"
-        />
+        <div className="relative">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-richblack-400">
+            $
+          </span>
+          <input
+            id="coursePrice"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder={t("courseForm.price_placeholder")}
+            {...register("coursePrice", { required: true, valueAsNumber: true, min: 0 })}
+            className={`form-style w-full pl-7 transition-colors ${
+              errors.coursePrice ? "border-pink-300 focus:border-pink-300" : ""
+            }`}
+          />
+        </div>
         {errors.coursePrice && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-1 text-xs tracking-wide text-pink-200">
             {t("courseForm.required")}
           </span>
         )}
@@ -191,27 +227,32 @@ export default function CourseInformationForm() {
 
       {/* Category */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseCategory">
+        <label className="text-sm font-medium text-richblack-5" htmlFor="courseCategory">
           {t("courseForm.category")} <sup className="text-pink-200">*</sup>
         </label>
-        <select
-          {...register("courseCategory", { required: true })}
-          id="courseCategory"
-          className="form-style w-full"
-          defaultValue=""
-        >
-          <option value="" disabled>
-            {t("courseForm.category_placeholder")}
-          </option>
-          {!loading &&
-            courseCategories.map((category) => (
+        {categoriesLoading ? (
+          <div className="h-[46px] w-full animate-pulse rounded-lg bg-richblack-700" />
+        ) : (
+          <select
+            {...register("courseCategory", { required: true })}
+            id="courseCategory"
+            className={`form-style w-full transition-colors ${
+              errors.courseCategory ? "border-pink-300 focus:border-pink-300" : ""
+            }`}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              {t("courseForm.category_placeholder")}
+            </option>
+            {courseCategories.map((category) => (
               <option key={category._id} value={category._id}>
                 {category.name}
               </option>
             ))}
-        </select>
+          </select>
+        )}
         {errors.courseCategory && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-1 text-xs tracking-wide text-pink-200">
             {t("courseForm.required")}
           </span>
         )}
@@ -219,13 +260,15 @@ export default function CourseInformationForm() {
 
       {/* Level */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseLevel">
+        <label className="text-sm font-medium text-richblack-5" htmlFor="courseLevel">
           {t("courseForm.level")} <sup className="text-pink-200">*</sup>
         </label>
         <select
           {...register("courseLevel", { required: true })}
           id="courseLevel"
-          className="form-style w-full"
+          className={`form-style w-full transition-colors ${
+            errors.courseLevel ? "border-pink-300 focus:border-pink-300" : ""
+          }`}
           defaultValue=""
         >
           <option value="" disabled>
@@ -236,7 +279,7 @@ export default function CourseInformationForm() {
           <option value="Advanced">{t("courseForm.level_advanced")}</option>
         </select>
         {errors.courseLevel && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-1 text-xs tracking-wide text-pink-200">
             {t("courseForm.required")}
           </span>
         )}
@@ -254,37 +297,48 @@ export default function CourseInformationForm() {
 
       {/* Benefits */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
-          {t("courseForm.benefits")} <sup className="text-pink-200">*</sup>
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-richblack-5" htmlFor="courseBenefits">
+            {t("courseForm.benefits")} <sup className="text-pink-200">*</sup>
+          </label>
+          <span className="text-xs text-richblack-400">{courseBenefits?.length || 0} chars</span>
+        </div>
         <textarea
           id="courseBenefits"
           placeholder={t("courseForm.benefits_placeholder")}
           {...register("courseBenefits", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full"
+          className={`form-style min-h-[130px] w-full resize-y transition-colors ${
+            errors.courseBenefits ? "border-pink-300 focus:border-pink-300" : ""
+          }`}
         />
         {errors.courseBenefits && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
+          <span className="ml-1 text-xs tracking-wide text-pink-200">
             {t("courseForm.required")}
           </span>
         )}
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-end gap-x-2">
+      <div className="flex flex-col-reverse gap-3 border-t border-richblack-700 pt-6 sm:flex-row sm:justify-end sm:gap-x-3">
         {editCourse && (
           <button
             type="button"
             onClick={() => dispatch(setStep(2))}
             disabled={loading}
-            className="flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900"
+            className="flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900 transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {t("courseForm.continue_without_saving")}
           </button>
         )}
         <IconBtn
-          disabled={loading}
-          text={!editCourse ? t("courseForm.next") : t("courseForm.save_changes")}
+          disabled={loading || categoriesLoading}
+          text={
+            loading
+              ? t("courseForm.saving", "Saving...")
+              : !editCourse
+              ? t("courseForm.next")
+              : t("courseForm.save_changes")
+          }
         >
           <MdNavigateNext />
         </IconBtn>

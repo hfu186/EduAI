@@ -59,9 +59,9 @@ export default function Upload({
           } flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500 `}
       >
         {previewSource ? (
-          <div className="flex w-full flex-col items-center p-6">
+          <div className="flex flex-col items-center p-6">
            {isPDF(previewSource) ? (
-  <div className="w-full max-w-lg h-[350px] bg-richblack-900 rounded-md border border-richblack-600">
+  <div className="w-full bg-richblack-900 rounded-md border border-richblack-600">
     <iframe
       src={`${previewSource}#toolbar=0`}
       className="w-full h-full rounded-md"
