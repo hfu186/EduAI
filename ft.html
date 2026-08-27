@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSpace - Functional Decomposition Diagram</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+@page{
+    size:A4 landscape;
+    margin:0;
+}
+
+body{
+    margin:0;
+    background:#e5e7eb;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.page{
+    width:297mm;
+    height:210mm;
+    margin:auto;
+    padding:4mm;
+    background:#fff;
+    overflow:hidden;
+}
+
+.diagram{
+    position:relative;
+    width:100%;
+    height:100%;
+    border:1.5px solid #222;
+    background:#fff;
+}
+
+/* ================= ROOT ================= */
+
+.root{
+    position:absolute;
+    top:3.5mm;
+    left:40%;
+    transform:translateX(-50%);
+
+    width:55mm;
+    padding:5px 10px;
+
+    background:#8dd8ed;
+    border:1px solid #5dbbd4;
+
+    color:#111827;
+    text-align:center;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+.root-connector{
+    position:absolute;
+    top:11.5mm;
+    left:40%;
+    width:1px;
+    height:3mm;
+    background:#7b8a91;
+}
+
+.main-bus{
+    position:absolute;
+    top:14.5mm;
+    left:1.5%;
+    right:1.5%;
+    height:1px;
+    background:#7b8a91;
+}
+
+/* ================= GROUPS ================= */
+
+.groups{
+    position:absolute;
+
+    top:17mm;
+    left:1.5mm;
+    bottom:3mm;
+
+    display:grid;
+
+    grid-template-columns:repeat(9, 1fr);
+
+}
+
+.group{
+    position:relative;
+    text-align:center;
+}
+
+.group::before{
+    content:"";
+
+    position:absolute;
+    top:-2.5mm;
+    left:50%;
+
+    width:1px;
+    height:2.5mm;
+
+    background:#7b8a91;
+}
+
+/* ================= GROUP TITLE ================= */
+
+.group-title{
+    width:70px;
+    height:22px;
+
+    padding:1px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#dff4f9;
+    border:1px solid #8acbd9;
+
+    color:#111827;
+
+    font-size:7.8px;
+    font-weight:700;
+    line-height:1.05;
+}
+
+/* ================= FUNCTION TREE ================= */
+
+.function-list{
+    position:relative;
+
+    margin:0;
+    padding:1.8mm 0 0 2.7mm;
+
+    text-align:left;
+}
+
+.function-list::before{
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    bottom:0.5mm;
+    left:2.7mm;
+
+    width:1px;
+
+    background:#7b8a91;
+}
+
+.function{
+    position:relative;
+
+    width:70px;
+
+    min-height:18px;
+    height:auto;
+    
+    margin:0 0 1.5mm 1.8mm;
+    padding:2px 1px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f8fcfd;
+    border:1px solid #9ed3df;
+
+    color:#111827;
+
+    text-align:center;
+
+    font-size:6.5px;
+    font-weight:600;
+    line-height:1.2;
+}
+
+.function::before{
+    content:"";
+
+    position:absolute;
+
+    left:-1.8mm;
+    top:50%;
+
+    width:1.8mm;
+    height:1px;
+
+    background:#7b8a91;
+}
+
+/* ================= NESTED ================= */
+
+.nested{
+    position:relative;
+
+    width:96%;
+
+    margin:-0.5mm 0 1.5mm 0.5mm;
+    padding-left:2.2mm;
+}
+
+.nested::before{
+    content:"";
+
+    position:absolute;
+
+    left:2.2mm;
+    top:0;
+    bottom:0;
+
+    width:1px;
+
+    background:#8d9ba1;
+}
+
+.nested .item{
+    position:relative;
+
+    margin:0 0 1mm 2.2mm;
+    padding:2px 1px;
+
+    background:#fff;
+    border:1px solid #c5e3ea;
+
+    color:#334155;
+
+    text-align:center;
+    width:50px;
+    font-size:5.6px;
+    line-height:1.02;
+}
+
+.nested .item::before{
+    content:"";
+
+    position:absolute;
+
+    left:-2.2mm;
+    top:50%;
+
+    width:2.2mm;
+    height:1px;
+
+    background:#8d9ba1;
+}
+
+/* ================= DENSE GROUPS ================= */
+
+.group:nth-child(n+5) .function{
+    min-height:17px;
+    margin-bottom:1.2mm;
+}
+
+.group:nth-child(n+5) .nested{
+    margin-bottom:1.2mm;
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+    position:absolute;
+
+    bottom:0.8mm;
+    left:0;
+    right:0;
+
+    text-align:center;
+
+    font-size:4.5px;
+
+    color:#64748b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+<div class="diagram">
+
+<!-- ROOT -->
+<div class="root">LMS SYSTEM</div>
+<div class="root-connector"></div>
+<div class="main-bus"></div>
+
+<div class="groups">
+
+<!-- 1 ACCOUNT MANAGEMENT -->
+<section class="group">
+    <div class="group-title">
+        Account<br>Management
+    </div>
+
+    <div class="function-list">
+        <div class="function">Sign Up</div>
+        <div class="function">Login</div>
+        <div class="function">Logout</div>
+        <div class="function">Manage Personal Profile        </div>
+
+
+        <div class="nested">
+            <div class="item">Update Profile</div>
+            <div class="item">Change Password</div>
+            <div class="item">Delete Account</div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- 2 COURSE DISCOVERY -->
+<section class="group">
+    <div class="group-title">
+        Course<br>Discovery
+    </div>
+
+    <div class="function-list">
+        <div class="function">Search Courses</div>
+        <div class="function">Filter Courses</div>
+        <div class="function">View Course Details</div>
+        <div class="function">View Instructor Profile</div>
+    </div>
+</section>
+
+
+<!-- 3 SHOPPING CART -->
+<section class="group">
+    <div class="group-title">
+        Shopping<br>Cart
+    </div>
+
+    <div class="function-list">
+        <div class="function">Add Course to Cart</div>
+        <div class="function">View Cart</div>
+        <div class="function">Update Cart</div>
+        <div class="function">Remove Course from Cart</div>
+    </div>
+</section>
+
+
+<!-- 4 PAYMENT -->
+<section class="group">
+    <div class="group-title">
+        Payment
+    </div>
+
+    <div class="function-list">
+        <div class="function">Make Course Payment</div>
+        <div class="function">Verify Payment</div>
+        <div class="function">View Payment Status</div>
+    </div>
+</section>
+
+
+<!-- 5 LEARNING MANAGEMENT -->
+<section class="group">
+    <div class="group-title">
+        Learning<br>Management
+    </div>
+
+    <div class="function-list">
+        <div class="function">Learn Course Content</div>
+        <div class="function">Take Quiz</div>
+        <div class="function">Submit Assignment</div>
+        <div class="function">Track Learning Progress</div>
+        <div class="function">Review &amp; Rate Course</div>
+        <div class="function">Receive Certificate</div>
+    </div>
+</section>
+
+
+<!-- 6 COMMUNICATION -->
+<section class="group">
+    <div class="group-title">
+        Communication
+    </div>
+
+    <div class="function-list">
+
+        <div class="function">
+            Student & Instructor Chat
+        </div>
+
+        <div class="nested">
+            <div class="item">Send Message</div>
+            <div class="item">Receive Message</div>
+            <div class="item">View Chat History</div>
+            <div class="item">Delete Chat</div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- 7 AI LEARNING SUPPORT -->
+<section class="group">
+    <div class="group-title">
+        AI Learning<br>Support
+    </div>
+
+    <div class="function-list">
+
+        <div class="function">AI Chatbot</div>
+
+        <div class="nested">
+            <div class="item">Ask Question</div>
+            <div class="item">Retrieve Course Content</div>
+            <div class="item">Generate Answer</div>
+            <div class="item">View Conversation History</div>
+        </div>
+
+        <div class="function">AI Quiz Generator</div>
+
+        <div class="nested">
+            <div class="item">Select Learning Content</div>
+            <div class="item">Generate Quiz</div>
+            <div class="item">Take Generated Quiz</div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- 8 COURSE MANAGEMENT -->
+<section class="group">
+    <div class="group-title">
+        Course<br>Management
+    </div>
+
+    <div class="function-list">
+
+        <div class="function">Create Course</div>
+
+        <div class="nested">
+            <div class="item">Course Information</div>
+            <div class="item">Section</div>
+            <div class="item"> Subsection</div>
+            <div class="item"> PDF</div>
+            <div class="item">Quiz</div>
+            <div class="item">Assignment</div>
+        </div>
+
+        <div class="function">Edit Course</div>
+        <div class="function">Grade Assignments</div>
+        <div class="function">View Course Statistics</div>
+
+    </div>
+</section>
+
+
+<!-- 9 SYSTEM ADMINISTRATION -->
+<section class="group">
+    <div class="group-title">
+        System<br>Administration
+    </div>
+
+    <div class="function-list">
+
+        <div class="function">
+            Admin Dashboard &amp; Statistics
+        </div>
+
+        <div class="function">
+            Manage Users
+        </div>
+
+        <div class="nested">
+            <div class="item">View Users</div>
+            <div class="item">Suspend / Reactivate Users</div>
+            <div class="item">Delete Users</div>
+        </div>
+
+        <div class="function">
+            Manage Instructors
+        </div>
+
+        <div class="nested">
+            <div class="item">View Instructor Profile</div>
+            <div class="item">Approve Instructor</div>
+            <div class="item">Reject Instructor</div>
+        </div>
+
+        <div class="function">
+            Manage Categories
+        </div>
+
+        <div class="nested">
+            <div class="item">Add Category</div>
+            <div class="item">Edit Category</div>
+            <div class="item">Delete Category</div>
+        </div>
+
+        <div class="function">
+            Course Approval
+        </div>
+
+        <div class="nested">
+            <div class="item">View Pending Courses</div>
+            <div class="item">View Course Details</div>
+            <div class="item">Review Course Content</div>
+            <div class="item">Approve Course</div>
+            <div class="item">Reject Course</div>
+        </div>
+
+    </div>
+</section>
+
+</div>
+
+<div class="footer">
+    EduSpace – Functional Decomposition Diagram
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

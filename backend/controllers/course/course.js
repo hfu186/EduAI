@@ -42,7 +42,7 @@ export const createCourse = async (req, res) => {
       whatYouWillLearn,
       price,
       category,
-      status = "Draft",
+      status,
       tag,
       level,
       instructions,
@@ -307,7 +307,6 @@ export const deleteCourse = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Course deleted successfully",
     })
   } catch (error) {
     return res.status(500).json({
@@ -406,7 +405,7 @@ export const publishCourse = async (req, res) => {
       })
     }
 
-    course.status = "Pending Review"
+    course.status = "Pending"
     await course.save()
 
     return res.status(200).json({

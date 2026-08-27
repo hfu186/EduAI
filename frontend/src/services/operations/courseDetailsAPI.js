@@ -19,6 +19,7 @@ const {
   PUBLISH_COURSE_API,
   UPDATE_COURSE_PROGRESS,
   GET_SECTION_DETAILS,
+  
 } = courseEndpoints
 
 const { CREATE_RATING_API } = ratingsEndpoints
@@ -406,7 +407,7 @@ export const deleteCourse = async (data, token) => {
   try {
     const response = await apiConnector(
       "DELETE",
-      `${DELETE_COURSE_API}/${data.courseId}`,
+      `${DELETE_COURSE_API}/${data.courseId}`,null,
       {
         Authorization: `Bearer ${token}`,
       }
@@ -415,7 +416,6 @@ export const deleteCourse = async (data, token) => {
     if (!response?.data?.success) {
       throw new Error(response.data.message);
     }
-    toast.success("Course deleted successfully");
     result = true;
   } catch (error) {
     console.log("DELETE COURSE API ERROR:", error);

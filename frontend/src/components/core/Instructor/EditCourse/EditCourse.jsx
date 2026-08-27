@@ -48,12 +48,12 @@ export default function EditCourse() {
   }
 
   return (
-    <div className="mx-auto w-11/12 max-w-[800px] py-10">
+    <div className="mx-auto w-full  py-4">
        <h1 className="text-3xl p-4 text-richblack-5  font-bold text-center lg:text-left ">
           Edit Course
         </h1>
     
-      <div className="flex-1 max-w-[120vh] gap-30px">
+      <div className="flex-1 max-w-[120vh]">
         {course ? (
           <RenderSteps />
         ) : (

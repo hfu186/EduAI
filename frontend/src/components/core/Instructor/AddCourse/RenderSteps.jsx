@@ -24,7 +24,7 @@ export default function RenderSteps() {
     },
     {
       id: 3,
-      title: "Publish",
+      title: "Submit Course",
     },
   ]
 
@@ -58,9 +58,9 @@ export default function RenderSteps() {
         ))}
       </div>
 
-      <div className="relative mb-16 flex w-full select-none justify-between">
+      <div className="relative mb-4 flex w-full select-none justify-between">
         {steps.map((item) => (
-          <div className={`sm:min-w-[130px] flex flex-col items-center gap-y-2 ${editCourse && 'sm:min-w-[270px]'}`} key={item.id}>
+          <div className={`sm:min-w-[150px] flex flex-col items-center gap-y-2 ${editCourse && 'sm:min-w-[250px]'}`} key={item.id}>
             <p className={`text-sm ${step >= item.id ? "text-richblack-5" : "text-richblack-500"}`}>
               {item.title}
             </p>

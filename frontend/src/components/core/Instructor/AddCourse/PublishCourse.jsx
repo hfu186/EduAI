@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom"
 import { resetCourseState, setStep } from "../../../../slices/courseSlice"
 import { apiConnector } from "../../../../services/apiConnector"
 import { toast } from "react-hot-toast"
+import { MdOutlineSendAndArchive, MdArrowBack } from "react-icons/md"
 
-export default function PublishCourse() {
-  const { register, handleSubmit, setValue, getValues, watch } = useForm()
+export default function SubmitForReview() {
+  const { register, handleSubmit, setValue, watch } = useForm()
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -15,14 +16,14 @@ export default function PublishCourse() {
   const { token } = useSelector((state) => state.auth)
 
   const [loading, setLoading] = useState(false)
-
-  const isPublic = watch("public")
+  const isSubmitForReview = watch("readyForReview")
 
   useEffect(() => {
-    if (course?.status === "Published") {
-      setValue("public", true)
+    // Nếu trạng thái khóa học đã ở dạng Pending hoặc Published
+    if (course?.status === "Pending" || course?.status === "Published") {
+      setValue("readyForReview", true)
     } else {
-      setValue("public", false)
+      setValue("readyForReview", false)
     }
   }, [course, setValue])
 
@@ -33,10 +34,10 @@ export default function PublishCourse() {
     navigate("/dashboard/my-courses")
   }
 
-  const handleCoursePublish = async () => {
+  const handleCourseSubmit = async () => {
     const formData = new FormData()
     formData.append("courseId", course._id)
-    formData.append("status", isPublic ? "Published" : "Draft")
+    formData.append("status", isSubmitForReview ? "Pending" : "Draft")
 
     setLoading(true)
     try {
@@ -44,7 +45,11 @@ export default function PublishCourse() {
         Authorization: `Bearer ${token}`,
       })
 
-      toast.success("Course status updated successfully")
+      toast.success(
+        isSubmitForReview
+          ? "Course submitted for admin review successfully"
+          : "Saved as Draft"
+      )
       goToMyCourses()
     } catch (error) {
       console.error(error)
@@ -54,99 +59,96 @@ export default function PublishCourse() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto rounded-xl border border-richblack-700 bg-richblack-800 p-8 shadow-lg">
-
+    <div className="max-w-2xl mx-auto rounded-xl border border-richblack-700 bg-richblack-800 p-6 shadow-lg">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-richblack-5">
-          Publish Settings
+      <div className="mb-6 border-b border-richblack-700 pb-4">
+        <h2 className="text-xl font-bold text-richblack-5">
+          Submit Course for Review
         </h2>
-        <p className="text-sm text-richblack-300 mt-1">
-          Control course visibility before making it live.
+        <p className="text-xs text-richblack-300 mt-1">
+          Your course will be sent to administrators for approval before going live.
         </p>
       </div>
 
       {/* Status Card */}
-      <div className="rounded-lg bg-richblack-900 border border-richblack-700 p-6 mb-8">
-
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-richblack-100 font-medium">
-            Course Visibility
+      <div className="rounded-lg bg-richblack-900 border border-richblack-700 p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-sm text-richblack-100 font-medium">
+            Submission Status
           </p>
 
           <span
-            className={`px-3 py-1 text-xs font-semibold rounded-full ${
-              isPublic
-                ? "bg-caribbeangreen-700 text-caribbeangreen-50"
-                : "bg-richblack-600 text-richblack-200"
+            className={`px-3 py-0.5 text-[11px] font-semibold rounded-full ${
+              isSubmitForReview
+                ? "bg-yellow-500/20 text-yellow-100 border border-yellow-500/30"
+                : "bg-richblack-700 text-richblack-300"
             }`}
           >
-            {isPublic ? "Published" : "Draft"}
+            {isSubmitForReview ? "Ready for Review" : "Draft"}
           </span>
         </div>
 
         {/* Toggle Switch */}
-        <label className="flex items-center justify-between cursor-pointer">
-          <span className="text-sm text-richblack-300">
-            Make this course public
+        <label className="flex items-center justify-between cursor-pointer py-2">
+          <span className="text-xs text-richblack-200">
+            I confirm this course is complete and ready for Admin verification.
           </span>
 
-          <div className="relative">
+          <div className="relative ml-4 shrink-0">
             <input
               type="checkbox"
               className="sr-only"
-              {...register("public")}
+              {...register("readyForReview")}
             />
             <div
-              className={`w-12 h-6 rounded-full transition-all duration-300 ${
-                isPublic ? "bg-yellow-50" : "bg-richblack-600"
+              className={`w-10 h-5 rounded-full transition-all duration-300 ${
+                isSubmitForReview ? "bg-yellow-50" : "bg-richblack-600"
               }`}
             ></div>
             <div
-              className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-richblack-900 transition-all duration-300 ${
-                isPublic ? "translate-x-6" : ""
+              className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-richblack-900 transition-all duration-300 ${
+                isSubmitForReview ? "translate-x-5" : ""
               }`}
             ></div>
           </div>
         </label>
 
-        <p className="text-xs text-richblack-400 mt-3">
-          Draft courses are not visible to students.
+        <p className="text-[11px] text-richblack-400 mt-2">
+          Note: You wont be able to make changes while the course is under review.
         </p>
       </div>
 
-      {/* Buttons */}
-      <form onSubmit={handleSubmit(handleCoursePublish)}>
-        <div className="flex justify-between">
-
+      {/* Action Buttons */}
+      <form onSubmit={handleSubmit(handleCourseSubmit)}>
+        <div className="flex items-center justify-between">
           <button
             type="button"
             disabled={loading}
             onClick={goBack}
-            className="px-5 py-2 rounded-md bg-richblack-700 text-richblack-5 font-medium hover:bg-richblack-600 transition"
+            className="flex items-center gap-x-1 px-4 py-1.5 rounded-md bg-richblack-700 text-xs font-semibold text-richblack-100 hover:bg-richblack-600 transition"
           >
-            Back
+            <MdArrowBack className="text-sm" /> Back
           </button>
 
-          <div className="flex gap-4">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               disabled={loading}
               onClick={goToMyCourses}
-              className="px-5 py-2 rounded-md border border-richblack-600 text-richblack-200 hover:bg-richblack-700 transition"
+              className="px-4 py-1.5 rounded-md border border-richblack-600 text-xs font-semibold text-richblack-200 hover:bg-richblack-700 transition"
             >
-              Cancel
+              Save as Draft & Exit
             </button>
 
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 rounded-md bg-yellow-50 text-richblack-900 font-semibold hover:scale-95 transition-all disabled:opacity-60"
+              className="flex items-center gap-x-1 px-5 py-1.5 rounded-md bg-yellow-50 text-xs font-bold text-richblack-900 hover:scale-95 transition-all disabled:opacity-60"
             >
-              {loading ? "Saving..." : "Save Changes"}
+              <MdOutlineSendAndArchive className="text-sm" />
+              {loading ? "Submitting..." : "Submit for Review"}
             </button>
           </div>
-
         </div>
       </form>
     </div>

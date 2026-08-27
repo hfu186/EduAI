@@ -25,7 +25,6 @@ export default function CoursesTable({ courses, setCourses }) {
   
   const TRUNCATE_LENGTH = 25
 
-  // Delete course logic
   const handleCourseDelete = async (courseId) => {
     setLoading(true)
     setDeletingId(courseId) 
@@ -113,7 +112,7 @@ export default function CoursesTable({ courses, setCourses }) {
                     ) : (
                       <div className="mt-3 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-3 py-[2px] text-[12px] font-medium text-yellow-100 border border-yellow-700">
                         <FaCheck size={10} />
-                        Published
+                        {course.status}
                       </div>
                     )}
                   </div>

@@ -120,7 +120,6 @@ export default function CourseInformationForm() {
       return
     }
 
-    // Create new course
     const formData = new FormData()
     formData.append("courseName", data.courseTitle)
     formData.append("level", data.courseLevel)
@@ -152,180 +151,171 @@ export default function CourseInformationForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-lg border border-richblack-700 bg-richblack-800 p-6 sm:p-8 space-y-8 shadow-sm"
+      className="rounded-lg border border-richblack-700 bg-richblack-800 p-5 shadow-sm flex flex-col gap-5"
     >
-      {/* Title */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-richblack-5" htmlFor="courseTitle">
-          {t("courseForm.title")} <sup className="text-pink-200">*</sup>
-        </label>
-        <input
-          id="courseTitle"
-          placeholder={t("courseForm.title_placeholder")}
-          {...register("courseTitle", { required: true })}
-          className={`form-style w-full transition-colors ${
-            errors.courseTitle ? "border-pink-300 focus:border-pink-300" : ""
-          }`}
-        />
-        {errors.courseTitle && (
-          <span className="ml-1 flex items-center gap-1 text-xs tracking-wide text-pink-200">
-            {t("courseForm.required")}
-          </span>
-        )}
-      </div>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        
+        <div className="flex flex-col gap-4 lg:col-span-9">
+          {/* Title */}
+          <div className="flex flex-col space-y-1">
+            <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseTitle">
+              {t("courseForm.title")} <sup className="text-pink-200">*</sup>
+            </label>
+            <input
+              id="courseTitle"
+              placeholder={t("courseForm.title_placeholder")}
+              {...register("courseTitle", { required: true })}
+              className={`form-style w-full transition-colors ${
+                errors.courseTitle ? "border-pink-300 focus:border-pink-300" : ""
+              }`}
+            />
+            {errors.courseTitle && (
+              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+            )}
+          </div>
 
-      {/* Description */}
-      <div className="flex flex-col space-y-2">
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-richblack-5" htmlFor="courseShortDesc">
-            {t("courseForm.description")} <sup className="text-pink-200">*</sup>
-          </label>
-          <span className="text-xs text-richblack-400">{courseShortDesc?.length || 0} chars</span>
+          {/* Category & Level */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {/* Category */}
+            <div className="flex flex-col space-y-1">
+              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseCategory">
+                {t("courseForm.category")} <sup className="text-pink-200">*</sup>
+              </label>
+              {categoriesLoading ? (
+                <div className="h-[40px] w-full animate-pulse rounded-lg bg-richblack-700" />
+              ) : (
+                <select
+                  {...register("courseCategory", { required: true })}
+                  id="courseCategory"
+                  className={`form-style w-full transition-colors ${
+                    errors.courseCategory ? "border-pink-300 focus:border-pink-300" : ""
+                  }`}
+                  defaultValue=""
+                >
+                  <option value="" disabled>{t("courseForm.category_placeholder")}</option>
+                  {courseCategories.map((category) => (
+                    <option key={category._id} value={category._id}>{category.name}</option>
+                  ))}
+                </select>
+              )}
+              {errors.courseCategory && (
+                <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+              )}
+            </div>
+
+            {/* Level */}
+            <div className="flex flex-col space-y-1">
+              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseLevel">
+                {t("courseForm.level")} <sup className="text-pink-200">*</sup>
+              </label>
+              <select
+                {...register("courseLevel", { required: true })}
+                id="courseLevel"
+                className={`form-style w-full transition-colors ${
+                  errors.courseLevel ? "border-pink-300 focus:border-pink-300" : ""
+                }`}
+                defaultValue=""
+              >
+                <option value="" disabled>{t("courseForm.level_placeholder")}</option>
+                <option value="Beginner">{t("courseForm.level_beginner")}</option>
+                <option value="Intermediate">{t("courseForm.level_intermediate")}</option>
+                <option value="Advanced">{t("courseForm.level_advanced")}</option>
+              </select>
+              {errors.courseLevel && (
+                <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+              )}
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="flex flex-col space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseShortDesc">
+                {t("courseForm.description")} <sup className="text-pink-200">*</sup>
+              </label>
+              <span className="text-[11px] text-richblack-400">{courseShortDesc?.length || 0} chars</span>
+            </div>
+            <textarea
+              id="courseShortDesc"
+              placeholder={t("courseForm.description_placeholder")}
+              {...register("courseShortDesc", { required: true })}
+              className={`form-style h-[100px] w-full resize-none transition-colors ${
+                errors.courseShortDesc ? "border-pink-300 focus:border-pink-300" : ""
+              }`}
+            />
+            {errors.courseShortDesc && (
+              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+            )}
+          </div>
+
+          {/* Benefits */}
+          <div className="flex flex-col space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseBenefits">
+                {t("courseForm.benefits")} <sup className="text-pink-200">*</sup>
+              </label>
+              <span className="text-[11px] text-richblack-400">{courseBenefits?.length || 0} chars</span>
+            </div>
+            <textarea
+              id="courseBenefits"
+              placeholder={t("courseForm.benefits_placeholder")}
+              {...register("courseBenefits", { required: true })}
+              className={`form-style h-[100px] w-full resize-none transition-colors ${
+                errors.courseBenefits ? "border-pink-300 focus:border-pink-300" : ""
+              }`}
+            />
+            {errors.courseBenefits && (
+              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+            )}
+          </div>
         </div>
-        <textarea
-          id="courseShortDesc"
-          placeholder={t("courseForm.description_placeholder")}
-          {...register("courseShortDesc", { required: true })}
-          className={`form-style min-h-[120px] w-full resize-y transition-colors ${
-            errors.courseShortDesc ? "border-pink-300 focus:border-pink-300" : ""
-          }`}
-        />
-        {errors.courseShortDesc && (
-          <span className="ml-1 text-xs tracking-wide text-pink-200">
-            {t("courseForm.required")}
-          </span>
-        )}
-      </div>
 
-      {/* Price */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-richblack-5" htmlFor="coursePrice">
-          {t("courseForm.price")} <sup className="text-pink-200">*</sup>
-        </label>
-        <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-richblack-400">
-            $
-          </span>
-          <input
-            id="coursePrice"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder={t("courseForm.price_placeholder")}
-            {...register("coursePrice", { required: true, valueAsNumber: true, min: 0 })}
-            className={`form-style w-full pl-7 transition-colors ${
-              errors.coursePrice ? "border-pink-300 focus:border-pink-300" : ""
-            }`}
-          />
+        {/* CỘT PHẢI (5/12): Thiết lập Giá & Upload Thumbnail */}
+        <div className="flex flex-col gap-4 lg:col-span-3">
+          {/* Price */}
+          <div className="flex flex-col space-y-1">
+            <label className="text-[13px] font-medium text-richblack-5" htmlFor="coursePrice">
+              {t("courseForm.price")} (VND) <sup className="text-pink-200">*</sup>
+            </label>
+            <input
+              id="coursePrice"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder={t("courseForm.price_placeholder")}
+              {...register("coursePrice", { required: true, valueAsNumber: true, min: 0 })}
+              className={`form-style w-full transition-colors ${
+                errors.coursePrice ? "border-pink-300 focus:border-pink-300" : ""
+              }`}
+            />
+            {errors.coursePrice && (
+              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+            )}
+          </div>
+
+          {/* Thumbnail Box - Nằm trọn vẹn ở cột bên phải */}
+          <div className="w-full">
+            <Upload
+              name="courseImage"
+              label={t("courseForm.thumbnail")}
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              editData={editCourse ? course?.thumbnail : null}
+            />
+          </div>
         </div>
-        {errors.coursePrice && (
-          <span className="ml-1 text-xs tracking-wide text-pink-200">
-            {t("courseForm.required")}
-          </span>
-        )}
+
       </div>
 
-      {/* Category */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-richblack-5" htmlFor="courseCategory">
-          {t("courseForm.category")} <sup className="text-pink-200">*</sup>
-        </label>
-        {categoriesLoading ? (
-          <div className="h-[46px] w-full animate-pulse rounded-lg bg-richblack-700" />
-        ) : (
-          <select
-            {...register("courseCategory", { required: true })}
-            id="courseCategory"
-            className={`form-style w-full transition-colors ${
-              errors.courseCategory ? "border-pink-300 focus:border-pink-300" : ""
-            }`}
-            defaultValue=""
-          >
-            <option value="" disabled>
-              {t("courseForm.category_placeholder")}
-            </option>
-            {courseCategories.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        )}
-        {errors.courseCategory && (
-          <span className="ml-1 text-xs tracking-wide text-pink-200">
-            {t("courseForm.required")}
-          </span>
-        )}
-      </div>
-
-      {/* Level */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm font-medium text-richblack-5" htmlFor="courseLevel">
-          {t("courseForm.level")} <sup className="text-pink-200">*</sup>
-        </label>
-        <select
-          {...register("courseLevel", { required: true })}
-          id="courseLevel"
-          className={`form-style w-full transition-colors ${
-            errors.courseLevel ? "border-pink-300 focus:border-pink-300" : ""
-          }`}
-          defaultValue=""
-        >
-          <option value="" disabled>
-            {t("courseForm.level_placeholder")}
-          </option>
-          <option value="Beginner">{t("courseForm.level_beginner")}</option>
-          <option value="Intermediate">{t("courseForm.level_intermediate")}</option>
-          <option value="Advanced">{t("courseForm.level_advanced")}</option>
-        </select>
-        {errors.courseLevel && (
-          <span className="ml-1 text-xs tracking-wide text-pink-200">
-            {t("courseForm.required")}
-          </span>
-        )}
-      </div>
-
-      {/* Thumbnail */}
-      <Upload
-        name="courseImage"
-        label={t("courseForm.thumbnail")}
-        register={register}
-        setValue={setValue}
-        errors={errors}
-        editData={editCourse ? course?.thumbnail : null}
-      />
-
-      {/* Benefits */}
-      <div className="flex flex-col space-y-2">
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-richblack-5" htmlFor="courseBenefits">
-            {t("courseForm.benefits")} <sup className="text-pink-200">*</sup>
-          </label>
-          <span className="text-xs text-richblack-400">{courseBenefits?.length || 0} chars</span>
-        </div>
-        <textarea
-          id="courseBenefits"
-          placeholder={t("courseForm.benefits_placeholder")}
-          {...register("courseBenefits", { required: true })}
-          className={`form-style min-h-[130px] w-full resize-y transition-colors ${
-            errors.courseBenefits ? "border-pink-300 focus:border-pink-300" : ""
-          }`}
-        />
-        {errors.courseBenefits && (
-          <span className="ml-1 text-xs tracking-wide text-pink-200">
-            {t("courseForm.required")}
-          </span>
-        )}
-      </div>
-
-      {/* Buttons */}
-      <div className="flex flex-col-reverse gap-3 border-t border-richblack-700 pt-6 sm:flex-row sm:justify-end sm:gap-x-3">
+      {/* Action Buttons Footer */}
+      <div className="mt-2 flex flex-col-reverse gap-3 border-t border-richblack-700 pt-4 sm:flex-row sm:justify-end sm:gap-x-3">
         {editCourse && (
           <button
             type="button"
             onClick={() => dispatch(setStep(2))}
             disabled={loading}
-            className="flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900 transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-richblack-300 py-1.5 px-4 text-[13px] font-semibold text-richblack-900 transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {t("courseForm.continue_without_saving")}
           </button>
@@ -340,7 +330,7 @@ export default function CourseInformationForm() {
               : t("courseForm.save_changes")
           }
         >
-          <MdNavigateNext />
+          <MdNavigateNext className="text-lg" />
         </IconBtn>
       </div>
     </form>
