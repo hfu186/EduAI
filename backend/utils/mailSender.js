@@ -1,15 +1,20 @@
 const nodemailer = require('nodemailer');
 
-const mailSender = async (email, title,otp) => {
+const mailSender = async (email, title, otp) => {
     try {
         const transporter = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS
-            }
-        });
-         body = `
+    host: process.env.MAIL_HOST,
+    port: Number(process.env.MAIL_PORT),
+    secure: true,
+    auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS
+    },
+    tls: {
+          rejectUnauthorized: false
+      }
+});
+        body = `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                 <h2 style="color: #4f46e5;">EduSpace - Email Verification</h2>
 
@@ -46,7 +51,7 @@ const mailSender = async (email, title,otp) => {
             </div>
             `
         const info = await transporter.sendMail({
-            from: 'EduSpace || by HfuIddTwn',
+            from: 'EduSpace || by ELMS',
             to: email,
             subject: title,
             html: body
@@ -55,7 +60,9 @@ const mailSender = async (email, title,otp) => {
         return info;
     }
     catch (error) {
-        console.log('Error while sending mail (mailSender) - ', email);
+    console.error('Error while sending mail:', error);
+        throw error;
+
     }
 }
 

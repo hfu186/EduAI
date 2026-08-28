@@ -75,9 +75,7 @@ exports.resetPassword = async (req, res) => {
             });
         }
 
-        // console.log('userDetails.resetPasswordExpires = ', userDetails.resetPasswordExpires);
 
-        // check token is expire or not
         if (!(userDetails.resetPasswordTokenExpires > Date.now())) {
             return res.status(401).json({
                 success: false,
