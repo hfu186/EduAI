@@ -446,7 +446,16 @@
         "no_bio": "No bio provided",
         "load_profile_error": "Unable to load instructor profile",
         "approved": "Instructor request approved",
-        "rejected": "Instructor request rejected"
+        "rejected": "Instructor request rejected",
+        "suspend": "Suspend",
+        "reactivate": "Reactivate",
+        "suspended_label": "Suspended",
+        "active_label": "Active",
+        "suspended": "Instructor suspended",
+        "reactivated": "Instructor reactivated",
+        "status_update_error": "Unable to update instructor status",
+        "confirm_suspend_body": "Suspend {{name}}? They will no longer be able to log in.",
+        "confirm_reactivate_body": "Reactivate {{name}}? They will be able to log in again."
       },
       "user_management": {
         "title": "User Management",

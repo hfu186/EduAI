@@ -3,6 +3,7 @@ const router = express.Router();
 const { auth, isAdmin } = require("../../middleware/auth");
 const { 
     getAllUsers, 
+    updateInstructorStatus,
     deleteUser, 
     promoteUserToInstructor,
     getAllCourses, 
@@ -24,6 +25,7 @@ router.post("/create-category", auth, isAdmin, createCategory);
 router.put("/update-category/:categoryId", auth, isAdmin, updateCategory);
 router.delete("/delete-category/:categoryId", auth, isAdmin, deleteCategory);
 router.get("/all-users", auth, isAdmin, getAllUsers);
+router.put("/instructors/:instructorId/status", auth, isAdmin, updateInstructorStatus);
 router.delete("/delete-user/:userId", auth, isAdmin, deleteUser);
 router.patch("/promote-user/:userId", auth, isAdmin, promoteUserToInstructor);
 router.get("/instructor-requests", auth, isAdmin, getInstructorRequests);

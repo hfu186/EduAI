@@ -46,6 +46,8 @@ export const promoteUser = async (userId, token) => {
     }
 };
 
+
+
 export const getAllCourses = async (token) => {
     try {
         const response = await apiConnector("GET", adminEndpoints.GET_ALL_COURSES, null, {
@@ -71,7 +73,23 @@ export const approveCourse = async (courseId, status, token) => {
         toast.dismiss(toastId);
     }
 };
-
+export const updateInstructorStatus = async (instructorId, status, token) => {
+    const toastId = toast.loading("Updating status...");
+    try {
+        const response = await apiConnector(
+            "PATCH",
+            `${adminEndpoints.UPDATE_INSTRUCTOR_STATUS}/${instructorId}`,
+            { status },
+            { Authorization: `Bearer ${token}` }
+        );
+        return response.data;
+    } catch (error) {
+        console.log("UPDATE_INSTRUCTOR_STATUS_ERROR...", error);
+        toast.error(error?.response?.data?.message || "Failed to update instructor status");
+    } finally {
+        toast.dismiss(toastId);
+    }
+};
 export const getInstructorRequests = async (token) => {
     try {
         const response = await apiConnector("GET", adminEndpoints.GET_INSTRUCTOR_REQUESTS, null, {

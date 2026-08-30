@@ -15,6 +15,43 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
+exports.updateInstructorStatus = async (req, res) => {
+    try {
+        const { instructorId } = req.params;
+        const { status } = req.body;
+
+        if (!['active', 'suspended'].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Status must be active or suspended',
+            });
+        }
+
+        const instructor = await User.findById(instructorId);
+        if (!instructor) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        if (instructor.accountType !== 'Instructor') {
+            return res.status(400).json({
+                success: false,
+                message: 'Only instructor accounts can be suspended or reactivated',
+            });
+        }
+
+        instructor.status = status;
+        await instructor.save();
+
+        return res.status(200).json({
+            success: true,
+            message: `Instructor ${status === 'suspended' ? 'suspended' : 'reactivated'} successfully`,
+            data: { _id: instructor._id, status: instructor.status },
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 exports.deleteUser = async (req, res) => {
     const { userId } = req.params;
     try {

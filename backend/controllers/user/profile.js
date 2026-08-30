@@ -179,7 +179,7 @@ exports.deleteAccount = async (req, res) => {
 
 
 // ================ request to become instructor ================
-exports.requestInstructor = async (req, res) => {
+exports.  requestInstructor = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId);

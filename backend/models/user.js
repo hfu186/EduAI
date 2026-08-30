@@ -34,6 +34,11 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        status: {
+            type: String,
+            enum: ['active', 'suspended'],
+            default: 'active',
+        },
         instructorRequestStatus: {
             type: String,
             enum: ['none', 'pending', 'approved', 'rejected'],

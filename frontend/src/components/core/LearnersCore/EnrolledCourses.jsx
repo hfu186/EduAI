@@ -93,7 +93,7 @@ export default function EnrolledCourses() {
             <div
               className="flex cursor-pointer items-center gap-4 px-5 py-3 sm:w-[70%]"
               onClick={() => {
-                navigate(`/course-workspace/${course?._id}`);
+                navigate(`/course/${course?._id}`);
               }}
             >
               <Img

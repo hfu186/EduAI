@@ -145,6 +145,13 @@ exports.login = async (req, res) => {
             });
         }
 
+        if (user.status === 'suspended') {
+            return res.status(403).json({
+                success: false,
+                message: 'This account has been suspended. Please contact support.'
+            });
+        }
+
 
         if (await bcrypt.compare(password, user.password)) {
             const payload = {

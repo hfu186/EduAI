@@ -444,7 +444,16 @@
         "no_bio": "Chưa có tiểu sử",
         "load_profile_error": "Không thể tải hồ sơ giảng viên",
         "approved": "Yêu cầu giảng viên đã được duyệt",
-        "rejected": "Yêu cầu giảng viên đã bị từ chối"
+        "rejected": "Yêu cầu giảng viên đã bị từ chối",
+        "suspend": "Tạm khóa",
+        "reactivate": "Kích hoạt lại",
+        "suspended_label": "Đã tạm khóa",
+        "active_label": "Đang hoạt động",
+        "suspended": "Đã tạm khóa giảng viên",
+        "reactivated": "Đã kích hoạt lại giảng viên",
+        "status_update_error": "Không thể cập nhật trạng thái giảng viên",
+        "confirm_suspend_body": "Tạm khóa {{name}}? Người dùng sẽ không thể đăng nhập.",
+        "confirm_reactivate_body": "Kích hoạt lại {{name}}? Người dùng sẽ có thể đăng nhập lại."
       },
       "user_management": {
         "title": "Quản lý người dùng",

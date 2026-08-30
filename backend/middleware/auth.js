@@ -11,7 +11,7 @@ exports.auth = (req, res, next) => {
                 message: 'Token is Missing'
             });
         }
-     
+
         try {
             const decode = jwt.verify(token, process.env.JWT_SECRET)
             req.user = decode;
@@ -22,7 +22,7 @@ exports.auth = (req, res, next) => {
             return res.status(401).json({
                 success: false,
                 error: error.message,
-                messgae: 'Error while decoding token'
+                message: 'Error while decoding token'
             })
         }
         next();
