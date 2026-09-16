@@ -19,21 +19,6 @@ const {
   EMBEDDING_OUTPUT_DIMENSIONS,
 } = require("../config/ai");
 
-/**
- * ---------------------------------------------------------------------------
- * One file, two jobs:
- *   1) INGESTION  — PDF -> text -> chunks -> embeddings -> Pinecone
- *      (extractTextFromPDF, processSlideForAI)
- *   2) RAG / CHAT — embed a question -> retrieve chunks -> ask Groq
- *      (retrieveContext, generateQuizJSON, answerWithRAG)
- * They share the same Pinecone index + embedding model config, which is the
- * main reason to keep them in one file: if the embedding model or dimension
- * changes, there's only one place to update instead of two files drifting
- * out of sync (this is literally what caused the 768 vs 3072 dimension bug).
- * ---------------------------------------------------------------------------
- */
-
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const EMBEDDING_MODEL = GEMINI_EMBEDDING_MODEL;
 const VISION_MODEL = GEMINI_VISION_MODEL; // NOTE: was "gemini-2.0-flash" (shut down 2026-06-01)
@@ -282,10 +267,6 @@ const processSlideForAI = async (subSectionId, relativeFilePath) => {
   }
 };
 
-// =============================================================================
-// 2) RAG / CHAT — retrieve chunks -> ask Groq (quiz generation + chatbot)
-// =============================================================================
-
 const sanitizeText = (text) =>
   (text || "")
     .replace(/\0/g, "")
@@ -349,35 +330,56 @@ const buildChatSystemPrompt = () =>
 const generateQuizJSON = async (context, numberOfQuestions) => {
   const groq = getGroqClient();
 
-  const response = await withRetry(() =>
-    groq.chat.completions.create({
+  console.log("[QUIZ] Model:", CHAT_MODEL);
+
+  try {
+    const response = await groq.chat.completions.create({
       model: CHAT_MODEL,
       temperature: 0.5,
-      response_format: { type: "json_object" },
-      messages: [{ role: "user", content: buildQuizPrompt(context, numberOfQuestions) }],
-    })
-  );
+      messages: [
+        {
+          role: "user",
+          content: buildQuizPrompt(context, numberOfQuestions),
+        },
+      ],
+    });
 
-  const rawText = response.choices[0]?.message?.content ?? "";
-  console.log("Groq raw (first 300 chars):", rawText.substring(0, 300));
+    console.log("[QUIZ] RESPONSE:", response);
 
-  let parsed;
-  try {
-    parsed = JSON.parse(rawText);
-  } catch (e) {
-    const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-    parsed = JSON.parse(cleaned);
+    const rawText =
+      response?.choices?.[0]?.message?.content ?? "";
+
+    console.log("[QUIZ] RAW:", rawText);
+
+    if (!rawText) {
+      throw new Error("Groq returned empty response.");
+    }
+
+    const parsed = JSON.parse(rawText);
+
+    const questions = Array.isArray(parsed)
+      ? parsed
+      : parsed?.questions;
+
+    if (!Array.isArray(questions) || questions.length === 0) {
+      throw new Error("Invalid quiz format returned from AI.");
+    }
+
+    return questions;
+  } catch (error) {
+    console.error("========== DIRECT GROQ ERROR ==========");
+    console.error(error);
+    console.error("======================================");
+
+    throw error instanceof Error
+      ? error
+      : new Error(
+          typeof error === "string"
+            ? error
+            : "Unknown Groq error"
+        );
   }
-
-  const questions = Array.isArray(parsed) ? parsed : parsed.questions;
-
-  if (!Array.isArray(questions) || questions.length === 0) {
-    throw new Error("Invalid quiz format returned from AI.");
-  }
-
-  return questions;
 };
-
 /**
  * @param {Object} params
  * @param {string} params.namespace

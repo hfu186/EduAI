@@ -134,11 +134,6 @@
     }
   };
 
-  /**
-   * POST /api/chat/ask
-   * Body: { subSectionId, question, history? }
-   * Non-streaming RAG chatbot — good for simple request/response clients.
-   */
   exports.askAIChatbot = async (req, res) => {
     try {
       const { subSectionId, question, history = [] } = req.body;
