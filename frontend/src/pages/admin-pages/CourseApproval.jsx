@@ -166,7 +166,7 @@ export default function CourseApproval() {
       </div>
     );
 
-  const pendingCount = courses.filter((c) => c.status === "Draft").length;
+  const pendingCount = courses.filter((c) => c.status === "Draft" || "Pending").length;
 
   return (
     <div className="space-y-8 animate-fadeIn px-4 md:px-8 lg:px-12 py-6 min-h-screen">
@@ -279,12 +279,12 @@ export default function CourseApproval() {
                       )
                     }
                     className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      course.status === "Draft"
+                      course.status === "Draft" || course.status === "Pending"
                         ? "bg-caribbeangreen-200 text-black shadow-md hover:bg-caribbeangreen-100"
                         : "bg-pink-700 text-white hover:bg-pink-600"
                     }`}
                   >
-                    {course.status === "Draft" ? "Approve" : "Revoke"}
+                    {course.status === "Draft" ?  "Approve" : "Revoke"}
                   </button>
                 </div>
               </div>

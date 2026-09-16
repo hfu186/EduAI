@@ -4,19 +4,62 @@ const { TaskType } = require("@google/generative-ai");
 const { PineconeStore } = require("@langchain/pinecone");
 const Groq = require("groq-sdk");
 
-const EMBEDDING_MODEL = "models/gemini-embedding-001";
-const CHAT_MODEL = "llama-3.1-8b-instant";
+const EMBEDDING_MODEL = process.env.GEMINI_EMBEDDING_MODEL || "models/gemini-embedding-001";
+// "llama-3.1-8b-instant" is listed as Enterprise-only on Groq (contact-sales
+// pricing, no public rate limit) — not available on a normal/free API key.
+// Swapped for "openai/gpt-oss-20b": fast, cheap, works on free tier.
+const CHAT_MODEL = process.env.GROQ_CHAT_MODEL || "openai/gpt-oss-20b";
 const TOP_K_RESULTS = 3;
 
-const createEmbeddings = () =>
-  new GoogleGenerativeAIEmbeddings({
+// Must match the actual dimension of your Pinecone index (see create-index.js).
+const EMBEDDING_OUTPUT_DIMENSIONS = Number(process.env.EMBEDDING_OUTPUT_DIMENSIONS ?? 768);
+
+/**
+ * @langchain/google-genai (JS) silently ignores an `outputDimensionality`
+ * constructor option — unlike the Python package — so
+ * "models/gemini-embedding-001" always returns the full 3072-dim vector no
+ * matter what you pass. This truncates + L2-renormalizes the vector to the
+ * target size, which is Google's own recommended approach for using a
+ * smaller dimension with Matryoshka-trained embedding models when the
+ * client library can't request it directly.
+ */
+const l2Normalize = (vector) => {
+  const norm = Math.sqrt(vector.reduce((sum, x) => sum + x * x, 0));
+  return norm === 0 ? vector : vector.map((x) => x / norm);
+};
+
+const truncateToDimension = (vector, dimensions) => {
+  if (!dimensions || vector.length <= dimensions) return vector;
+  return l2Normalize(vector.slice(0, dimensions));
+};
+
+class DimensionTruncatedEmbeddings {
+  constructor(baseEmbeddings, dimensions) {
+    this.base = baseEmbeddings;
+    this.dimensions = dimensions;
+  }
+
+  async embedDocuments(texts) {
+    const vectors = await this.base.embedDocuments(texts);
+    return vectors.map((v) => truncateToDimension(v, this.dimensions));
+  }
+
+  async embedQuery(text) {
+    const vector = await this.base.embedQuery(text);
+    return truncateToDimension(vector, this.dimensions);
+  }
+}
+
+const createEmbeddings = () => {
+  const base = new GoogleGenerativeAIEmbeddings({
     apiKey: process.env.GOOGLE_API_KEY,
     modelName: EMBEDDING_MODEL,
     taskType: TaskType.RETRIEVAL_QUERY,
   });
+  return new DimensionTruncatedEmbeddings(base, EMBEDDING_OUTPUT_DIMENSIONS);
+};
 
-const createGroqClient = () =>
-  new Groq({ apiKey: process.env.GROQ_API_KEY });
+const createGroqClient = () => new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const getVectorStore = async (embeddings, namespace) => {
   const pinecone = new Pinecone({
@@ -42,7 +85,14 @@ RULES:
 Lesson content:
 ${context}
 
-IMPORTANT: Respond strictly in English. Keep it short and helpful.`;
+FORMATTING (critical — this response renders as raw, unparsed text inside a chat bubble, NOT Markdown):
+- Do NOT use ANY Markdown syntax at all: no "**bold**", no "*italic*", no "-" or "*" bullet lists, no "#" headings, no "|" tables, no backticks. The widget displays these symbols literally as characters — they are never rendered as formatting.
+- Write in plain prose sentences and short paragraphs only.
+- If you need to list a few items, write them as a normal sentence ("There are three approaches: X, Y, and Z.") or put each item on its own plain line with no leading symbol.
+- Keep it short, conversational, and free of any special characters used for styling.
+
+IMPORTANT: - If user ask by their native language, answer in their native language. If you don't know the language, answer in English.
+. Keep it short and helpful.`;
 
 const sanitizeText = (text = "") =>
   text
@@ -130,6 +180,7 @@ exports.chatWithSlide = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("CHAT_WITH_SLIDE_ERROR:", error.message);
     return res.status(500).json({
       success: false,
       message: "An error occurred while processing the question. Please try again later.",

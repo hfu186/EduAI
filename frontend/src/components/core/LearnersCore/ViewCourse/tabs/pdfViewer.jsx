@@ -27,7 +27,7 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
           "GET",
           `${courseEndpoints.GET_HIGHLIGHTS_API}/${subSectionId}`,
           null,
-          { Authorization: `Bearer ${token}` }
+          { Authorization: `Bearer ${token}` },
         );
         if (response?.data?.success) {
           setHighlights(response.data.data);
@@ -50,7 +50,7 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
 
     const range = selection.getRangeAt(0);
     const pageElements = Array.from(
-      viewerRef.current?.querySelectorAll("[data-pdf-page]") || []
+      viewerRef.current?.querySelectorAll("[data-pdf-page]") || [],
     );
 
     const rectsByPage = pageElements
@@ -110,7 +110,7 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
           text: selectedHighlight.text,
           pages: selectedHighlight.pages,
         },
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
 
       if (response?.data?.success) {
@@ -134,7 +134,7 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
         "DELETE",
         `${courseEndpoints.CLEAR_HIGHLIGHTS_API}/${subSectionId}`,
         null,
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
       if (response?.data?.success) {
         setHighlights([]);
@@ -152,7 +152,7 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
         "DELETE",
         `${courseEndpoints.DELETE_HIGHLIGHT_API}/${highlightId}`,
         null,
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
       if (response?.data?.success) {
         setHighlights((prev) => prev.filter((h) => h._id !== highlightId));
@@ -165,12 +165,12 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
 
   return (
     <div className="bg-richblack-900">
-      <div className="sticky top-0 z-20 flex flex-col gap-3 border-b border-richblack-700 bg-richblack-900/95 px-4 py-3 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+      <div className="sticky top-0 z-50 flex flex-col gap-3 border-b border-richblack-700 bg-richblack-900 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        {" "}
         <div className="flex items-center gap-2 text-sm text-richblack-300">
           <MdOutlineInfo className="text-lg text-yellow-50" />
           Select text on the slide, then click Highlight.
         </div>
-
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -211,8 +211,11 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
               (highlight.pages || [])
                 .filter((page) => page.pageNumber === pageNumber)
                 .flatMap((page) =>
-                  page.rects.map((rect) => ({ ...rect, highlightId: highlight._id }))
-                )
+                  page.rects.map((rect) => ({
+                    ...rect,
+                    highlightId: highlight._id,
+                  })),
+                ),
             );
 
             return (

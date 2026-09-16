@@ -1,15 +1,157 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { getMyChats } from "../../services/operations/chatAPI";
-import { BsChatDots, BsSearch } from "react-icons/bs";
+import { useSwipeable } from "react-swipeable";
+import { getMyChats, deleteChat } from "../../services/operations/chatAPI";
+import { BsChatDots, BsSearch, BsTrash } from "react-icons/bs";
 import { clearChatUnread } from "../../slices/messageSlice";
+const ChatItem = ({
+  chat,
+  other,
+  unreadCount,
+  hasMessage,
+  formatTime,
+  onDelete,
+  onOpenChat,
+  isDeleting,
+  t,
+}) => {
+  const [offset, setOffset] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
+  const DELETE_WIDTH = 96;
+
+  const handlers = useSwipeable({
+    onSwiping: (e) => {
+      if (e.dir === "Left") {
+        const newOffset = Math.min(Math.abs(e.deltaX), DELETE_WIDTH);
+        setOffset(newOffset);
+      } else if (e.dir === "Right" && isOpen) {
+        const newOffset = Math.max(DELETE_WIDTH - Math.abs(e.deltaX), 0);
+        setOffset(newOffset);
+      }
+    },
+    onSwipedLeft: (e) => {
+      if (Math.abs(e.deltaX) > DELETE_WIDTH * 0.4) {
+        setOffset(DELETE_WIDTH);
+        setIsOpen(true);
+      } else {
+        setOffset(0);
+        setIsOpen(false);
+      }
+    },
+    onSwipedRight: () => {
+      setOffset(0);
+      setIsOpen(false);
+    },
+    onTap: () => {
+      if (isOpen) {
+        setOffset(0);
+        setIsOpen(false);
+      } else {
+        onOpenChat();
+      }
+    },
+    trackMouse: true,
+    preventScrollOnSwipe: true,
+    delta: 10,
+  });
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl">
+      <div
+        className="absolute inset-y-0 right-0 flex items-center justify-center bg-red-600 transition-opacity"
+        style={{
+          width: DELETE_WIDTH,
+          opacity: offset > 0 ? 1 : 0, 
+        }}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(chat._id);
+          }}
+          disabled={isDeleting}
+          className="flex flex-col items-center justify-center gap-1 text-white w-full h-full disabled:opacity-60"
+        >
+          <BsTrash className="text-xl text-yellow-100" />
+          <span className="text-xs font-medium text-red-100">
+            {isDeleting ? "..." : t("pages.chat.delete") || "Xóa"}
+          </span>
+        </button>
+      </div>
+
+      <div
+        {...handlers}
+        className={`group relative z-10 flex items-center gap-4 p-4 cursor-pointer border transition-transform duration-150 ease-out ${
+          unreadCount > 0
+            ? "bg-blue-950 border-red-500/40 shadow-lg shadow-black/20" // bỏ /50
+            : "bg-richblack-800 border-transparent hover:bg-richblack-700 hover:border-richblack-600 hover:shadow-lg hover:shadow-black/20" // bỏ /40
+        }`}
+        style={{
+          transform: `translateX(-${offset}px)`,
+        }}
+      >
+        <div className="relative flex-shrink-0">
+          <img
+            src={
+              other.image ||
+              `https://api.dicebear.com/7.x/initials/svg?seed=${other.firstName}%20${other.lastName}&backgroundColor=7c3aed`
+            }
+            alt={`${other.firstName} ${other.lastName}`}
+            className="w-14 h-14 rounded-full object-cover ring-2 ring-richblack-700 group-hover:ring-yellow-50/40 transition-all duration-200"
+          />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white shadow-lg">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-3 mb-1">
+            <h3
+              className={`truncate font-semibold transition-colors ${
+                unreadCount > 0
+                  ? "text-white"
+                  : "text-richblack-5 group-hover:text-yellow-50"
+              }`}
+            >
+              {other.firstName} {other.lastName}
+            </h3>
+            {chat.lastMessage?.createdAt && (
+              <span className="text-xs text-richblack-500 whitespace-nowrap">
+                {formatTime(chat.lastMessage.createdAt)}
+              </span>
+            )}
+          </div>
+
+          <p
+            className={`truncate text-sm ${
+              unreadCount > 0
+                ? "font-semibold text-white"
+                : hasMessage
+                ? "text-richblack-300"
+                : "text-richblack-500 italic"
+            }`}
+          >
+            {hasMessage
+              ? chat.lastMessage.content
+              : t("pages.chat.start_conversation")}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 const ChatList = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
+
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.profile);
   const { unreadChats = {} } = useSelector((state) => state.messages);
@@ -70,6 +212,27 @@ const ChatList = () => {
     return name.includes(searchTerm.toLowerCase());
   });
 
+  const handleDeleteChat = async (chatId) => {
+    const confirmed = window.confirm(
+      t("pages.chat.confirm_delete") ||
+        "Bạn có chắc muốn xóa cuộc trò chuyện này?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(chatId);
+      await deleteChat(chatId, token);
+      setChats((prev) => prev.filter((c) => c._id !== chatId));
+      dispatch(clearChatUnread(chatId));
+    } catch (error) {
+      console.error("Delete chat failed:", error);
+      alert(t("pages.chat.delete_failed") || "Xóa thất bại. Vui lòng thử lại.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-full max-w-2xl mx-auto px-4 py-8">
@@ -122,10 +285,14 @@ const ChatList = () => {
             <BsChatDots className="text-5xl text-richblack-500" />
           </div>
           <h3 className="text-xl font-semibold text-richblack-100 mb-2">
-            {searchTerm ? t("pages.chat.no_results") : t("pages.chat.no_conversations")}
+            {searchTerm
+              ? t("pages.chat.no_results")
+              : t("pages.chat.no_conversations")}
           </h3>
           <p className="text-richblack-400 max-w-xs">
-            {searchTerm ? t("pages.chat.try_search") : t("pages.chat.start_conversation")}
+            {searchTerm
+              ? t("pages.chat.try_search")
+              : t("pages.chat.start_conversation")}
           </p>
         </div>
       ) : (
@@ -138,61 +305,21 @@ const ChatList = () => {
             const unreadCount = unreadChats?.[chat._id] || 0;
 
             return (
-              <div
+              <ChatItem
                 key={chat._id}
-                onClick={() => {
+                chat={chat}
+                other={other}
+                unreadCount={unreadCount}
+                hasMessage={hasMessage}
+                formatTime={formatTime}
+                isDeleting={deletingId === chat._id}
+                t={t}
+                onDelete={handleDeleteChat}
+                onOpenChat={() => {
                   dispatch(clearChatUnread(chat._id));
                   navigate(`/chat/${chat._id}`);
                 }}
-                className={`group flex items-center gap-4 p-4 rounded-2xl cursor-pointer border transition-all duration-200 ${
-                  unreadCount > 0
-                    ? "bg-blue-950/50 border-red-500/40 shadow-lg shadow-black/20"
-                    : "bg-richblack-800/40 border-transparent hover:bg-richblack-800 hover:border-richblack-600 hover:shadow-lg hover:shadow-black/20"
-                } active:scale-[0.99]`}
-              >
-                <div className="relative flex-shrink-0">
-                  <img
-                    src={
-                      other.image ||
-                      `https://api.dicebear.com/7.x/initials/svg?seed=${other.firstName}%20${other.lastName}&backgroundColor=7c3aed`
-                    }
-                    alt={`${other.firstName} ${other.lastName}`}
-                    className="w-14 h-14 rounded-full object-cover ring-2 ring-richblack-700 group-hover:ring-yellow-50/40 transition-all duration-200"
-                  />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white shadow-lg">
-                      {unreadCount > 9 ? "9+" : unreadCount}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-3 mb-1">
-                    <h3 className={`truncate font-semibold transition-colors ${
-                      unreadCount > 0 ? "text-white" : "text-richblack-5 group-hover:text-yellow-50"
-                    }`}>
-                      {other.firstName} {other.lastName}
-                    </h3>
-                    {chat.lastMessage?.createdAt && (
-                      <span className="text-xs text-richblack-500 whitespace-nowrap">
-                        {formatTime(chat.lastMessage.createdAt)}
-                      </span>
-                    )}
-                  </div>
-
-                  <p
-                    className={`truncate text-sm ${
-                      unreadCount > 0
-                        ? "font-semibold text-white"
-                        : hasMessage
-                        ? "text-richblack-300"
-                        : "text-richblack-500 italic"
-                    }`}
-                  >
-                    {hasMessage ? chat.lastMessage.content : t("pages.chat.start_conversation")}
-                  </p>
-                </div>
-              </div>
+              />
             );
           })}
         </div>

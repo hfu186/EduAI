@@ -36,12 +36,7 @@ export default function Sidebar() {
     }
   }, [screenSize, dispatch]);
 
-  useEffect(() => {
-    if (screenSize <= 640) {
-      dispatch(setOpenSideMenu(false))
-    }
-    else dispatch(setOpenSideMenu(true))
-  })
+
 
   if (profileLoading || authLoading) {
     return (
@@ -76,8 +71,10 @@ export default function Sidebar() {
               )
             })}
           </div>
+            <div className="mt-auto">
 
-          <div className="mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-richblack-700" />
+
+          <div className="mx-auto mb-6 h-[1px] w-10/12 bg-richblack-700" />
 
           <div className="flex flex-col">
             <SidebarLink
@@ -104,6 +101,7 @@ export default function Sidebar() {
               </div>
             </button>
           </div>
+        </div>
         </div>
       }
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}

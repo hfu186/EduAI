@@ -63,7 +63,7 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
     setQuizResult(null);
 
     try {
-      const questions = await generateAIQuiz(subSectionId, 5, token);
+      const questions = await generateAIQuiz(subSectionId, 10, token);
       if (questions?.length > 0) {
         setAiQuiz(questions);
         setShowQuiz(true);
@@ -120,7 +120,7 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
     <div
       ref={scrollContainerRef}
       onScroll={handleScroll}
-      className="flex flex-col gap-y-8 pdf-isolate overflow-y-auto max-h-[80vh] custom-scrollbar p-2"
+      className="flex flex-col gap-y-8 pdf-isolate overflow-y-auto max-h-[80vh] custom-scrollbar"
       style={{ scrollBehavior: "smooth" }}
     >
       {slides.map((section) =>
@@ -137,7 +137,7 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
 
           return (
             <div key={slideFile._id || index} className="w-full">
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center  ">
                 <p className="text-white font-bold text-xl flex items-center gap-2">
                   <span className="text-yellow-50">📄 Slide:</span>
                   {slideFile.fileName}
@@ -149,13 +149,13 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
                 )}
               </div>
 
-              {/* ── PDF Viewer ── */}
-              <div className="bg-richblack-800 rounded-lg p-1 border border-richblack-700 shadow-2xl">
+              <div className="bg-richblack-800 rounded-lg border border-richblack-700 shadow-2xl">
                 <PDFViewer
                   pdfUrl={fullFileUrl}
-                  subSectionId={slideFile._id}
+                  subSectionId={subSectionId}
                   token={token}
-                />              </div>
+                />              
+                </div>
 
               {/* ── Footer ── */}
               <div className="mt-6 p-6 bg-richblack-800 rounded-2xl border border-richblack-700">
@@ -189,7 +189,6 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
               {showQuiz && aiQuiz && (
                 <div id="ai-quiz-section" className="mt-6 rounded-2xl border border-blue-500/30 bg-richblack-800 overflow-hidden">
 
-                  {/* Quiz Header */}
                   <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-blue-600/20 to-caribbeangreen-600/20 border-b border-richblack-700">
                     <div className="flex items-center gap-2">
                       <MdAutoAwesome className="text-yellow-200 animate-pulse" size={20} />

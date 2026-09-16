@@ -12,9 +12,11 @@ module.exports = {
       "edu-sa": ["Inter", "sans-serif"],
       boogaloo: ["Inter", "sans-serif"],
     },
+    
     colors: {
       white: "#fff",
       black: "#000",
+      red: "#fc0a0a",
       transparent: "#ffffff00",
       richblack: {
         5: "#F1F2FF",

@@ -26,6 +26,7 @@ const notificationRoutes = require("./routes/notifications");
 const chatRoutes = require("./routes/chat");
 const messageRoutes = require("./routes/message");
 const highlightRoutes = require("./routes/highlight");
+
 app.use(
   "/uploads",
   (req, res, next) => {
@@ -34,9 +35,8 @@ app.use(
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     next();
   },
-  express.static("uploads")
-);
-
+express.static(path.join(__dirname, "uploads")));
+console.log("Uploads path:", path.join(__dirname, "uploads"));
 app.use(
   express.json({
     verify: (req, res, buf) => {

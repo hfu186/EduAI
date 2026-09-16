@@ -1,6 +1,7 @@
 const Course = require("../models/course");
 const Section = require("../models/section");
-
+const SubSection = require("../models/subSection");
+const CourseProgress = require("../models/courseProgress");
 exports.createSection = async ({ sectionName, courseId, instructorId }) => {
   if (!sectionName || !courseId) {
     throw new Error("sectionName and courseId are required");
@@ -38,16 +39,54 @@ exports.updateSection = async ({ sectionId, sectionName, courseId }) => {
     populate: { path: "subSection" },
   });
 };
+exports.deleteSection = async ({
+  sectionId,
+  courseId,
+}) => {
+  const section = await Section.findById(sectionId);
 
-exports.deleteSection = async ({ sectionId, courseId }) => {
+  if (!section) {
+    throw new Error("Section not found");
+  }
+
+  const subSectionIds = section.subSection || [];
+
   await Course.findByIdAndUpdate(courseId, {
-    $pull: { courseContent: sectionId },
+    $pull: {
+      courseContent: sectionId,
+    },
   });
+
+  if (subSectionIds.length > 0) {
+    await CourseProgress.updateMany(
+      {
+        courseID: courseId,
+        completedSubSections: {
+          $in: subSectionIds,
+        },
+      },
+      {
+        $pull: {
+          completedSubSections: {
+            $in: subSectionIds,
+          },
+        },
+      }
+    );
+
+    await SubSection.deleteMany({
+      _id: {
+        $in: subSectionIds,
+      },
+    });
+  }
 
   await Section.findByIdAndDelete(sectionId);
 
   return Course.findById(courseId).populate({
     path: "courseContent",
-    populate: { path: "subSection" },
+    populate: {
+      path: "subSection",
+    },
   });
 };

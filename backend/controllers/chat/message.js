@@ -123,6 +123,31 @@ exports.getMessages = async (req, res) => {
     return res.status(500).json({ success: false, message: "Failed to fetch messages" });
   }
 };
+exports.deleteMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = req.user.id;
+
+    const message = await Message.findById(messageId);
+    if (!message) {
+      return res.status(404).json({ success: false, message: "Message not found" });
+    }
+
+    if (String(message.sender) !== userId) {
+      return res.status(403).json({ success: false, message: "You do not have permission to delete this message" });
+    }
+
+    await Message.findByIdAndDelete(messageId);
+
+    const io = req.app.get("io");
+    if (io) io.to(String(message.chat)).emit("messageDeleted", { messageId });
+
+    return res.status(200).json({ success: true, message: "Message deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Failed to delete message" });
+  }
+};
 
 exports.markAsRead = async (req, res) => {
   try {

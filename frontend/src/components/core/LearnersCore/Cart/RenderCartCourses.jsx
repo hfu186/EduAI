@@ -53,7 +53,7 @@ export default function RenderCartCourses() {
                     {course?.courseName}
                   </h3>
 
-                  <p className="text-sm text-yellow-100">
+                  <p className="text-xs">
                     <span className="font-semibold">
                       {t("pages.course_details.instructor")}:
                     </span>{" "}

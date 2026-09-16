@@ -11,15 +11,66 @@ const { Pinecone } = require("@pinecone-database/pinecone");
 const SubSection = require("../models/subSection");
 
 // ─── Constants ────────────────────────────────────────────────────────────────
+// NOTE: pulled from env the same way ai_service.js does, so ingestion and
+// retrieval can never silently drift onto different embedding configs again.
 
 const MAX_CHARS = 15000;
 const MIN_CHARS = 50;
 const CHUNK_SIZE = 1000;
 const CHUNK_OVERLAP = 200;
-const EMBEDDING_MODEL = "models/gemini-embedding-001";
-const VISION_MODEL = "gemini-2.0-flash";
+const EMBEDDING_MODEL = process.env.GEMINI_EMBEDDING_MODEL || "models/gemini-embedding-001";
+const VISION_MODEL = process.env.GEMINI_VISION_MODEL || "gemini-3.5-flash-lite";
 const TMP_DIR = "/tmp/pdf2pic_slides";
 
+// Must match the actual dimension of your Pinecone index (see create-index.js).
+// Same env var / same default as ai_service.js and chatbot.js — this is the
+// value that was missing here before, which caused ingestion to upload
+// full 3072-dim vectors into a 768-dim index (upsert failure -> nothing
+// ever got indexed -> empty retrieval downstream).
+const EMBEDDING_OUTPUT_DIMENSIONS = Number(process.env.EMBEDDING_OUTPUT_DIMENSIONS ?? 768);
+
+// ─── Embedding dimension fix (kept identical to ai_service.js / chatbot.js) ──
+
+/**
+ * @langchain/google-genai (JS) silently ignores an `outputDimensionality`
+ * constructor option — unlike the Python package — so
+ * "models/gemini-embedding-001" always returns the full 3072-dim vector no
+ * matter what you pass. This truncates + L2-renormalizes the vector to the
+ * target size, which is Google's own recommended approach for using a
+ * smaller dimension with Matryoshka-trained embedding models when the
+ * client library can't request it directly.
+ *
+ * IMPORTANT: this must be applied on BOTH sides — when embedding documents
+ * for upload (here) and when embedding queries for search (ai_service.js /
+ * chatbot.js) — or the vectors won't be comparable and/or Pinecone will
+ * reject the upsert outright.
+ */
+const l2Normalize = (vector) => {
+  const norm = Math.sqrt(vector.reduce((sum, x) => sum + x * x, 0));
+  return norm === 0 ? vector : vector.map((x) => x / norm);
+};
+
+const truncateToDimension = (vector, dimensions) => {
+  if (!dimensions || vector.length <= dimensions) return vector;
+  return l2Normalize(vector.slice(0, dimensions));
+};
+
+class DimensionTruncatedEmbeddings {
+  constructor(baseEmbeddings, dimensions) {
+    this.base = baseEmbeddings;
+    this.dimensions = dimensions;
+  }
+
+  async embedDocuments(texts) {
+    const vectors = await this.base.embedDocuments(texts);
+    return vectors.map((v) => truncateToDimension(v, this.dimensions));
+  }
+
+  async embedQuery(text) {
+    const vector = await this.base.embedQuery(text);
+    return truncateToDimension(vector, this.dimensions);
+  }
+}
 
 const extractTextLegacy = (filePath) =>
   new Promise((resolve, reject) => {
@@ -58,9 +109,8 @@ const extractTextLegacy = (filePath) =>
     pdfParser.loadPDF(filePath);
   });
 
-
 const extractTextVisionFallback = async (filePath) => {
-  console.log("Switching to Vision AI fallback...");
+  console.log(`Switching to Vision AI fallback (${VISION_MODEL})...`);
   if (!fs.existsSync(TMP_DIR)) fs.mkdirSync(TMP_DIR, { recursive: true });
 
   const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
@@ -105,7 +155,6 @@ const extractTextVisionFallback = async (filePath) => {
   return pageDescriptions.join("\n\n");
 };
 
-
 const getPDFPageCount = (filePath) =>
   new Promise((resolve, reject) => {
     const pdfParser = new PDFParser();
@@ -135,12 +184,17 @@ const extractTextFromPDF = async (filePath) => {
   return await extractTextVisionFallback(filePath);
 };
 
-const createEmbeddings = () =>
-  new GoogleGenerativeAIEmbeddings({
+// Now truncates to EMBEDDING_OUTPUT_DIMENSIONS, same as the query-side
+// embeddings in ai_service.js / chatbot.js, so ingested vectors actually
+// match what similaritySearch will send later.
+const createEmbeddings = () => {
+  const base = new GoogleGenerativeAIEmbeddings({
     apiKey: process.env.GOOGLE_API_KEY,
     modelName: EMBEDDING_MODEL,
     taskType: TaskType.RETRIEVAL_DOCUMENT,
   });
+  return new DimensionTruncatedEmbeddings(base, EMBEDDING_OUTPUT_DIMENSIONS);
+};
 
 const splitTextIntoDocs = async (text, metadata) => {
   const splitter = new RecursiveCharacterTextSplitter({
@@ -175,10 +229,9 @@ const markSubSectionAsIndexed = (subSectionId, totalChunks) =>
     },
   });
 
-
 /**
- * @param {string} subSectionId 
- * @param {string} relativeFilePath 
+ * @param {string} subSectionId
+ * @param {string} relativeFilePath
  */
 exports.processSlideForAI = async (subSectionId, relativeFilePath) => {
 

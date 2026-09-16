@@ -585,6 +585,9 @@
       "search_prompt": "Try searching with another keyword",
       "start_messaging": "Start messaging your instructors or classmates",
       "just_now": "Just now",
+        "confirm_delete": "Do you really want to delete this conversation?",
+      "delete":"Delete",
+      "delete_failed": "Failed to delete conversation",
       "minutes": "minutes ago",
       "try_search": "Try searching with another keyword",
       "start_conversation": "Start a conversation"
