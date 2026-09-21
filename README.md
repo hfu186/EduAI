@@ -1,6 +1,6 @@
-# 🎓 EduSpace - Intelligent Learning Management System
+# 🎓 EduAI - Intelligent Learning Management System
 
-**EduSpace** is a next-generation Learning Management System (LMS) designed specifically for IT education. The platform goes beyond traditional course management by integrating AI to provide personalized learning experiences through a **RAG** architecture.
+**EduAI** is a next-generation Learning Management System (LMS) designed specifically for IT education. The platform goes beyond traditional course management by integrating AI to provide personalized learning experiences through a **RAG** architecture.
 
 ---
 
@@ -46,8 +46,8 @@
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/yourusername/eduspace-lms.git](https://github.com/yourusername/eduspace-lms.git)
-    cd eduspace-lms
+    git clone [https://github.com/yourusername/eduai.git](https://github.com/yourusername/eduai-lms.git)
+    cd eduai
     ```
 
 2.  **Backend Configuration:**
