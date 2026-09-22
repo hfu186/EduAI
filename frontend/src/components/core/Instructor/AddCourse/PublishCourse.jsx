@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { resetCourseState, setStep } from "../../../../slices/courseSlice"
 import { apiConnector } from "../../../../services/apiConnector"
 import { toast } from "react-hot-toast"
-import { MdOutlineSendAndArchive, MdArrowBack } from "react-icons/md"
+import { MdOutlineSendAndArchive, MdOutlineArrowBack } from "react-icons/md"
 
 const ALREADY_REVIEWED_STATUSES = ["Approved", "Published"]
 
@@ -21,7 +21,6 @@ export default function SubmitForReview() {
   const isAlreadyApproved = ALREADY_REVIEWED_STATUSES.includes(course?.status)
 
   useEffect(() => {
-   
     if (isAlreadyApproved) {
       setReadyForReview(true)
     } else {
@@ -44,6 +43,7 @@ export default function SubmitForReview() {
       Authorization: `Bearer ${token}`,
     })
   }
+
   const submitForAdminReview = async () => {
     await apiConnector(
       "PATCH",
@@ -68,23 +68,29 @@ export default function SubmitForReview() {
       }
 
       goToMyCourses()
-    }  catch (error) {
-  console.error("SUBMIT ERROR:", error)
-  console.error("SERVER RESPONSE:", error?.response?.data)
-  console.error("STATUS CODE:", error?.response?.status)
-  toast.error(error?.response?.data?.message || "Failed to update course")
-}
+    } catch (error) {
+      console.error("SUBMIT ERROR:", error)
+      console.error("SERVER RESPONSE:", error?.response?.data)
+      console.error("STATUS CODE:", error?.response?.status)
+      toast.error(error?.response?.data?.message || "Failed to update course")
+    }
     setLoading(false)
   }
 
   return (
-    <div className="max-w-2xl mx-auto rounded-xl border border-richblack-700 bg-richblack-800 p-6 shadow-lg">
-      {/* Header */}
-      <div className="mb-6 border-b border-richblack-700 pb-4">
-        <h2 className="text-xl font-bold text-richblack-5">
+    <div className="space-y-5 rounded-xl border border-richblack-700 bg-richblack-800 p-5 md:p-6">
+      {/* Header - đồng bộ với Step 1 & 2 */}
+      <div>
+        <div className="mb-1 flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-yellow-50/90">
+            Step 3 of 3
+          </span>
+        </div>
+        <h2 className="text-xl font-semibold text-richblack-5">
           {isAlreadyApproved ? "Update Course" : "Submit Course for Review"}
         </h2>
-        <p className="text-xs text-richblack-300 mt-1">
+        <p className="mt-0.5 text-sm text-richblack-400">
           {isAlreadyApproved
             ? "This course is already live. Changes are saved immediately without needing admin re-approval."
             : "Your course will be sent to administrators for approval before going live."}
@@ -92,19 +98,17 @@ export default function SubmitForReview() {
       </div>
 
       {/* Status Card */}
-      <div className="rounded-lg bg-richblack-900 border border-richblack-700 p-5 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm text-richblack-100 font-medium">
-            Submission Status
-          </p>
+      <div className="rounded-lg border border-richblack-600 bg-richblack-900/50 p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <p className="text-sm font-medium text-richblack-5">Submission Status</p>
 
           <span
-            className={`px-3 py-0.5 text-[11px] font-semibold rounded-full ${
+            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
               isAlreadyApproved
-                ? "bg-green-500/20 text-green-100 border border-green-500/30"
+                ? "border border-green-500/30 bg-green-500/15 text-green-300"
                 : readyForReview
-                ? "bg-yellow-500/20 text-yellow-100 border border-yellow-500/30"
-                : "bg-richblack-700 text-richblack-300"
+                ? "border border-yellow-500/30 bg-yellow-500/15 text-yellow-200"
+                : "border border-richblack-600 bg-richblack-700 text-richblack-300"
             }`}
           >
             {isAlreadyApproved
@@ -115,15 +119,15 @@ export default function SubmitForReview() {
           </span>
         </div>
 
-        {/* Toggle chỉ hiển thị khi course CHƯA từng được duyệt */}
+        {/* Toggle chỉ hiện khi chưa duyệt */}
         {!isAlreadyApproved && (
-          <>
-            <label className="flex items-center justify-between cursor-pointer py-2">
-              <span className="text-xs text-richblack-200">
+          <div className="space-y-2.5">
+            <label className="flex cursor-pointer items-center justify-between gap-4 py-1">
+              <span className="text-sm text-richblack-300">
                 I confirm this course is complete and ready for Admin verification.
               </span>
 
-              <div className="relative ml-4 shrink-0">
+              <div className="relative shrink-0">
                 <input
                   type="checkbox"
                   className="sr-only"
@@ -131,48 +135,59 @@ export default function SubmitForReview() {
                   onChange={(e) => setReadyForReview(e.target.checked)}
                 />
                 <div
-                  className={`w-10 h-5 rounded-full transition-all duration-300 ${
+                  className={`h-5 w-10 rounded-full transition-colors duration-200 ${
                     readyForReview ? "bg-yellow-50" : "bg-richblack-600"
                   }`}
-                ></div>
+                />
                 <div
-                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-richblack-900 transition-all duration-300 ${
-                    readyForReview ? "translate-x-5" : ""
+                  className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-richblack-900 shadow transition-transform duration-200 ${
+                    readyForReview ? "translate-x-5" : "translate-x-0"
                   }`}
-                ></div>
+                />
               </div>
             </label>
 
-            <p className="text-[11px] text-richblack-400 mt-2">
-              Note: You wont be able to make changes while the course is under review.
+            <p className="text-xs text-richblack-500">
+              Note: You won’t be able to make changes while the course is under review.
             </p>
-          </>
+          </div>
         )}
 
         {isAlreadyApproved && (
-          <p className="text-[11px] text-richblack-400 mt-2">
+          <p className="text-xs text-richblack-500">
             No approval needed — updates to a published course go live immediately.
           </p>
         )}
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex items-center justify-between">
+      {/* Course summary (optional quick glance) */}
+      {course && (
+        <div className="rounded-lg border border-richblack-700 bg-richblack-900/30 px-4 py-3">
+          <p className="text-xs text-richblack-400 mb-1">Course</p>
+          <p className="text-sm font-medium text-richblack-5 truncate">
+            {course.courseName || "Untitled Course"}
+          </p>
+        </div>
+      )}
+
+      {/* Footer actions - đồng bộ */}
+      <div className="flex flex-col-reverse gap-3 border-t border-richblack-700 pt-4 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="button"
           disabled={loading}
           onClick={goBack}
-          className="flex items-center gap-x-1 px-4 py-1.5 rounded-md bg-richblack-700 text-xs font-semibold text-richblack-100 hover:bg-richblack-600 transition"
+          className="flex items-center justify-center gap-2 rounded-lg bg-richblack-700 px-4 py-2 text-sm font-semibold text-richblack-5 transition-colors hover:bg-richblack-600 disabled:opacity-50"
         >
-          <MdArrowBack className="text-sm" /> Back
+          <MdOutlineArrowBack size={16} />
+          Back
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <button
             type="button"
             disabled={loading}
             onClick={goToMyCourses}
-            className="px-4 py-1.5 rounded-md border border-richblack-600 text-xs font-semibold text-richblack-200 hover:bg-richblack-700 transition"
+            className="rounded-lg border border-richblack-600 px-4 py-2 text-sm font-semibold text-richblack-300 transition-colors hover:bg-richblack-700 hover:text-richblack-5 disabled:opacity-50"
           >
             {isAlreadyApproved ? "Exit Without Saving" : "Save as Draft & Exit"}
           </button>
@@ -181,9 +196,9 @@ export default function SubmitForReview() {
             type="button"
             disabled={loading}
             onClick={handleCourseSubmit}
-            className="flex items-center gap-x-1 px-5 py-1.5 rounded-md bg-yellow-50 text-xs font-bold text-richblack-900 hover:scale-95 transition-all disabled:opacity-60"
+            className="flex items-center justify-center gap-2 rounded-lg bg-yellow-50 px-5 py-2 text-sm font-bold text-richblack-900 transition-all hover:scale-[0.98] disabled:opacity-60"
           >
-            <MdOutlineSendAndArchive className="text-sm" />
+            <MdOutlineSendAndArchive size={16} />
             {loading
               ? "Saving..."
               : isAlreadyApproved

@@ -60,7 +60,6 @@ export const getAllCourses = async (token) => {
 };
 
 export const approveCourse = async (courseId, status, token) => {
-    const toastId = toast.loading("Processing course status...");
     try {
         const response = await apiConnector("POST", adminEndpoints.APPROVE_COURSE, { courseId, status }, {
             Authorization: `Bearer ${token}`,
@@ -69,8 +68,6 @@ export const approveCourse = async (courseId, status, token) => {
     } catch (error) {
         console.log("APPROVE_COURSE_ERROR...", error);
         toast.error("Error updating course status");
-    } finally {
-        toast.dismiss(toastId);
     }
 };
 export const updateInstructorStatus = async (instructorId, status, token) => {

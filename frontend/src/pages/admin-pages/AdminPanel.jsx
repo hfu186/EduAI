@@ -162,11 +162,12 @@ export default function AdminAnalytics() {
 
   return (
     <div style={{
-      minHeight: "100vh",
-      background: "#080810",
-      color: "#fff",
-      fontFamily: "'Inter', sans-serif",
-    }}>
+    width: "100%",
+    minWidth: 0,
+    background: "#080810",
+    color: "#fff",
+    fontFamily: "'Inter', sans-serif",
+}}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 6px; }
@@ -249,8 +250,7 @@ export default function AdminAnalytics() {
           {/* ── Revenue + Enrollment (2 col) ── */}
           <div style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 20,
+gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",            gap: 20,
             marginBottom: 20,
           }}>
             <ChartCard title={t("pages.admin.analytics.charts.revenue")} badge={t("pages.admin.analytics.kpi.last_30_days")}>

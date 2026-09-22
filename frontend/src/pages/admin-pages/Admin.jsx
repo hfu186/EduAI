@@ -28,7 +28,7 @@ const Admin = () => {
     <div className="flex w-full bg-[#000814] text-richblack-5">
       <Sidebar />
       <div ref={contentRef} className="overflow-auto w-full">
-        <div className="mx-auto w-11/12 max-w-[1000px] py-10">
+        <div className="mx-auto max-w-[1050px] py-10">
           <Outlet />
         </div>
       </div>

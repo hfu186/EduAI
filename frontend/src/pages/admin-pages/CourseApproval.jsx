@@ -24,40 +24,25 @@ import {
 import { MdErrorOutline, MdInfoOutline } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
+import {  formatVND } from "../../utils/formatVND"
+import {  dateFormatter } from "../../utils/dateFormatter"
+
 
 export default function CourseApproval() {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const { token } = useSelector((state) => state.auth);
 
   const fetchCourses = async () => {
-    setLoading(true);
     const result = await getAllCourses(token);
     if (result) setCourses(result);
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchCourses();
   }, []);
 
-  const formatDate = (date) => {
-    if (!date) return "—";
-    return new Date(date).toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
-  const formatPrice = (price) => {
-    if (price === 0 || price === "0") return "Free";
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
+ 
 
   const renderSubSectionLink = (sub) => {
     const baseUrl = "http://localhost:5000";
@@ -149,7 +134,6 @@ export default function CourseApproval() {
     }
   };
 
-  // Count total lectures
   const getTotalLectures = (course) => {
     if (!course.courseContent || typeof course.courseContent[0] !== "object")
       return 0;
@@ -159,17 +143,13 @@ export default function CourseApproval() {
     );
   };
 
-  if (loading)
-    return (
-      <div className="grid place-items-center h-[60vh]">
-        <div className="spinner"></div>
-      </div>
-    );
+  
 
-  const pendingCount = courses.filter((c) => c.status === "Draft" || "Pending").length;
+  const pendingCount = courses.filter((c) => c.status === "Draft" ||  c.status === "Pending"
+).length;
 
   return (
-    <div className="space-y-8 animate-fadeIn px-4 md:px-8 lg:px-12 py-6 min-h-screen">
+    <div className="space-y-8 ">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -242,7 +222,7 @@ export default function CourseApproval() {
                     {course.price !== undefined && (
                       <span className="flex items-center gap-1">
                         <FaMoneyBillWave size={10} className="text-caribbeangreen-300" />
-                        {formatPrice(course.price)}
+                        {formatVND(course.price)}
                       </span>
                     )}
                     {course.category?.name && (
@@ -381,7 +361,7 @@ export default function CourseApproval() {
                         <FaMoneyBillWave size={10} /> Price
                       </p>
                       <p className="text-sm font-bold text-caribbeangreen-200">
-                        {formatPrice(selectedCourse.price)}
+                        {formatVND(selectedCourse.price)}
                       </p>
                     </div>
                     <div className="bg-richblack-900/60 rounded-xl p-3 border border-richblack-700">
@@ -415,7 +395,7 @@ export default function CourseApproval() {
                         <FaCalendarAlt size={10} /> Created
                       </p>
                       <p className="text-sm font-bold text-richblack-5">
-                        {formatDate(selectedCourse.createdAt)}
+                        {dateFormatter(selectedCourse.createdAt)}
                       </p>
                     </div>
                     {selectedCourse.updatedAt && (
@@ -424,7 +404,7 @@ export default function CourseApproval() {
                           <FaClock size={10} /> Updated
                         </p>
                         <p className="text-sm font-bold text-richblack-5">
-                          {formatDate(selectedCourse.updatedAt)}
+                          {dateFormatter(selectedCourse.updatedAt)}
                         </p>
                       </div>
                     )}

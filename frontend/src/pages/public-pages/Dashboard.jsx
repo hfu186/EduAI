@@ -1,40 +1,54 @@
 import { useEffect, useRef } from "react";
-import { useSelector } from 'react-redux'
-import { Outlet, useLocation } from "react-router-dom"
-import Sidebar from '@/components/common/Layout/Sidebar'
-import Loading from '@/components/common/Loading'
+import { useSelector } from "react-redux";
+import { Outlet, useLocation } from "react-router-dom";
+
+import Sidebar from "@/components/common/Layout/Sidebar";
+import Loading from "@/components/common/Loading";
 
 const Dashboard = () => {
-    const { loading: authLoading } = useSelector((state) => state.auth);
-    const { loading: profileLoading } = useSelector((state) => state.profile);
+    const { loading: authLoading } = useSelector(
+        (state) => state.auth
+    );
+
+    const { loading: profileLoading } = useSelector(
+        (state) => state.profile
+    );
+
     const contentRef = useRef(null);
     const location = useLocation();
 
-
-    if (profileLoading || authLoading) {
-        return (
-            <div className='mt-10'>
-                <Loading />
-            </div>
-        )
-    }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    // Scroll to top when changing page
     useEffect(() => {
         if (contentRef.current) {
-            contentRef.current.scrollTo({ top: 0, behavior: "auto" });
+            contentRef.current.scrollTo({
+                top: 0,
+                behavior: "auto",
+            });
         }
     }, [location.pathname]);
 
+    if (profileLoading || authLoading) {
+        return (
+            <div className="mt-10">
+                <Loading />
+            </div>
+        );
+    }
+
     return (
-        <div className='flex w-full bg-[#000814] text-richblack-5'>
+        <div className="flex min-h-screen w-full bg-[#000814] text-richblack-5">
             <Sidebar />
-            <div ref={contentRef} className='overflow-auto w-full'>
-                <div className='mx-auto w-11/12 max-w-[1000px] py-10 '>
+
+            <div
+                ref={contentRef}
+                className="min-w-0 min-h-screen flex-1 overflow-auto"
+            >
+                <div className="mx-auto w-11/12 py-10">
                     <Outlet />
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Dashboard
+export default Dashboard;

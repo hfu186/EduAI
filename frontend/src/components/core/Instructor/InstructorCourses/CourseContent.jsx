@@ -3,10 +3,10 @@ import  { useEffect, useState } from "react"
 import {  useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { getFullCourseDetails } from "../../../../services/operations/courseDetailsAPI"
-import { formatDate } from "../../../../services/formatDate"
+import {  formatVND } from "../../../../utils/formatVND"
+import {  dateFormatter } from "../../../../utils/dateFormatter"
 import { VscEdit } from "react-icons/vsc";
 import { BiTask } from "react-icons/bi";
-import { formatVND } from "../../../../utils/formatVND";
 import { BiDetail } from "react-icons/bi"
 import { HiOutlineUsers } from "react-icons/hi"
 import {  MdKeyboardArrowDown, MdKeyboardArrowUp, MdEdit } from "react-icons/md"
@@ -66,7 +66,7 @@ export default function CourseContent() {
             
             <div className="flex gap-x-4 text-richblack-200 text-sm font-medium mt-2">
                 <span className="flex items-center gap-1 bg-richblack-700 px-3 py-1 rounded-full">
-                    Created: {formatDate(courseData?.createdAt)}
+                    Created: {dateFormatter(courseData?.createdAt)}
                 </span>
                 <span className={`flex items-center gap-1 px-3 py-1 rounded-full ${courseData?.status === "Published" ? "bg-caribbeangreen-900 text-caribbeangreen-50" : "bg-pink-900 text-pink-50"}`}>
                     {courseData?.status}

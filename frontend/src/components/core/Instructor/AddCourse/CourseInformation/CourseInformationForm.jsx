@@ -151,130 +151,154 @@ export default function CourseInformationForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-lg border border-richblack-700 bg-richblack-800 p-5 shadow-sm flex flex-col gap-5"
+      className="space-y-5 rounded-xl border border-richblack-700 bg-richblack-800 p-5 md:p-6"
     >
+      {/* Header - đồng bộ với CourseBuilder */}
+      <div>
+        <div className="mb-1 flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-yellow-50" />
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-yellow-50/90">
+            Step 1 of 3
+          </span>
+        </div>
+        <h2 className="text-xl font-semibold text-richblack-5">
+          {t("courseForm.title_heading", "Course Information")}
+        </h2>
+        <p className="mt-0.5 text-sm text-richblack-400">
+          {t("courseForm.subtitle", "Fill in the basic details of your course.")}
+        </p>
+      </div>
+
+      {/* Main grid */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
-        
-        <div className="flex flex-col gap-4 lg:col-span-9">
+        {/* Left column - Main fields */}
+        <div className="flex flex-col gap-4 lg:col-span-8">
           {/* Title */}
-          <div className="flex flex-col space-y-1">
-            <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseTitle">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm text-richblack-5" htmlFor="courseTitle">
               {t("courseForm.title")} <sup className="text-pink-200">*</sup>
             </label>
             <input
               id="courseTitle"
               placeholder={t("courseForm.title_placeholder")}
               {...register("courseTitle", { required: true })}
-              className={`form-style w-full transition-colors ${
+              className={`form-style w-full !py-2.5 ${
                 errors.courseTitle ? "border-pink-300 focus:border-pink-300" : ""
               }`}
             />
             {errors.courseTitle && (
-              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+              <span className="text-xs text-pink-200">{t("courseForm.required")}</span>
             )}
           </div>
 
-          {/* Category & Level */}
+          {/* Category + Level */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {/* Category */}
-            <div className="flex flex-col space-y-1">
-              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseCategory">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm text-richblack-5" htmlFor="courseCategory">
                 {t("courseForm.category")} <sup className="text-pink-200">*</sup>
               </label>
               {categoriesLoading ? (
-                <div className="h-[40px] w-full animate-pulse rounded-lg bg-richblack-700" />
+                <div className="h-[42px] w-full animate-pulse rounded-lg bg-richblack-700" />
               ) : (
                 <select
                   {...register("courseCategory", { required: true })}
                   id="courseCategory"
-                  className={`form-style w-full transition-colors ${
+                  className={`form-style w-full !py-2.5 ${
                     errors.courseCategory ? "border-pink-300 focus:border-pink-300" : ""
                   }`}
                   defaultValue=""
                 >
-                  <option value="" disabled>{t("courseForm.category_placeholder")}</option>
+                  <option value="" disabled>
+                    {t("courseForm.category_placeholder")}
+                  </option>
                   {courseCategories.map((category) => (
-                    <option key={category._id} value={category._id}>{category.name}</option>
+                    <option key={category._id} value={category._id}>
+                      {category.name}
+                    </option>
                   ))}
                 </select>
               )}
               {errors.courseCategory && (
-                <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+                <span className="text-xs text-pink-200">{t("courseForm.required")}</span>
               )}
             </div>
 
-            {/* Level */}
-            <div className="flex flex-col space-y-1">
-              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseLevel">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm text-richblack-5" htmlFor="courseLevel">
                 {t("courseForm.level")} <sup className="text-pink-200">*</sup>
               </label>
               <select
                 {...register("courseLevel", { required: true })}
                 id="courseLevel"
-                className={`form-style w-full transition-colors ${
+                className={`form-style w-full !py-2.5 ${
                   errors.courseLevel ? "border-pink-300 focus:border-pink-300" : ""
                 }`}
                 defaultValue=""
               >
-                <option value="" disabled>{t("courseForm.level_placeholder")}</option>
+                <option value="" disabled>
+                  {t("courseForm.level_placeholder")}
+                </option>
                 <option value="Beginner">{t("courseForm.level_beginner")}</option>
                 <option value="Intermediate">{t("courseForm.level_intermediate")}</option>
                 <option value="Advanced">{t("courseForm.level_advanced")}</option>
               </select>
               {errors.courseLevel && (
-                <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+                <span className="text-xs text-pink-200">{t("courseForm.required")}</span>
               )}
             </div>
           </div>
 
           {/* Description */}
-          <div className="flex flex-col space-y-1">
+          <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseShortDesc">
+              <label className="text-sm text-richblack-5" htmlFor="courseShortDesc">
                 {t("courseForm.description")} <sup className="text-pink-200">*</sup>
               </label>
-              <span className="text-[11px] text-richblack-400">{courseShortDesc?.length || 0} chars</span>
+              <span className="text-[11px] text-richblack-400">
+                {courseShortDesc?.length || 0} chars
+              </span>
             </div>
             <textarea
               id="courseShortDesc"
               placeholder={t("courseForm.description_placeholder")}
               {...register("courseShortDesc", { required: true })}
-              className={`form-style h-[100px] w-full resize-none transition-colors ${
+              className={`form-style h-[90px] w-full resize-none !py-2.5 ${
                 errors.courseShortDesc ? "border-pink-300 focus:border-pink-300" : ""
               }`}
             />
             {errors.courseShortDesc && (
-              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+              <span className="text-xs text-pink-200">{t("courseForm.required")}</span>
             )}
           </div>
 
           {/* Benefits */}
-          <div className="flex flex-col space-y-1">
-            <div className="flex items-center justify-between">
-              <label className="text-[13px] font-medium text-richblack-5" htmlFor="courseBenefits">
+          <div className="flex flex-col gap-1.5 overflow-hidden">
+            <div className="flex items-center justify-between ">
+              <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
                 {t("courseForm.benefits")} <sup className="text-pink-200">*</sup>
               </label>
-              <span className="text-[11px] text-richblack-400">{courseBenefits?.length || 0} chars</span>
+              <span className="text-[11px] text-richblack-400">
+                {courseBenefits?.length || 0} chars
+              </span>
             </div>
             <textarea
               id="courseBenefits"
               placeholder={t("courseForm.benefits_placeholder")}
               {...register("courseBenefits", { required: true })}
-              className={`form-style h-[100px] w-full resize-none transition-colors ${
+              className={`form-style h-[90px] w-full resize-none !py-2.5 ${
                 errors.courseBenefits ? "border-pink-300 focus:border-pink-300" : ""
               }`}
             />
             {errors.courseBenefits && (
-              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+              <span className="text-xs text-pink-200">{t("courseForm.required")}</span>
             )}
           </div>
         </div>
 
-        {/* CỘT PHẢI (5/12): Thiết lập Giá & Upload Thumbnail */}
-        <div className="flex flex-col gap-4 lg:col-span-3">
-          {/* Price */}
-          <div className="flex flex-col space-y-1">
-            <label className="text-[13px] font-medium text-richblack-5" htmlFor="coursePrice">
+        {/* Right column - Price + Thumbnail */}
+        <div className="flex flex-col gap-4 lg:col-span-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm text-richblack-5" htmlFor="coursePrice">
               {t("courseForm.price")} (VND) <sup className="text-pink-200">*</sup>
             </label>
             <input
@@ -283,17 +307,20 @@ export default function CourseInformationForm() {
               min="0"
               step="0.01"
               placeholder={t("courseForm.price_placeholder")}
-              {...register("coursePrice", { required: true, valueAsNumber: true, min: 0 })}
-              className={`form-style w-full transition-colors ${
+              {...register("coursePrice", {
+                required: true,
+                valueAsNumber: true,
+                min: 0,
+              })}
+              className={`form-style w-full !py-2.5 ${
                 errors.coursePrice ? "border-pink-300 focus:border-pink-300" : ""
               }`}
             />
             {errors.coursePrice && (
-              <span className="ml-1 text-[11px] tracking-wide text-pink-200">{t("courseForm.required")}</span>
+              <span className="text-xs text-pink-200">{t("courseForm.required")}</span>
             )}
           </div>
 
-          {/* Thumbnail Box - Nằm trọn vẹn ở cột bên phải */}
           <div className="w-full">
             <Upload
               name="courseImage"
@@ -305,17 +332,16 @@ export default function CourseInformationForm() {
             />
           </div>
         </div>
-
       </div>
 
-      {/* Action Buttons Footer */}
-      <div className="mt-2 flex flex-col-reverse gap-3 border-t border-richblack-700 pt-4 sm:flex-row sm:justify-end sm:gap-x-3">
+      {/* Footer actions - đồng bộ với CourseBuilder */}
+      <div className="flex flex-col-reverse gap-3 border-t border-richblack-700 pt-4 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
         {editCourse && (
           <button
             type="button"
             onClick={() => dispatch(setStep(2))}
             disabled={loading}
-            className="flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-richblack-300 py-1.5 px-4 text-[13px] font-semibold text-richblack-900 transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg bg-richblack-700 px-4 py-2 text-sm font-semibold text-richblack-5 transition-colors hover:bg-richblack-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {t("courseForm.continue_without_saving")}
           </button>
@@ -330,7 +356,7 @@ export default function CourseInformationForm() {
               : t("courseForm.save_changes")
           }
         >
-          <MdNavigateNext className="text-lg" />
+          <MdNavigateNext size={18} />
         </IconBtn>
       </div>
     </form>

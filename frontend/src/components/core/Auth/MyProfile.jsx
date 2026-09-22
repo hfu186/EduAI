@@ -5,7 +5,7 @@ import { IoClose } from "react-icons/io5"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from 'react-i18next'
-import { formattedDate } from "../../../utils/dateFormatter"
+import { dateFormatter } from "../../../utils/dateFormatter"
 import IconBtn from "../../common/IconBtn"
 import Img from './../../common/Img';
 
@@ -134,7 +134,7 @@ export default function MyProfile() {
             <div>
               <p className="mb-2 text-sm text-richblack-600">{t('profile.personal.dob')}</p>
               <p className="text-sm font-semibold text-richblack-5">
-                {formattedDate(user?.additionalDetails?.dateOfBirth) ?? t('profile.personal.add_dob')}
+                {dateFormatter(user?.additionalDetails?.dateOfBirth) ?? t('profile.personal.add_dob')}
               </p>
             </div>
           </div>

@@ -11,7 +11,6 @@ import {
   createRating,
   fetchCourseDetails,
 } from "../../services/operations/courseDetailsAPI";
-import { formatDate } from "../../services/formatDate";
 import GetAvgRating from "../../utils/avgRating";
 import { ACCOUNT_TYPE } from "../../utils/constants";
 import { addToCart } from "../../slices/cartSlice";
@@ -234,9 +233,9 @@ function CourseDetails() {
 
   const instructorImage = instructor?.image;
 
-  const formattedDate = createdAt
-    ? formatDate(createdAt)
-    : formatDate(new Date().toISOString());
+  const dateFormatter = createdAt
+    ? dateFormatter(createdAt)
+    : dateFormatter(new Date().toISOString());
 
   return (
     <div className="bg-richblack-900 min-h-screen">
@@ -317,7 +316,7 @@ function CourseDetails() {
                   <BiInfoCircle />
                   <span>
                     {t("pages.course_details.last_updated", {
-                      date: formattedDate,
+                      date: dateFormatter,
                     })}
                   </span>
                 </div>
@@ -508,7 +507,7 @@ function CourseDetails() {
                               {reviewerName}
                             </p>
                             <span className="text-richblack-500 text-xs">
-                              • {formatDate(review?.createdAt || new Date())}
+                              • {dateFormatter(review?.createdAt || new Date())}
                             </span>
                           </div>
                           <div className="flex items-center gap-1 text-yellow-50 text-xs mb-3">

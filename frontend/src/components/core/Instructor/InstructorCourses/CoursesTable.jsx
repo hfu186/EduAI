@@ -8,8 +8,7 @@ import { FiEdit2 } from "react-icons/fi"
 import { HiClock } from "react-icons/hi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { useNavigate } from "react-router-dom"
-
-import { formatDate } from "../../../../services/formatDate"
+import {  dateFormatter } from "../../../../utils/dateFormatter"
 import { deleteCourse, fetchInstructorCourses } from "../../../../services/operations/courseDetailsAPI"
 import { COURSE_STATUS } from "../../../../utils/constants"
 import ConfirmationModal from "../../../common/ConfirmationModal"
@@ -99,7 +98,7 @@ export default function CoursesTable({ courses, setCourses }) {
 
                     <div className="mt-4 space-y-1">
                         <p className="text-[12px] text-richblack-100">
-                          Created: {formatDate(course?.createdAt)}
+                          Created: {dateFormatter(course?.createdAt)}
                         </p>
                        
                     </div>
