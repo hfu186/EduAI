@@ -5,10 +5,11 @@ const {
   getNotifications,
   markNotificationAsRead,
   markAllNotificationsAsRead,
+  deleteNotification,
 } = require("../controllers/notifications");
 
 router.get("/", auth, getNotifications);
 router.patch("/:id/read", auth, markNotificationAsRead);
 router.patch("/mark-all-read", auth, markAllNotificationsAsRead);
-
+router.delete("/:id", auth, deleteNotification);
 module.exports = router;

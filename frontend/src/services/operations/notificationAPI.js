@@ -38,3 +38,13 @@ export const markAllNotificationsAsRead = async (token) => {
 
   return response?.data;
 };
+
+export const deleteNotification = async (token, notificationId) => {
+  const response = await apiConnector("DELETE", `${notificationEndpoints.DELETE_NOTIFICATION_API.replace(":id", notificationId)}`, null, {
+    Authorization: `Bearer ${token}`,
+  });
+  if (!response?.data?.success) {
+    throw new Error(response?.data?.message || "Could not delete notification");
+  }
+  return response?.data;
+};

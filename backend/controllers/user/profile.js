@@ -178,7 +178,6 @@ exports.deleteAccount = async (req, res) => {
 }
 
 
-// ================ request to become instructor ================
 exports.  requestInstructor = async (req, res) => {
   try {
     const userId = req.user.id;

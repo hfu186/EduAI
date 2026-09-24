@@ -91,6 +91,7 @@ export const notificationEndpoints = {
   GET_NOTIFICATIONS_API: BASE_URL + "/notifications",
   MARK_NOTIFICATION_READ_API: BASE_URL + "/notifications",
   MARK_ALL_NOTIFICATIONS_READ_API: BASE_URL + "/notifications/mark-all-read",
+  DELETE_NOTIFICATION_API: BASE_URL + "/notifications/:id",
 }
 
 export const adminEndpoints={

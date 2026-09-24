@@ -1,15 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FiSearch, FiX, FiBell,FiMessageSquare  } from "react-icons/fi";
+import { FiSearch, FiX, FiMessageSquare } from "react-icons/fi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import {
-  getNotifications,
-  markNotificationAsRead,
-  markAllNotificationsAsRead,
-} from "../../../services/operations/notificationAPI";
 import LocaleSwitcher from "./LocaleSwitcher";
+import NotificationDropdown from "./NotificationDropdown";
 import { useTranslation } from "react-i18next";
 import { NavbarLinks } from "../../../../data/navbar-links";
 import EduSpaceLogo from "@/assets/Logo/Logo-Full-Light.png";
@@ -29,16 +25,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
   const inputRef = useRef(null);
-  const notificationRef = useRef(null);
   const [subLinks, setSubLinks] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const initData = async () => {
@@ -56,36 +48,6 @@ const Navbar = () => {
     initData();
   }, []);
 
-  useEffect(() => {
-    const loadNotifications = async () => {
-      if (!token) return;
-      try {
-        const data = await getNotifications(token);
-        setNotifications(data);
-        setUnreadCount(data.filter((item) => !item.read).length);
-      } catch (error) {
-        console.log("Error loading notifications", error);
-      }
-    };
-    loadNotifications();
-    if (!token) return;
-    const intervalId = window.setInterval(() => {
-      loadNotifications();
-    }, 10000);
-
-    const handleWindowFocus = () => {
-      loadNotifications();
-    };
-
-    window.addEventListener("focus", handleWindowFocus);
-
-    return () => {
-      window.clearInterval(intervalId);
-      window.removeEventListener("focus", handleWindowFocus);
-    };
-  }, [token]);
-
-  // Auto focus input when search opens
   useEffect(() => {
     if (isSearchOpen && inputRef.current) {
       inputRef.current.focus();
@@ -126,31 +88,12 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  useEffect(() => {
-    if (!showNotifications) return;
-
-    const handleClickOutside = (e) => {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(e.target)
-      ) {
-        setShowNotifications(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showNotifications]);
 
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
         setIsSearchOpen(false);
         setShowSuggestions(false);
-        setShowNotifications(false);
         setSearchValue("");
       }
     };
@@ -178,39 +121,6 @@ const Navbar = () => {
     setSearchValue("");
   };
 
-  const handleNotificationClick = async (notification) => {
-    if (!notification.read) {
-      try {
-        await markNotificationAsRead(token, notification._id);
-
-        setNotifications((prev) =>
-          prev.map((item) =>
-            item._id === notification._id ? { ...item, read: true } : item,
-          ),
-        );
-        setUnreadCount((prev) => Math.max(0, prev - 1));
-      } catch (error) {
-        console.log("Error marking notification as read", error);
-      }
-    }
-
-    if (notification.link) {
-      navigate(notification.link);
-      setShowNotifications(false);
-    }
-  };
-
-  const handleMarkAllNotificationsRead = async () => {
-    if (!token) return;
-    try {
-      await markAllNotificationsAsRead(token);
-      setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
-      setUnreadCount(0);
-    } catch (error) {
-      console.log("Error marking all notifications as read", error);
-    }
-  };
-
   const matchRoute = (route) => matchPath({ path: route }, location.pathname);
 
   return (
@@ -227,8 +137,7 @@ const Navbar = () => {
           />
         </Link>
 
-        {/* CENTER NAV LINKS */}
-        <ul className="hidden text-m lg:flex items-center gap-7 font-semi564bold absolute left-1/2 -translate-x-1/2">
+        <ul className="hidden text-m lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
           {NavbarLinks.map((link, index) => (
             <li key={index}>
               {link.title === "Catalog" ? (
@@ -242,7 +151,7 @@ const Navbar = () => {
 
                   <div className="invisible absolute left-1/2 top-full z-[1000] w-52 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
                     <div className="relative rounded-xl bg-richblack-5 p-2 text-richblack-900 shadow-xl">
-                      <div className="absolute left-1/2 -top-1.5 h-3 w- -translate-x-1/2 rotate-45 bg-richblack-5" />
+                      <div className="absolute left-1/2 -top-1.5 h-3 w-3 -translate-x-1/2 rotate-45 bg-richblack-5" />
                       {subLinks.length > 0 ? (
                         subLinks.map((sub, i) => (
                           <Link
@@ -375,74 +284,10 @@ const Navbar = () => {
           </div>
 
           {/* Notifications */}
-          {/* Notifications */}
-          {token && (
-            <div className="relative" ref={notificationRef}>
-              <button
-                onClick={() => setShowNotifications((prev) => !prev)}
-                className="relative flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 hover:bg-richblack-800 hover:text-[#12D8FA] transition-all"
-                aria-label="Notifications"
-              >
-                <FiBell size={18} />
+          {token && <NotificationDropdown />}
 
-                {/* Chấm đỏ thông báo */}
-                {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red ring-2 ring-richblack-900" />
-                )}
-              </button>
-
-              {showNotifications && (
-                <div className="absolute right-0 top-[calc(100%+10px)] w-[320px] rounded-2xl border border-richblack-700 bg-richblack-800 shadow-2xl overflow-hidden">
-                  <div className="flex items-center justify-between border-b border-richblack-700 px-4 py-3">
-                    <p className="text-sm font-semibold text-richblack-5">
-                      {t("navbar.notifications.title")}
-                    </p>
-                    <button
-                      onClick={handleMarkAllNotificationsRead}
-                      className="text-xs text-[#12D8FA] hover:underline"
-                    >
-                      {t("navbar.notifications.mark_all")}
-                    </button>
-                  </div>
-
-                  <div className="max-h-[320px] overflow-y-auto">
-                    {notifications.length > 0 ? (
-                      notifications.map((notification) => (
-                        <button
-                          key={notification._id}
-                          onClick={() => handleNotificationClick(notification)}
-                          className={`block w-full px-4 py-3 text-left transition-colors ${
-                            notification.read
-                              ? "bg-richblack-800"
-                              : "bg-richblack-700/60"
-                          }`}
-                        >
-                          <div className="flex items-start gap-2">
-                            {!notification.read && (
-                              <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-richblack" />
-                            )}
-                            <div>
-                              <p className="text-sm font-medium text-richblack-5">
-                                {notification.title}
-                              </p>
-                              <p className="mt-1 text-xs text-richblack-400">
-                                {notification.message}
-                              </p>
-                            </div>
-                          </div>
-                        </button>
-                      ))
-                    ) : (
-                      <p className="px-4 py-6 text-center text-sm text-richblack-400">
-                        {t("navbar.notifications.empty")}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          {user && user?.accountType === "Student" && (
+          {/* Cart (Student) */}
+          {user?.accountType === "Student" && (
             <Link to="/dashboard/cart" className="relative group">
               <div className="flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 group-hover:bg-richblack-800 group-hover:text-yellow-25 transition-all">
                 <AiOutlineShoppingCart className="text-xl" />
@@ -454,19 +299,16 @@ const Navbar = () => {
               )}
             </Link>
           )}
-          {(user && user?.accountType === "Admin") ||
-            (user?.accountType === "Instructor" && (
-              <Link to="/chat" className="relative group">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 group-hover:bg-richblack-800 group-hover:text-yellow-25 transition-all">
-                  <FiMessageSquare className="text-xl" />
-                </div>
-                {totalItems > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-pink-500 px-1 text-[10px] font-bold text-white">
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
-            ))}
+
+          {/* Chat (Admin / Instructor) */}
+          {(user?.accountType === "Admin" ||
+            user?.accountType === "Instructor") && (
+            <Link to="/chat" className="relative group">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 group-hover:bg-richblack-800 group-hover:text-yellow-25 transition-all">
+                <FiMessageSquare className="text-xl" />
+              </div>
+            </Link>
+          )}
 
           {/* Auth */}
           {token === null ? (
