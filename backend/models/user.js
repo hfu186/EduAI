@@ -26,14 +26,7 @@ const userSchema = new mongoose.Schema(
             enum: ['Admin', 'Instructor', 'Student'],
             reuired: true
         },
-        active: {
-            type: Boolean,
-            default: true,
-        },
-        approved: {
-            type: Boolean,
-            default: true,
-        },
+       
         status: {
             type: String,
             enum: ['active', 'suspended'],
@@ -69,13 +62,7 @@ const userSchema = new mongoose.Schema(
         resetPasswordTokenExpires: {
             type: Date
         },
-        courseProgress: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'CourseProgress'
-
-            }
-        ],
+        
         lastActiveDate: {
             type: Date,
             default: Date.now

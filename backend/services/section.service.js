@@ -60,7 +60,7 @@ exports.deleteSection = async ({
   if (subSectionIds.length > 0) {
     await CourseProgress.updateMany(
       {
-        courseID: courseId,
+        courseId,
         completedSubSections: {
           $in: subSectionIds,
         },

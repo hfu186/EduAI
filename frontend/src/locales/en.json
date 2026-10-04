@@ -20,7 +20,7 @@
     "home": "Home",
     "courses": "Courses",
     "profile": "Profile",
-    "catalog": "Catalog",
+    "category": "Category",
     "instructors": "Instructors",
     "about us": "About",
     "contact us": "Contact"
@@ -329,7 +329,6 @@
       "money_back": "30-Day Money-Back Guarantee",
       "course_includes": "This course includes:",
       "lifetime_access": "Lifetime access",
-      "mobile_tv": "Access on Mobile and TV",
       "certificate": "Certificate of completion",
       "share": "Share",
       "purchased": "Purchased",

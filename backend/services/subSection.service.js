@@ -193,6 +193,9 @@ const updateSubSection = async ({
     await SubSection.findById(
       subSectionId
     );
+  if (type && type !== subSection.type) {
+  throw new Error("Cannot change subsection type");
+}
 
   if (!subSection) {
     throw new Error(
@@ -382,7 +385,7 @@ const deleteSubSection = async ({
 
   await CourseProgress.updateMany(
     {
-      courseID: courseId,
+      courseId,
       completedSubSections:
         subSectionId,
     },

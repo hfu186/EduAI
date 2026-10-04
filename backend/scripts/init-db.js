@@ -11,6 +11,7 @@ const models = [
   require("../models/chat"),
   require("../models/course"),
   require("../models/courseProgress"),
+  require("../models/enrollment"),
   require("../models/order"),
   require("../models/OTP"),
   require("../models/profile"),

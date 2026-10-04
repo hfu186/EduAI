@@ -1,6 +1,8 @@
 
 const Category = require("../../models/category");
 const Course = require("../../models/course");
+const Enrollment = require("../../models/enrollment");
+const { attachEnrollmentStudents } = require("../../services/enrollment.service");
 
 exports.getCategoryPageDetails = async (req, res) => {
   try {
@@ -36,27 +38,52 @@ exports.getCategoryPageDetails = async (req, res) => {
         })
         .exec();
     }
-
-    const allCategories = await Category.find()
-      .populate({
-        path: "courses",
-        match: { status: "Published" },
-        populate: { path: "instructor" },
-      })
-      .exec();
-    
-    const allCourses = allCategories.flatMap((category) => category.courses);
-    const mostSellingCourses = await Course.find({ status: "Published" })
-      .sort({ "studentsEnrolled.length": -1 }) 
-      .limit(10)
+    const popularCourseIds = await Enrollment.aggregate([
+      { $group: { _id: "$courseId", enrollmentCount: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: "courses",
+          localField: "_id",
+          foreignField: "_id",
+          as: "course",
+        },
+      },
+      { $unwind: "$course" },
+      { $match: { "course.status": "Published" } },
+      { $sort: { enrollmentCount: -1 } },
+      { $limit: 10 },
+      { $project: { _id: 1 } },
+    ]);
+    const popularCourses = await Course.find({
+      _id: { $in: popularCourseIds.map(({ _id }) => _id) },
+    })
       .populate("instructor")
       .exec();
+    const popularCoursesById = new Map(
+      popularCourses.map((course) => [String(course._id), course])
+    );
+    const mostSellingCourses = await attachEnrollmentStudents(
+      popularCourseIds
+        .map(({ _id }) => popularCoursesById.get(String(_id)))
+        .filter(Boolean)
+    );
+
+    const selectedCategoryData = selectedCategory.toObject();
+    selectedCategoryData.courses = await attachEnrollmentStudents(
+      selectedCategory.courses
+    );
+    const differentCategoryData = differentCategory?.toObject() || null;
+    if (differentCategoryData) {
+      differentCategoryData.courses = await attachEnrollmentStudents(
+        differentCategory.courses
+      );
+    }
 
     res.status(200).json({
       success: true,
       data: {
-        selectedCategory,
-        differentCategory,
+        selectedCategory: selectedCategoryData,
+        differentCategory: differentCategoryData,
         mostSellingCourses,
       },
     });

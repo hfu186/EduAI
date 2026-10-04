@@ -6,7 +6,7 @@ import { apiConnector } from "@/services/apiConnector";
 import { courseEndpoints } from "@/services/apis";
 import { generateAIQuiz } from "@/services/operations/courseDetailsAPI";
 import { toast } from "react-hot-toast";
-import { MdAutoAwesome, MdClose, } from "react-icons/md";
+import { MdAutoAwesome, MdClose, MdFlag, MdSend } from "react-icons/md";
 import PDFViewer from "./pdfViewer";
 
 const BASE_URL = "http://localhost:5000";
@@ -24,6 +24,11 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizResult, setQuizResult] = useState(null);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [reportingQuestion, setReportingQuestion] = useState(null);
+  const [reportIssueType, setReportIssueType] = useState("incorrect_answer");
+  const [reportDetails, setReportDetails] = useState("");
+  const [isReporting, setIsReporting] = useState(false);
+  const [reportedQuestions, setReportedQuestions] = useState([]);
 
   const isAlreadyCompleted = completedLectures.some(
     (id) => String(id) === String(subSectionId)
@@ -61,6 +66,8 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
     setAiQuiz(null);
     setQuizAnswers({});
     setQuizResult(null);
+    setReportingQuestion(null);
+    setReportedQuestions([]);
 
     try {
       const questions = await generateAIQuiz(subSectionId, 10, token);
@@ -108,11 +115,46 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
     setQuizResult(null);
   };
 
+  const handleReportIssue = async (question, questionIndex) => {
+    setIsReporting(true);
+    try {
+      const response = await apiConnector(
+        "POST",
+        courseEndpoints.REPORT_AI_QUIZ_ISSUE_API,
+        {
+          subSectionId,
+          questionIndex,
+          question: question.question,
+          options: question.options,
+          correctAnswer: question.correctAnswer,
+          issueType: reportIssueType,
+          details: reportDetails,
+        },
+        
+      );
+
+      if (response?.data?.success) {
+        setReportedQuestions((previous) => [...previous, questionIndex]);
+        setReportingQuestion(null);
+        setReportDetails("");
+        toast.success("Thanks for helping us improve this AI quiz.");
+      } else {
+        toast.error(response?.data?.message || "Failed to submit your report.");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit your report. Please try again.");
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
   const handleCloseQuiz = () => {
     setShowQuiz(false);
     setAiQuiz(null);
     setQuizAnswers({});
     setQuizResult(null);
+    setReportingQuestion(null);
+    setReportedQuestions([]);
   };
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -275,6 +317,73 @@ const SlideTab = ({ slides = [], courseId, subSectionId }) => {
                                 </label>
                               ))}
                             </div>
+                            <div className="mt-4 flex justify-end">
+                              {reportedQuestions.includes(qIndex) ? (
+                                <span className="text-sm text-caribbeangreen-200">
+                                  Issue reported
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setReportingQuestion(qIndex);
+                                    setReportIssueType("incorrect_answer");
+                                    setReportDetails("");
+                                  }}
+                                  className="inline-flex items-center gap-2 text-sm text-richblack-300 hover:text-yellow-50"
+                                >
+                                  <MdFlag size={16} />
+                                  Report an issue
+                                </button>
+                              )}
+                            </div>
+                            {reportingQuestion === qIndex && (
+                              <div className="mt-4 space-y-3 rounded-lg border border-richblack-600 bg-richblack-800 p-4">
+                                <label className="block text-sm text-richblack-200">
+                                  What is wrong with this question?
+                                  <select
+                                    value={reportIssueType}
+                                    onChange={(event) => setReportIssueType(event.target.value)}
+                                    className="mt-2 w-full rounded-md border border-richblack-600 bg-richblack-900 px-3 py-2 text-white"
+                                  >
+                                    <option value="incorrect_answer">The marked answer is incorrect</option>
+                                    <option value="unclear_question">The question is unclear</option>
+                                    <option value="incorrect_options">The answer options are incorrect</option>
+                                    <option value="other">Other issue</option>
+                                  </select>
+                                </label>
+                                <label className="block text-sm text-richblack-200">
+                                  Additional details (optional)
+                                  <textarea
+                                    value={reportDetails}
+                                    onChange={(event) => setReportDetails(event.target.value)}
+                                    maxLength={1000}
+                                    rows={3}
+                                    className="mt-2 w-full resize-y rounded-md border border-richblack-600 bg-richblack-900 px-3 py-2 text-white"
+                                    placeholder="Tell us what should be corrected..."
+                                  />
+                                </label>
+                                <div className="flex justify-end gap-3">
+                                  <button
+                                    type="button"
+                                    onClick={() => setReportingQuestion(null)}
+                                    disabled={isReporting}
+                                    className="rounded-md px-3 py-2 text-sm text-richblack-200 hover:text-white disabled:opacity-50"
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleReportIssue(question, qIndex)}
+                                    disabled={isReporting}
+                                    className="inline-flex items-center gap-2 rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
+                                  >
+                                    <MdSend size={16} />
+                                    {isReporting ? "Sending..." : "Submit report"}
+                                  </button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))}
 

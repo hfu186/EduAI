@@ -77,7 +77,6 @@ export const getAllCourses = async () => {
     }
     result = response?.data?.data
   } catch (error) {
-    console.log("GET_ALL_COURSE_API API ERROR............", error)
     toast.error(error.message)
   }
   return result
@@ -437,7 +436,6 @@ export const getFullCourseDetails = async (courseId, token) => {
         Authorization: `Bearer ${token}`,
       }
     )
-    console.log("COURSE_FULL_DETAILS_API API RESPONSE............", response)
     if (!response.data.success) {
       throw new Error(response.data.message)
     }

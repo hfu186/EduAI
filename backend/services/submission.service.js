@@ -57,13 +57,13 @@ const submitAssignment = async ({
 
   const course = await Course.findById(courseId);
   let courseProgress = await CourseProgress.findOne({
-    courseID: courseId,
+    courseId,
     userId: studentId,
   });
 
   if (!courseProgress) {
     courseProgress = await CourseProgress.create({
-      courseID: courseId,
+      courseId,
       userId: studentId,
       completedSubSections: [],
     });

@@ -14,9 +14,7 @@ exports.sendOTP = async (req, res) => {
     try {
 
         const { email } = req.body;
-
         const checkUserPresent = await User.findOne({ email });
-
         if (checkUserPresent) {
             console.log('(when otp generate) User alreay registered')
             return res.status(401).json({
@@ -170,7 +168,7 @@ exports.login = async (req, res) => {
 
 
             const cookieOptions = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+                expires: new Date(Date.now() +  24 * 60 * 60 * 1000), // 3 days
                 httpOnly: true
             }
 

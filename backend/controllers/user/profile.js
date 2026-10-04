@@ -1,15 +1,14 @@
 const Profile = require('../../models/profile');
 const User = require('../../models/user');
 const CourseProgress = require('../../models/courseProgress')
+const Enrollment = require('../../models/enrollment')
 const Course = require('../../models/course')
+const enrollmentService = require('../../services/enrollment.service')
 const { uploadImageToCloudinary, getFileBase64 } = require('../../utils/imageUploader');
-
 const fs = require('fs');
 const { convertSecondsToDuration } = require('../../utils/secToDuration')
 const { createNotification } = require('../../utils/notification')
-
-
-
+const RatingAndReview = require('../../models/ratingAndReview')
 
 exports.updateProfile = async (req, res) => {
   try {
@@ -142,25 +141,14 @@ exports.deleteAccount = async (req, res) => {
         message: 'User not found'
       });
     }
-    const userEnrolledCoursesId = userDetails.courses
-    console.log('userEnrolledCourses ids = ', userEnrolledCoursesId)
+    await Promise.all([
+      Enrollment.deleteMany({ userId }),
+      CourseProgress.deleteMany({ userId }),
+    ])
 
-    for (const courseId of userEnrolledCoursesId) {
-      await Course.findByIdAndUpdate(courseId, {
-        $pull: { studentsEnrolled: userId }
-      })
-    }
-
-    // first - delete profie (profileDetails)
     await Profile.findByIdAndDelete(userDetails.additionalDetails);
 
-    // second - delete account
     await User.findByIdAndDelete(userId);
-
-
-    // sheduale this deleting account , crone job
-
-    // return response
     res.status(200).json({
       success: true,
       message: 'Account deleted successfully'
@@ -372,59 +360,57 @@ exports.updateUserProfileImage = async (req, res) => {
     });
   }
 };
-
-
 exports.getEnrolledCourses = async (req, res) => {
   try {
     const userId = req.user.id;
-    let userDetails = await User.findById(userId)
-      .populate({
-        path: "courses",
-        populate: {
-          path: "courseContent",
+
+    const [enrollments, progresses] = await Promise.all([
+      Enrollment.find({ userId })
+        .sort({ enrolledAt: 1 })
+        .populate({
+          path: "courseId",
           populate: {
-            path: "subSection",
+            path: "courseContent",
+            populate: { path: "subSection" },
           },
-        },
-      })
-      .exec();
+        })
+        .lean(),
+      CourseProgress.find({ userId }).lean(),
+    ]);
+    const progressByCourse = new Map(
+      progresses.map((progress) => [String(progress.courseId), progress])
+    );
 
-    userDetails = userDetails.toObject();
+    const courses = enrollments
+      .filter((enrollment) => enrollment.courseId)
+      .map((enrollment) => {
+        const course = enrollment.courseId;
+        const progress = progressByCourse.get(String(course._id)) || {};
 
-    for (var i = 0; i < userDetails.courses.length; i++) {
-      let totalNoOfLectures = 0;
-      userDetails.courses[i].courseContent.forEach((sec) => {
-        totalNoOfLectures += sec.subSection.length;
+        const lectureIds = new Set();
+        (course.courseContent || []).forEach((sec) => {
+          (sec.subSection || []).forEach((sub) => lectureIds.add(String(sub._id)));
+        });
+
+        const completedCount = new Set(
+          (progress.completedSubSections || [])
+            .map(String)
+            .filter((id) => lectureIds.has(id))
+        ).size;
+
+        const total = lectureIds.size;
+        const progressPercentage =
+          total === 0 ? 100 : Math.round((completedCount / total) * 10000) / 100;
+
+        return { ...course, progressPercentage };
       });
 
-      let courseProgressCount = await CourseProgress.findOne({
-        courseID: userDetails.courses[i]._id,
-        userId: userId,
-      });
-
-      let completedCount = courseProgressCount?.completedSubSections?.length || 0;
-
-      if (totalNoOfLectures === 0) {
-        userDetails.courses[i].progressPercentage = 100;
-      } else {
-        const multiplier = Math.pow(10, 2);
-        userDetails.courses[i].progressPercentage =
-          Math.round((completedCount / totalNoOfLectures) * 100 * multiplier) / multiplier;
-      }
-    }
-
-    return res.status(200).json({
-      success: true,
-      data: userDetails.courses,
-    });
+    return res.status(200).json({ success: true, data: courses });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
-
-
 exports.getUserCertificates = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -448,8 +434,11 @@ exports.instructorDashboard = async (req, res) => {
   try {
     const courseDetails = await Course.find({ instructor: req.user.id })
 
+    const enrollmentCounts = await enrollmentService.getEnrollmentCounts(
+      courseDetails.map((course) => course._id)
+    )
     const courseData = courseDetails.map((course) => {
-      const totalStudentsEnrolled = course.studentsEnrolled.length
+      const totalStudentsEnrolled = enrollmentCounts.get(String(course._id)) || 0
       const totalAmountGenerated = totalStudentsEnrolled * course.price
 
       // Create a new object with the additional fields
@@ -479,15 +468,42 @@ exports.instructorDashboard = async (req, res) => {
 
 exports.getAllInstructors = async (req, res) => {
   try {
-    const allInstructors = await User.find({ accountType: "Instructor" })
+    const allInstructors = await User.find({
+      accountType: "Instructor"
+    })
       .populate("additionalDetails")
-      .populate("courses")
       .sort({ firstName: 1 })
-      .select("-password -token -resetPasswordToken -resetPasswordExpires");
+      .select("-password -token -resetPasswordToken -resetPasswordExpires")
+      .lean();
+
+    const instructorIds = allInstructors.map(
+      (instructor) => instructor._id
+    );
+
+    const courses = await Course.find({
+      instructor: { $in: instructorIds }
+    })
+      .select("courseName instructor price status thumbnail ratingAvg ratingCount" )
+      .lean()
+
+    const instructorWithCourses = allInstructors.map((instructor) => {
+      const instructorCourses = courses.filter(
+        (course) =>
+          course.instructor.toString() === instructor._id.toString()
+      );
+
+      return {
+        ...instructor,
+        courses: instructorCourses,
+        totalCourses: instructorCourses.length,
+      };
+    });
+
     return res.status(200).json({
       success: true,
-      data: allInstructors,
+      data: instructorWithCourses,
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -498,15 +514,11 @@ exports.getAllInstructors = async (req, res) => {
 exports.getInstructorPublicProfile = async (req, res) => {
   try {
     const { instructorId } = req.params;
+
     const instructorDetails = await User.findById(instructorId)
       .populate("additionalDetails")
       .select("-password -token -resetPasswordToken -resetPasswordExpires")
       .exec();
-
-    const instructCourses = await Course.find({
-      instructor: instructorId,
-      status: "Published",
-    }).populate("ratingAndReviews");
 
     if (!instructorDetails) {
       return res.status(404).json({
@@ -515,29 +527,72 @@ exports.getInstructorPublicProfile = async (req, res) => {
       });
     }
 
+    // Get instructor courses
+    const instructCourses = await Course.find({
+      instructor: instructorId,
+    });
+
+    // Attach enrolled students
+    const enrolledCourses =
+      await enrollmentService.attachEnrollmentStudents(instructCourses);
+
+    // Get course IDs
+    const courseIds = enrolledCourses.map(course => course._id);
+
+    // Fetch all reviews belonging to these courses
+    const reviews = await RatingAndReview.find({
+      course: { $in: courseIds },
+    });
+
+    // Group reviews by course ID
+    const reviewsMap = new Map();
+
+    reviews.forEach(review => {
+      const courseId = review.course.toString();
+
+      if (!reviewsMap.has(courseId)) {
+        reviewsMap.set(courseId, []);
+      }
+
+      reviewsMap.get(courseId).push(review);
+    });
+
     let totalStudents = 0;
     let totalReviews = 0;
     let totalRating = 0;
 
-    instructCourses.forEach((course) => {
-      totalStudents += course.studentsEnrolled.length;
-      totalReviews += course.ratingAndReviews.length;
+    // Attach ratingAndReviews to each course
+    const coursesWithRating = enrolledCourses.map(course => {
+      const courseReviews =
+        reviewsMap.get(course._id.toString()) || [];
 
-      course.ratingAndReviews.forEach((r) => {
-        totalRating += r.rating;
-      });
+      const courseTotalRating = courseReviews.reduce(
+        (sum, review) => sum + (Number(review.rating) || 0),
+        0
+      );
+
+      totalStudents += course.studentsEnrolled?.length || 0;
+      totalReviews += courseReviews.length;
+      totalRating += courseTotalRating;
+
+      return {
+        ...(course.toObject ? course.toObject() : course),
+        ratingAndReviews: courseReviews,
+      };
     });
 
     return res.status(200).json({
       success: true,
       data: {
         ...instructorDetails.toObject(),
-        courses: instructCourses,
+        courses: coursesWithRating,
         stats: {
           totalStudents,
           totalReviews,
           averageRating:
-            totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : 0,
+            totalReviews > 0
+              ? Number((totalRating / totalReviews).toFixed(1))
+              : 0,
           totalCourses: instructCourses.length,
         },
       },

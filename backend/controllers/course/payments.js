@@ -5,6 +5,8 @@ import Order from "../../models/order.js"
 import User from "../../models/user.js";
 import Course from "../../models/course.js";
 import CourseProgress from "../../models/courseProgress.js";
+import Enrollment from "../../models/enrollment.js";
+import enrollmentService from "../../services/enrollment.service.js";
 import mailSender from "../../utils/mailSender.js";
 import { courseEnrollmentEmail } from "../../mail/templates/courseEnrollmentEmail.js";
 
@@ -31,8 +33,7 @@ export const createPayment = async (req, res) => {
         });
       }
 
-      const uid = new mongoose.Types.ObjectId(userId);
-      if (course.studentsEnrolled.includes(uid)) {
+      if (await Enrollment.exists({ userId, courseId })) {
         return res.status(400).json({
           success: false,
           message: `Student already enrolled in ${course.courseName}`,
@@ -161,32 +162,26 @@ const enrollStudents = async (courses, userId) => {
   if (!student) throw new Error("User not found");
 
   for (const courseId of courses) {
-    const enrolledCourse = await Course.findByIdAndUpdate(
-      courseId,
-      { $addToSet: { studentsEnrolled: userId } },
-      { new: true }
-    );
+    const enrolledCourse = await Course.findById(courseId);
 
     if (!enrolledCourse) throw new Error("Course not found");
 
-    const courseProgress = await CourseProgress.create({
-      courseID: courseId,
-      userId: userId,
-      completedSubSections: [],
-      quizResults: [],
-    });
-    await User.findByIdAndUpdate(userId, {
-      $addToSet: {
-        courses: courseId,
-        courseProgress: courseProgress._id,
-      },
-    });
+    const [createdEnrollment] = await Promise.all([
+      enrollmentService.createEnrollmentIfMissing(userId, courseId),
+      CourseProgress.updateOne(
+        { userId, courseId },
+        { $setOnInsert: { userId, courseId, completedSubSections: [] } },
+        { upsert: true }
+      ),
+    ]);
 
-    await mailSender(
-      student.email,
-      `Successfully Enrolled into ${enrolledCourse.courseName}`,
-      courseEnrollmentEmail(enrolledCourse.courseName, student.firstName)
-    );
+    if (createdEnrollment) {
+      await mailSender(
+        student.email,
+        `Successfully Enrolled into ${enrolledCourse.courseName}`,
+        courseEnrollmentEmail(enrolledCourse.courseName, student.firstName)
+      );
+    }
   }
 };
 
@@ -195,8 +190,15 @@ export const enrollFreeCourse = async (req, res) => {
   try {
     const { courseId } = req.body
     const userId = req.user.id
-    const course = await Course.findById(courseId)
-    if (!course) {
+
+    if (!mongoose.isValidObjectId(courseId)) {
+      return res.status(400).json({ success: false, message: "Invalid courseId" })
+    }
+
+    const course = await Course.findById(courseId).select(
+      "courseName price status instructor"
+    )
+    if (!course || course.status !== "Published") {
       return res.status(404).json({ success: false, message: "Course not found" })
     }
     if (course.price > 0) {
@@ -205,48 +207,39 @@ export const enrollFreeCourse = async (req, res) => {
         message: "Paid course cannot be enrolled for free",
       })
     }
-    if (course.studentsEnrolled.includes(userId)) {
-      return res.status(200).json({ success: true, message: "Student already enrolled" }) 
+    if (String(course.instructor) === String(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot enroll in your own course",
+      })
     }
 
-    course.studentsEnrolled.push(userId)
-    await course.save()
+    
+    const [createdEnrollment] = await Promise.all([
+      enrollmentService.createEnrollmentIfMissing(userId, courseId),
+      CourseProgress.updateOne(
+        { userId, courseId },
+        { $setOnInsert: { userId, courseId, completedSubSections: [] } },
+        { upsert: true }
+      ),
+    ])
 
-    const courseProgress = await CourseProgress.create({
-      courseID: courseId,
-      userId: userId,
-      completedSubSections: [],
-      quizResults: [],
-    });
+    if (createdEnrollment) {
+      try {
+        const student = await User.findById(userId).select("email firstName")
+        await mailSender(
+          student.email,
+          `Successfully Enrolled into ${course.courseName}`,
+          courseEnrollmentEmail(course.courseName, student.firstName)
+        )
+      } catch (mailError) {
+        console.error("Enrollment email failed:", mailError)
+      }
+    }
 
-
-    const enrolledStudent = await User.findByIdAndUpdate(
-      userId,
-      {
-        $push: {
-          courses: courseId,
-          courseProgress: courseProgress._id,
-        },
-      },
-      { new: true }
-    )
-
-    await mailSender(
-      enrolledStudent.email,
-      `Successfully Enrolled into ${course.courseName}`,
-      courseEnrollmentEmail(course.courseName, enrolledStudent.firstName)
-    )
-
-    return res.status(200).json({
-      success: true,
-      message: "Enrolled Successfully",
-    })
-
+    return res.status(200).json({ success: true, message: "Enrolled Successfully" })
   } catch (error) {
     console.error("Enroll Free Course Error:", error)
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    })
+    return res.status(500).json({ success: false, message: "Failed to enroll" })
   }
 }

@@ -10,10 +10,6 @@ description
   Type      : String
   Required  : false
 
-courses
-  Type      : Array
-  Required  : false
-
 _id
   Type      : ObjectId
   Required  : false
@@ -80,6 +76,10 @@ lastMessage
   Type      : ObjectId
   Required  : false
   Ref       : Message
+
+deletedBy
+  Type      : Array
+  Required  : false
 
 _id
   Type      : ObjectId
@@ -152,10 +152,6 @@ level
   Required  : false
   Default   : Beginner
 
-studentsEnrolled
-  Type      : Array
-  Required  : false
-
 instructions
   Type      : Array
   Required  : false
@@ -193,7 +189,7 @@ userId
   Required  : true
   Ref       : User
 
-courseID
+courseId
   Type      : ObjectId
   Required  : true
   Ref       : Course
@@ -214,6 +210,41 @@ __v
   Type      : Number
   Required  : false
 
+
+=====================================================
+Collection: enrollments
+Model: Enrollment
+=====================================================
+userId
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+courseId
+  Type      : ObjectId
+  Required  : true
+  Ref       : Course
+
+enrolledAt
+  Type      : Date
+  Required  : false
+  Default   : Date.now
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+
+updatedAt
+  Type      : Date
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
 
 
 =====================================================
@@ -268,11 +299,6 @@ email
 otp
   Type      : String
   Required  : true
-
-createdAt
-  Type      : Date
-  Required  : false
-  Default   : 1787208144139
 
 _id
   Type      : ObjectId
@@ -433,10 +459,10 @@ __v
 Collection: submissions
 Model: Submission
 =====================================================
-assignmentId
+subSectionId
   Type      : ObjectId
   Required  : true
-  Ref       : Assignment
+  Ref       : SubSection
 
 studentId
   Type      : ObjectId
@@ -495,22 +521,13 @@ type
   Type      : String
   Required  : true
 
-aiMetadata.isIndexed
-  Type      : Boolean
-  Required  : false
-  Default   : false
+slide.fileName
+  Type      : String
+  Required  : true
 
-aiMetadata.totalChunks
-  Type      : Number
-  Required  : false
-
-aiMetadata.lastProcessed
-  Type      : Date
-  Required  : false
-
-slides
-  Type      : Array
-  Required  : false
+slide.fileUrl
+  Type      : String
+  Required  : true
 
 quiz.source
   Type      : String
@@ -563,8 +580,29 @@ assignment.answerKeyUrl
   Type      : String
   Required  : false
 
+aiMetadata.isIndexed
+  Type      : Boolean
+  Required  : false
+  Default   : false
+
+aiMetadata.totalChunks
+  Type      : Number
+  Required  : false
+
+aiMetadata.lastProcessed
+  Type      : Date
+  Required  : false
+
 _id
   Type      : ObjectId
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+
+updatedAt
+  Type      : Date
   Required  : false
 
 __v
@@ -607,6 +645,11 @@ approved
   Required  : false
   Default   : true
 
+status
+  Type      : String
+  Required  : false
+  Default   : active
+
 instructorRequestStatus
   Type      : String
   Required  : false
@@ -638,10 +681,6 @@ resetPasswordTokenExpires
   Type      : Date
   Required  : false
 
-courseProgress
-  Type      : Array
-  Required  : false
-
 lastActiveDate
   Type      : Date
   Required  : false
@@ -667,6 +706,5 @@ updatedAt
 __v
   Type      : Number
   Required  : false
-
 
 

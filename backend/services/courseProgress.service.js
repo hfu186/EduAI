@@ -74,13 +74,13 @@ const updateCourseProgress = async ({ courseId, subsectionId, userId }) => {
   }
 
   let courseProgress = await CourseProgress.findOne({
-    courseID: courseId,
+    courseId,
     userId,
   });
 
   if (!courseProgress) {
     courseProgress = await CourseProgress.create({
-      courseID: courseId,
+      courseId,
       userId,
       completedSubSections: [subsectionId],
     });
@@ -134,7 +134,7 @@ const getProgressPercentage = async ({ courseId, userId }) => {
   }
 
   const courseProgress = await CourseProgress.findOne({
-    courseID: courseId,
+    courseId: courseId,
     userId,
   });
   const validSubSectionIds = getValidSubSectionIds(course);

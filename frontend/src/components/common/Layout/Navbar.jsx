@@ -140,11 +140,11 @@ const Navbar = () => {
         <ul className="hidden text-m lg:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
           {NavbarLinks.map((link, index) => (
             <li key={index}>
-              {link.title === "Catalog" ? (
+              {link.title === "Category" ? (
                 <div className="group relative flex cursor-pointer items-center  text-richblack-25 hover:text-yellow-25 transition-colors">
                   <span>
-                    {link.title === "Catalog"
-                      ? t("nav.catalog")
+                    {link.title === "Category"
+                      ? t("nav.category")
                       : t(`nav.${link.title.toLowerCase()}`)}
                   </span>
                   <MdKeyboardArrowDown className="text-lg" />

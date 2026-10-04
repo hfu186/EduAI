@@ -1,5 +1,6 @@
 const User = require('../../models/user')
 const Course = require('../../models/course')
+const Enrollment = require('../../models/enrollment')
 const ratingAndReviews = require('../../models/ratingAndReview')
 const mongoose = require('mongoose');
 
@@ -15,13 +16,8 @@ exports.createRating = async (req, res) => {
                 message: "All fileds are required"
             });
         }
-        const courseDetails = await Course.findOne({ _id: courseId },
-            {
-                studentsEnrolled: { $elemMatch: { $eq: userId } }
-            });
-
-
-        if (!courseDetails) {
+        const enrollment = await Enrollment.exists({ courseId, userId });
+        if (!enrollment) {
             return res.status(404).json({
                 success: false,
                 message: 'Student is not enrolled in the course'

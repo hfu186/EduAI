@@ -1,4 +1,4 @@
-const Chat = require("../../models/Chat");
+const Chat = require("../../models/chat");
 const Message = require("../../models/Message");
 const Course = require("../../models/course");
 
@@ -65,8 +65,10 @@ exports.getChatById = async (req, res) => {
     const { chatId } = req.params;
     const userId = req.user.id;
 
-    const chat = await Chat.findById(chatId)
-      .populate("student", "firstName lastName image")
+    const chat = await Chat.findOne({
+      _id: chatId,
+      $or: [{ student: userId }, { instructor: userId }],
+    }).populate("student", "firstName lastName image")
       .populate("instructor", "firstName lastName image")
       .populate("course", "courseName");
 
@@ -90,23 +92,28 @@ exports.getChatById = async (req, res) => {
 exports.deleteChat = async (req, res) => {
   try {
     const { chatId } = req.params;
-    const userId = req.user.id;
+    const userId = String(req.user.id);
 
-    const chat = await Chat.findById(chatId);
+    if (!mongoose.isValidObjectId(chatId)) {
+      return res.status(400).json({ success: false, message: "Invalid id" });
+    }
+
+    const chat = await Chat.findOneAndUpdate(
+      { _id: chatId, $or: [{ student: userId }, { instructor: userId }] },
+      { $addToSet: { deletedBy: userId } },
+      { new: true }
+    );
     if (!chat) {
       return res.status(404).json({ success: false, message: "Not found" });
     }
 
-    const isParticipant =
-      String(chat.student) === userId || String(chat.instructor) === userId;
-    if (!isParticipant) {
-      return res.status(403).json({ success: false, message: "Not permitted to access" });
+    const deleted = new Set(chat.deletedBy.map(String));
+    if (deleted.has(String(chat.student)) && deleted.has(String(chat.instructor))) {
+      await Message.deleteMany({ chat: chatId });
+      await chat.deleteOne();
     }
 
-    await Message.deleteMany({ chat: chatId });
-    await chat.deleteOne();
-
-    return res.status(200).json({ success: true, message: "Deleted succesfully" });
+    return res.status(200).json({ success: true, message: "Deleted successfully" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ success: false, message: "Failed to delete chat" });

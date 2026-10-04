@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const submissionSchema = new mongoose.Schema({
-    assignmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Assignment", required: true },
+    subSectionId: { type: mongoose.Schema.Types.ObjectId, ref: "SubSection", required: true },
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     fileName: { type: String },
     fileUrl: { type: String, required: true },

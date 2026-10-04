@@ -11,22 +11,18 @@ const subSectionSchema = new mongoose.Schema({
     enum: ["slide", "quiz", "assignment"],
     required: true,
   },
-  aiMetadata: {
-    isIndexed: { type: Boolean, default: false },
-    totalChunks: Number,
 
-    lastProcessed: Date
+  slide: {
+  fileName: {
+    type: String,
+    required: true,
   },
+  fileUrl: {
+    type: String,
+    required: true,
+  },
+},
 
-  // SLIDE
-  slides: [
-    {
-      fileName: String,
-      fileUrl: String,
-    },
-  ],
-
-  // QUIZ (Unified Manual + AI)
   quiz: {
     source: {
       type: String,
@@ -75,13 +71,23 @@ const subSectionSchema = new mongoose.Schema({
     approvedAt: Date,
   },
 
-  // ASSIGNMENT
   assignment: {
     description: String,
     deadline: Date,
     fileUrl: String,
     answerKeyUrl: String,
   },
+
+  aiMetadata: {
+    isIndexed: {
+      type: Boolean,
+      default: false,
+    },
+    totalChunks: Number,
+    lastProcessed: Date,
+  },
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model("SubSection", subSectionSchema);

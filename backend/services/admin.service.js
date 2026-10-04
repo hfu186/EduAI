@@ -1,5 +1,8 @@
 const User = require("../models/user");
 const Course = require("../models/course");
+const CourseProgress = require("../models/courseProgress");
+const Enrollment = require("../models/enrollment");
+const enrollmentService = require("./enrollment.service");
 const Profile = require("../models/profile");
 const Orders = require("../models/order");
 const mailSender = require("../utils/mailSender");
@@ -63,10 +66,16 @@ const updateInstructorStatus = async ({ instructorId, status }) => {
 };
 
 const deleteUser = async ({ userId }) => {
-  const user = await User.findByIdAndDelete(userId);
+  const user = await User.findById(userId);
   if (!user) {
     throw createError(404, "User not found");
   }
+
+  await Promise.all([
+    Enrollment.deleteMany({ userId }),
+    CourseProgress.deleteMany({ userId }),
+    User.findByIdAndDelete(userId),
+  ]);
 
   return { message: "User deleted successfully" };
 };
@@ -127,8 +136,8 @@ const promoteUserToInstructor = async ({ userId }) => {
   };
 };
 
-const getAllCourses = async () =>
-  Course.find({})
+const getAllCourses = async () => {
+  const courses = await Course.find({})
     .populate("instructor")
     .populate("category")
     .populate({
@@ -136,6 +145,8 @@ const getAllCourses = async () =>
       populate: { path: "subSection" },
     })
     .sort({ createdAt: -1 });
+  return enrollmentService.attachEnrollmentStudents(courses);
+};
 
 const approveCourse = async ({ courseId, status }) => {
   const updatedCourse = await Course.findByIdAndUpdate(
@@ -233,11 +244,27 @@ const getAdminStats = async () => {
   const totalStudents = await User.countDocuments({ accountType: "Student" });
   const totalInstructors = await User.countDocuments({ accountType: "Instructor" });
 
-  const courses = await Course.find({});
-  let totalRevenue = 0;
-  courses.forEach((course) => {
-    totalRevenue += course.price * course.studentsEnrolled.length;
-  });
+  const [courses, revenueResult] = await Promise.all([
+    Course.find({}).select("_id"),
+    Enrollment.aggregate([
+      {
+        $lookup: {
+          from: "courses",
+          localField: "courseId",
+          foreignField: "_id",
+          as: "course",
+        },
+      },
+      { $unwind: "$course" },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$course.price" },
+        },
+      },
+    ]),
+  ]);
+  const totalRevenue = revenueResult[0]?.totalRevenue || 0;
 
   return {
     totalStudents,
@@ -358,14 +385,13 @@ const getInstructorEarnings = async () => {
 };
 
 const getEnrollmentGrowth = async () => {
-  const growth = await Orders.aggregate([
-    { $match: { status: "PAID" } },
+  const growth = await Enrollment.aggregate([
     {
       $group: {
         _id: {
           $dateToString: {
             format: "%Y-%m-%d",
-            date: "$createdAt",
+            date: "$enrolledAt",
             timezone: "Asia/Ho_Chi_Minh",
           },
         },

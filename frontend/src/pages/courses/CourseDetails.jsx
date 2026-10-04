@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BiInfoCircle, BiChevronRight } from "react-icons/bi";
-import { HiOutlineGlobeAlt, HiShare } from "react-icons/hi";
+import {  HiShare } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -11,6 +11,7 @@ import {
   createRating,
   fetchCourseDetails,
 } from "../../services/operations/courseDetailsAPI";
+import { dateFormatter } from "../../utils/dateFormatter";
 import GetAvgRating from "../../utils/avgRating";
 import { ACCOUNT_TYPE } from "../../utils/constants";
 import { addToCart } from "../../slices/cartSlice";
@@ -72,11 +73,16 @@ function CourseDetails() {
   }
 
   useEffect(() => {
-    if (courseData && user) {
-      if (courseData?.studentsEnrolled?.includes(user?._id)) {
-        setIsEnrolled(true);
-      }
-    }
+    const userId = user?._id ?? user?.id;
+    const isStudentEnrolled =
+      userId != null &&
+      Array.isArray(courseData?.studentsEnrolled) &&
+      courseData.studentsEnrolled.some((student) => {
+        const studentId = student?._id ?? student;
+        return studentId != null && String(studentId) === String(userId);
+      });
+
+    setIsEnrolled(isStudentEnrolled);
   }, [courseData, user]);
 
   useEffect(() => {
@@ -156,7 +162,8 @@ function CourseDetails() {
         const res = await enrollFreeCourse(courseId, token);
         if (res?.success) {
           toast.success(t("pages.course_details.enrolled_success"));
-          fectchCourseDetailsData();
+          setIsEnrolled(true);
+          await fectchCourseDetailsData();
         } else {
           toast.error(
             res?.message || t("pages.course_details.errors.enroll_failed"),
@@ -233,10 +240,6 @@ function CourseDetails() {
 
   const instructorImage = instructor?.image;
 
-  const dateFormatter = createdAt
-    ? dateFormatter(createdAt)
-    : dateFormatter(new Date().toISOString());
-
   return (
     <div className="bg-richblack-900 min-h-screen">
       <div className="bg-richblack-800 border-b border-richblack-700">
@@ -266,7 +269,7 @@ function CourseDetails() {
             <h1 className="text-4xl md:text-4xl font-extrabold text-richblack-5 tracking-tight leading-tight">
               {courseName}
             </h1>
-            <p className="text-lg text-richblack-200 leading-relaxed">
+            <p className="text-sm text-richblack-200 leading-relaxed mt-2">
               {courseDescription}
             </p>
           </div>
@@ -316,7 +319,7 @@ function CourseDetails() {
                   <BiInfoCircle />
                   <span>
                     {t("pages.course_details.last_updated", {
-                      date: dateFormatter,
+                      date: dateFormatter(createdAt || new Date()),
                     })}
                   </span>
                 </div>
@@ -621,10 +624,7 @@ function CourseDetails() {
                         <MdAccessTime className="text-caribbeangreen-200 text-base flex-shrink-0" />
                         <span>{t("pages.course_details.lifetime_access")}</span>
                       </div>
-                      <div className="flex items-center gap-2.5">
-                        <HiOutlineGlobeAlt className="text-caribbeangreen-200 text-base flex-shrink-0" />
-                        <span>{t("pages.course_details.mobile_tv")}</span>
-                      </div>
+                 
                       <div className="flex items-center gap-2.5">
                         <BiInfoCircle className="text-caribbeangreen-200 text-base flex-shrink-0" />
                         <span>{t("pages.course_details.certificate")}</span>

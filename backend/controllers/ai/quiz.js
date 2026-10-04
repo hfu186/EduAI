@@ -1,5 +1,8 @@
   const SubSection = require("../../models/subSection");
   const CourseProgress = require("../../models/courseProgress");
+  const Section = require("../../models/section");
+  const QuizReport = require("../../models/quizReport");
+  const mongoose = require("mongoose");
   const {
     TOP_K_RESULTS,
     retrieveContext,
@@ -45,7 +48,7 @@
       const isPassed = score >= PASS_THRESHOLD;
 
       let courseProgress = await CourseProgress.findOneAndUpdate(
-        { courseID: courseId, userId },
+        { courseId: courseId, userId },
         { $setOnInsert: { completedSubSections: [], quizResults: [] } },
         { upsert: true, new: true }
       );
@@ -79,6 +82,91 @@
       return res.status(500).json({
         success: false,
         message: "Failed to submit quiz.",
+      });
+    }
+  };
+
+  exports.reportAIQuizIssue = async (req, res) => {
+    try {
+      const {
+        subSectionId,
+        questionIndex,
+        question,
+        options = [],
+        correctAnswer,
+        issueType,
+        details = "",
+      } = req.body;
+      const validIssueTypes = [
+        "incorrect_answer",
+        "unclear_question",
+        "incorrect_options",
+        "other",
+      ];
+
+      if (
+        !subSectionId ||
+        !mongoose.isValidObjectId(subSectionId) ||
+        !Number.isInteger(questionIndex) ||
+        questionIndex < 0 ||
+        typeof question !== "string" ||
+        !question.trim() ||
+        question.length > 2000 ||
+        !Array.isArray(options) ||
+        options.length < 2 ||
+        options.length > 10 ||
+        options.some((option) => typeof option !== "string" || !option.trim() || option.length > 500) ||
+        !Number.isInteger(correctAnswer) ||
+        correctAnswer < 0 ||
+        correctAnswer >= options.length ||
+        !validIssueTypes.includes(issueType) ||
+        typeof details !== "string" ||
+        details.length > 1000
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a valid quiz issue report.",
+        });
+      }
+
+      const subSection = await SubSection.findById(subSectionId).select("type");
+      if (!subSection || subSection.type !== "slide") {
+        return res.status(404).json({
+          success: false,
+          message: "Lesson not found.",
+        });
+      }
+
+      const section = await Section.findOne({ subSection: subSectionId }).select("course");
+      if (!section) {
+        return res.status(404).json({
+          success: false,
+          message: "Lesson course not found.",
+        });
+      }
+
+      const report = await QuizReport.create({
+        student: req.user.id,
+        course: section.course,
+        subSection: subSectionId,
+        questionIndex,
+        question: question.trim(),
+        options,
+        correctAnswer,
+        issueType,
+        details: details.trim(),
+      });
+
+      return res.status(201).json({
+        success: true,
+        message: "Thank you. Your quiz issue report has been submitted.",
+        data: { reportId: report._id },
+      });
+    } catch (error) {
+      console.error("REPORT_AI_QUIZ_ISSUE_ERROR:", error.message);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to submit quiz issue report.",
       });
     }
   };
@@ -211,7 +299,6 @@
       res.end();
     } catch (error) {
       console.error("ASK_AI_CHATBOT_STREAM_ERROR:", error.message);
-      // Headers may already be sent once streaming started, so guard.
       if (!res.headersSent) {
         res.status(500).json({ success: false, message: "Failed to answer the question." });
       } else {

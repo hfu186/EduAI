@@ -7,7 +7,7 @@ import Course_Slider from "@/components/core/Catalog/Course_Slider";
 import Loading from "@/components/common/Loading";
 import { getCatalogPageData } from "@/services/operations/pageAndComponentData";
 import { fetchCourseCategories } from "@/services/operations/courseDetailsAPI";
-import { FiAlertCircle, FiBookOpen } from "react-icons/fi";
+import {FiBookOpen } from "react-icons/fi";
 
 function Catalog() {
   const { catalogName } = useParams();
@@ -73,17 +73,6 @@ function Catalog() {
     );
   }
 
-  if (!catalogPageData || !catalogPageData.selectedCategory) {
-    return (
-      <div className="flex flex-col gap-4 min-h-[60vh] justify-center items-center bg-richblack-900 text-white">
-        <FiAlertCircle size={50} className="text-pink-200" />
-        <h2 className="text-3xl font-bold">{t("pages.catalog.no_courses_found")}</h2>
-        <p className="text-richblack-300">
-          {t("pages.catalog.no_category_courses")}
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-richblack-900">
