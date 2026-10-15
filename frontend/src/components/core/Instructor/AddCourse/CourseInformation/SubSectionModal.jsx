@@ -27,10 +27,10 @@ export default function SubSectionModal({
   const modalType = modalData?.type || "video";
 
   const handleCommonSave = async (data) => {
-    setLoading(true);
     const formData = new FormData();
     if (!course?._id) return toast.error("Course ID not found");
 
+    setLoading(true);
     formData.append("sectionId", modalData.sectionId);
     formData.append("courseId", course._id);
     formData.append("title", data.lectureTitle);
@@ -60,10 +60,9 @@ export default function SubSectionModal({
   };
 
   const handleQuizSave = async (quizData) => {
-    setLoading(true);
     const formData = new FormData();
     if (!course?._id) return toast.error("Course ID not found");
-
+    setLoading(true);
     formData.append("sectionId", modalData.sectionId);
     formData.append("courseId", course._id);
     formData.append("title", quizData.title);
@@ -85,10 +84,10 @@ export default function SubSectionModal({
     setLoading(false);
   };
   const handleAssignmentSave = async (assignmentData) => {
-    setLoading(true);
     const formData = new FormData();
     if (!course?._id) return toast.error("Course ID not found");
 
+    setLoading(true);
     formData.append("sectionId", modalData.sectionId);
     formData.append("courseId", course._id);
     formData.append("title", assignmentData.title);

@@ -29,6 +29,8 @@ export default function CourseBuilderForm() {
   const dispatch = useDispatch()
 
   const onSubmit = async (data) => {
+
+
     setLoading(true)
     let result
 

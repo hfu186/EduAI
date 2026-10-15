@@ -11,13 +11,10 @@ const ALREADY_REVIEWED_STATUSES = ["Approved", "Published"]
 export default function SubmitForReview() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-
   const { course } = useSelector((state) => state.course)
   const { token } = useSelector((state) => state.auth)
-
   const [loading, setLoading] = useState(false)
   const [readyForReview, setReadyForReview] = useState(false)
-
   const isAlreadyApproved = ALREADY_REVIEWED_STATUSES.includes(course?.status)
 
   useEffect(() => {

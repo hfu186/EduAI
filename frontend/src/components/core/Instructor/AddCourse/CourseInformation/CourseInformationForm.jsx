@@ -78,6 +78,10 @@ export default function CourseInformationForm() {
   }
 
   const onSubmit = async (data) => {
+    if (editCourse && !isFormUpdated()) {
+      toast.error(t("courseForm.no_changes"))
+      return
+    }
     setLoading(true)
 
     if (editCourse) {
@@ -113,8 +117,6 @@ export default function CourseInformationForm() {
           console.error("Edit course error:", err)
           toast.error(t("courseForm.update_error", "Failed to update course"))
         }
-      } else {
-        toast.error(t("courseForm.no_changes"))
       }
       setLoading(false)
       return

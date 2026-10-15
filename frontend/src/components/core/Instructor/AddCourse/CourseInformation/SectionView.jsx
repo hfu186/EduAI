@@ -11,11 +11,13 @@ import {
 } from "../../../../../services/operations/courseDetailsAPI"
 import ConfirmationModal from "../../../../common/ConfirmationModal"
 import SubSectionModal from "./SubSectionModal"
+import useAlertDialog from "@/hooks/useAlertDialog"
 
 export default function SectionView({ section }) {
   const dispatch = useDispatch()
   const { course } = useSelector((state) => state.course)
   const { token } = useSelector((state) => state.auth)
+  const confirm = useAlertDialog()
   const [editSectionName, setEditSectionName] = useState(null)
   const [viewSubSection, setViewSubSection] = useState(null)
   const [addSubSection, setAddSubSection] = useState(null)
@@ -58,6 +60,13 @@ export default function SectionView({ section }) {
       setEditSectionName(null)
       return
     }
+
+    const confirmed = await confirm({
+      title: "Update section?",
+      description: "Save the updated section name?",
+      confirmText: "Save changes",
+    })
+    if (!confirmed) return
 
     const result = await updateSection(
       {
