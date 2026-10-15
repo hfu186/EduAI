@@ -115,7 +115,6 @@ const ChatWindow = () => {
     }, 1500);
   };
 
-  // ====================== UPLOAD FILE ======================
   const handleFileSelect = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -126,7 +125,6 @@ const ChatWindow = () => {
       if (!result) {
         console.error("Upload failed");
       }
-      // The "newMessage" socket event updates messages automatically.
     } catch (err) {
       console.error(err);
     } finally {
@@ -135,7 +133,6 @@ const ChatWindow = () => {
     }
   };
 
-  // ====================== LOADING ======================
   if (loading) {
     return (
       <div className="w-full h-[calc(100vh-3.5rem)] bg-richblack-900 flex flex-col">

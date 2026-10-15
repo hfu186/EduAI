@@ -7,6 +7,7 @@ import { FiUploadCloud } from "react-icons/fi"
 
 import { updateProfile } from "../../../../services/operations/SettingsAPI"
 import IconBtn from "../../../common/IconBtn"
+import useAlertDialog from "@/hooks/useAlertDialog"
 
 const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"]
 
@@ -15,6 +16,7 @@ export default function EditProfile() {
   const { token } = useSelector((state) => state.auth)
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const confirm = useAlertDialog()
 
   const { register, handleSubmit, formState: { errors } } = useForm()
 
@@ -51,6 +53,13 @@ export default function EditProfile() {
   }
 
   const submitProfileForm = async (data) => {
+    const confirmed = await confirm({
+      title: "Save profile changes?",
+      description: "Update your profile with the information you entered?",
+      confirmText: "Save changes",
+    })
+    if (!confirmed) return
+
     try {
       const formData = new FormData()
       formData.append("firstName", data.firstName)

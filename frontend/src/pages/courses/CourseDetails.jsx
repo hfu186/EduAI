@@ -15,7 +15,6 @@ import { dateFormatter } from "../../utils/dateFormatter";
 import GetAvgRating from "../../utils/avgRating";
 import { ACCOUNT_TYPE } from "../../utils/constants";
 import { addToCart } from "../../slices/cartSlice";
-
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import Footer from "../../components/common/Layout/Footer";
 import RatingStars from "../../components/common/RatingStars";
@@ -114,6 +113,7 @@ function CourseDetails() {
       return;
     }
 
+  
     setIsReviewSubmitting(true);
     try {
       const res = await createRating(
@@ -385,11 +385,13 @@ function CourseDetails() {
                 {courseContent?.length > 0 ? (
                   courseContent.map((course, index) => (
                     <CourseAccordionBar
+                      courseId={courseId}
                       course={course}
                       key={index}
                       isActive={isActive}
                       handleActive={handleActive}
                     />
+                    
                   ))
                 ) : (
                   <div className="p-6 text-center text-richblack-400">

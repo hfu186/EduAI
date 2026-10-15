@@ -13,15 +13,15 @@ const subSectionSchema = new mongoose.Schema({
   },
 
   slide: {
-  fileName: {
-    type: String,
-    required: true,
+    fileName: String,
+    fileUrl: String,
   },
-  fileUrl: {
-    type: String,
-    required: true,
-  },
-},
+  slides: [
+    {
+      fileName: String,
+      fileUrl: String,
+    },
+  ],
 
   quiz: {
     source: {

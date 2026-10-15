@@ -26,12 +26,14 @@ import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import {  formatVND } from "../../utils/formatVND"
 import {  dateFormatter } from "../../utils/dateFormatter"
+import useAlertDialog from "@/hooks/useAlertDialog"
 
 
 export default function CourseApproval() {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const { token } = useSelector((state) => state.auth);
+  const confirm = useAlertDialog();
 
   const fetchCourses = async () => {
     const result = await getAllCourses(token);
@@ -40,7 +42,7 @@ export default function CourseApproval() {
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [token]);
 
  
 
@@ -111,6 +113,14 @@ export default function CourseApproval() {
   };
 
   const handleStatus = async (courseId, status) => {
+    const confirmed = await confirm({
+      title: `${status} course?`,
+      description: `Confirm that you want to ${status.toLowerCase()} this course?`,
+      confirmText: status,
+      isDestructive: status.toLowerCase().includes("reject"),
+    });
+    if (!confirmed) return;
+
     const toastId = toast.loading("Updating course status...");
     const success = await approveCourse(courseId, status, token);
     if (success) {
@@ -142,9 +152,6 @@ export default function CourseApproval() {
       0
     );
   };
-
-  
-
   const pendingCount = courses.filter((c) => c.status === "Draft" ||  c.status === "Pending"
 ).length;
 

@@ -126,6 +126,7 @@
     "settings": "Settings",
     "messages": "Messages",
     "logout": "Logout",
+    "quiz_reports": "Quiz Report",
     "logout_confirm": "Are you sure?",
     "logout_message": "You will be logged out of your account."
   },

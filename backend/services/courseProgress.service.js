@@ -7,6 +7,7 @@ const User = require("../models/user");
 const { updateStreak } = require("../utils/streak");
 const mailSender = require("../utils/mailSender");
 const { certEmailTemplate } = require("../mail/templates/certificate");
+const { hasFullCourseAccess } = require("../utils/courseAccess");
 
 const createServiceError = (message, statusCode = 500) => {
   const error = new Error(message);
@@ -58,6 +59,10 @@ const countCompletedSubSections = (completedSubSections, validIds) =>
   completedSubSections.filter((id) => validIds.includes(id.toString())).length;
 
 const updateCourseProgress = async ({ courseId, subsectionId, userId }) => {
+  if (!(await hasFullCourseAccess({ courseId, userId }))) {
+    throw createServiceError("Enroll in this course to update learning progress", 403);
+  }
+
   const subsection = await SubSection.findById(subsectionId);
   if (!subsection) {
     throw createServiceError("Lesson not found", 404);

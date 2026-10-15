@@ -43,6 +43,7 @@ import CourseContent from "@/components/core/Instructor/InstructorCourses/Course
 import InstructorRequest from "@/components/core/Auth/InstructorRequest";
 import ChatList from "@/pages/chat/ChatList";
 import ChatWindow from "@/pages/chat/ChatWindow";
+import QuizReportsPage from "@/pages/instructor/QuizReportsPage";
 
 function AppRoutes() {
   const { user } = useSelector((state) => state.profile);
@@ -152,6 +153,10 @@ function AppRoutes() {
             <Route
               path="dashboard/course/:courseId"
               element={<CourseContent />}
+            />
+            <Route
+              path="dashboard/quiz-reports"
+              element={<QuizReportsPage />}
             />
             <Route
               path="dashboard/course/:courseId/assignment/:assignmentId"

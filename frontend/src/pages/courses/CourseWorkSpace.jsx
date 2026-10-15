@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import confetti from "canvas-confetti";
 import Swal from "sweetalert2";
@@ -18,6 +18,8 @@ const MySwal = withReactContent(Swal);
 
 function CourseWorkspace() {
   const { courseId } = useParams();
+  const [searchParams] = useSearchParams();
+  const previewSubSectionId = searchParams.get("previewSubSectionId");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
@@ -30,6 +32,7 @@ function CourseWorkspace() {
   const [loading, setLoading] = useState(true);
   const [lastSlideId, setLastSlideId] = useState(null);
   const [activeGroup, setActiveGroup] = useState(null);
+  const [isTrial, setIsTrial] = useState(false);
 
   const showCertificateModal = useCallback(() => {
     MySwal.fire({
@@ -81,41 +84,54 @@ function CourseWorkspace() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await getFullCourseDetails(courseId, token);
+        const response = await getFullCourseDetails(courseId, token, previewSubSectionId);
         if (response?.success) {
           const details = response.data?.courseDetails;
+          setIsTrial(Boolean(response.data?.isTrial));
           setCourseData(details);
-          const total = details.courseContent?.reduce((acc, sec) => acc + (sec.subSection?.length || 0), 0) || 0;
+          const total = response.data?.isTrial
+            ? 0
+            : details.courseContent?.reduce((acc, sec) => acc + (sec.subSection?.length || 0), 0) || 0;
           dispatch(setTotalNoOfLectures(total));
-          dispatch(setCompletedLectures(response.data?.completedSubSections || []));
+          dispatch(setCompletedLectures(response.data?.isTrial ? [] : response.data?.completedSubSections || []));
 
           const groupedContent = { slide: [], assignment: [], quiz: [] };
           details.courseContent?.forEach(sec => sec.subSection?.forEach(sub => {
             if (groupedContent[sub.type]) groupedContent[sub.type].push({ ...sub, sectionName: sec.sectionName });
           }));
           setGrouped(groupedContent);
-          const first = groupedContent.slide?.[0] || groupedContent.quiz?.[0] || null;
+          const previewItem = previewSubSectionId
+            ? Object.values(groupedContent)
+                .flat()
+                .find((item) => String(item._id) === String(previewSubSectionId))
+            : null;
+          const first = previewItem || groupedContent.slide?.[0] || groupedContent.quiz?.[0] || null;
           setCurrentItem(first);
           if (first?.type === "slide") setLastSlideId(first._id);
         }
       } catch (e) { console.error(e); } finally { setLoading(false); }
     };
     fetchCourse();
-  }, [courseId, token, dispatch]);
+  }, [courseId, token, previewSubSectionId, dispatch]);
 
   if (loading) return <div className="grid place-items-center h-screen bg-richblack-900 text-white font-bold italic animate-pulse">Loading Workspace...</div>;
 
   return (
     <div className="flex h-screen bg-richblack-900 text-richblack-5 overflow-hidden">
-      {lastSlideId && <AIChatbot token={token} subSectionId={lastSlideId} />}
-      <CourseSidebar grouped={grouped} currentItem={currentItem} setCurrentItem={setCurrentItem} setActiveGroup={setActiveGroup} />
+      {!isTrial && lastSlideId && <AIChatbot token={token} subSectionId={lastSlideId} />}
+      <CourseSidebar grouped={grouped} currentItem={currentItem} setCurrentItem={setCurrentItem} setActiveGroup={setActiveGroup} isTrial={isTrial} />
       <div className="flex-1 p-6 overflow-y-auto">
         {currentItem ? (
           <div className="mt-4 mx-auto">
+            {isTrial && (
+              <div className="mb-5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
+                Trial preview: the first 3 pages of this subsection are available. Enroll to access all course materials.
+              </div>
+            )}
             <div className="mb-6 border-b border-richblack-700 pb-4">
               <p className="text-yellow-50 text-xs font-bold uppercase tracking-widest">{currentItem.sectionName}</p>
             </div>
-            {currentItem.type === "slide" && <SlideTab slides={[currentItem]} courseId={courseId} subSectionId={currentItem._id} />}
+            {currentItem.type === "slide" && <SlideTab slides={[currentItem]} courseId={courseId} subSectionId={currentItem._id} isTrial={isTrial} />}
             {currentItem.type === "assignment" && <AssignmentTab assignment={currentItem} courseId={courseId} subSectionId={currentItem._id} />}
             {currentItem.type === "quiz" && <QuizTab quizData={currentItem.quiz} courseId={courseId} subSectionId={currentItem._id} slideSubSectionId={lastSlideId} />}
           </div>

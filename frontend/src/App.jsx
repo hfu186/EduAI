@@ -80,7 +80,7 @@ function App() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-richblack-900 flex flex-col font-inter">
+    <div className="w-full min-h-screen bg-richblack-900 flex flex-col">
       <Navbar />
 
       <main className="flex-1 w-full pt-10">

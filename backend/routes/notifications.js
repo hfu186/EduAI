@@ -9,7 +9,7 @@ const {
 } = require("../controllers/notifications");
 
 router.get("/", auth, getNotifications);
-router.patch("/:id/read", auth, markNotificationAsRead);
 router.patch("/mark-all-read", auth, markAllNotificationsAsRead);
+router.patch("/:id", auth, markNotificationAsRead);
 router.delete("/:id", auth, deleteNotification);
 module.exports = router;

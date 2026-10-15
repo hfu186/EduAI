@@ -5,7 +5,6 @@ const quizReportSchema = new mongoose.Schema(
     student: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     course: {
       type: mongoose.Schema.Types.ObjectId,
@@ -52,6 +51,14 @@ const quizReportSchema = new mongoose.Schema(
       trim: true,
       maxlength: 1000,
       default: "",
+    },
+    quizVersion: {
+      type: Number,
+      default: 1,
+    },
+    generatedByAI: {
+      type: Boolean,
+      default: false,
     },
     status: {
       type: String,

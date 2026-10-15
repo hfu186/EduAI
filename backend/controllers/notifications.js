@@ -3,10 +3,8 @@ const Notification = require("../models/notification");
 exports.getNotifications = async (req, res) => {
     const notifications = await Notification.find({ recipient: req.user.id })
       .sort({ createdAt: -1 })
-      .limit(30);
-
+      .limit(10);
     const unreadCount = await Notification.countDocuments({ recipient: req.user.id, read: false });
-
     return res.status(200).json({
       success: true,
       data: notifications,
@@ -19,13 +17,12 @@ exports.markNotificationAsRead = async (req, res) => {
     const notification = await Notification.findOneAndUpdate(
       { _id: req.params.id, recipient: req.user.id },
       { read: true },
-      { new: true }
     );
-
     if (!notification) {
-      return res.status(404).json({ success: false, message: "Notification not found" });
+      console.Consolelog("Notification not found for user:", req.user.id, "with notification ID:", req.params.id);
+      return res.status(404).json({ success: false, message: "Notification not found"
+       });
     }
-
     return res.status(200).json({ success: true, data: notification });
   
 };

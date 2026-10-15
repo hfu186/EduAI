@@ -7,10 +7,14 @@ import CourseProgress from "../models/courseProgress.js"
 import Enrollment from "../models/enrollment.js"
 import enrollmentService from "./enrollment.service.js"
 import fs from "fs"
+import path from "path"
 import mongoose from "mongoose"
+import { fileURLToPath } from "url"
 import uploadHelper from "../utils/uploadHelper.js"
 import RatingAndReview from "../models/ratingAndReview.js"
+import { PDFDocument } from "pdf-lib"
 const { attachEnrollmentStudents } = enrollmentService
+const serviceDirectory = path.dirname(fileURLToPath(import.meta.url))
 
 const parseArrayField = (value) =>
   typeof value === "string" ? JSON.parse(value) : value
@@ -277,7 +281,12 @@ export const publishCourse = async ({ courseId, instructorId }) => {
   course.status = "Pending"
   await course.save()
 }
-export const getFullCourseDetails = async ({ courseId, userId, accountType }) => {
+export const getFullCourseDetails = async ({
+  courseId,
+  userId,
+  accountType,
+  previewSubSectionId,
+}) => {
   if (!mongoose.isValidObjectId(courseId)) {
     const error = new Error("Invalid course id")
     error.statusCode = 400
@@ -302,17 +311,158 @@ export const getFullCourseDetails = async ({ courseId, userId, accountType }) =>
       .lean(),
   ])
   const isEnrolled = !!enrollment
+  const hasFullAccess = isInstructor || isAdmin || isEnrolled
 
-  if (!isInstructor && !isAdmin && !isEnrolled) {
+  if (!hasFullAccess && !previewSubSectionId) {
     const error = new Error("You are not enrolled in this course")
     error.statusCode = 403
     throw error
   }
 
-  return {
-    courseDetails: await attachEnrollmentStudents(courseDetails),
-    completedSubSections: courseProgress?.completedSubSections || [],
+  let responseCourse = await attachEnrollmentStudents(courseDetails)
+  if (!hasFullAccess) {
+    if (!mongoose.isValidObjectId(previewSubSectionId)) {
+      const error = new Error("Invalid preview subsection")
+      error.statusCode = 400
+      throw error
+    }
+
+    const previewSection = courseDetails.courseContent.find((section) =>
+      (section.subSection || []).some(
+        (subSection) => String(subSection._id) === String(previewSubSectionId)
+      )
+    )
+    const previewSubSection = (previewSection?.subSection || []).find(
+      (subSection) => String(subSection._id) === String(previewSubSectionId)
+    )
+    if (!previewSubSection || previewSubSection.type !== "slide") {
+      const error = new Error("Only slide subsections can be previewed")
+      error.statusCode = 403
+      throw error
+    }
+
+    const courseObject = responseCourse.toObject
+      ? responseCourse.toObject()
+      : responseCourse
+    courseObject.courseContent = courseObject.courseContent.map((section) => {
+      const matchingSubSection = (section.subSection || []).find(
+        (subSection) => String(subSection._id) === String(previewSubSectionId)
+      )
+      return {
+        ...section,
+        subSection: matchingSubSection
+          ? [
+              {
+                ...matchingSubSection,
+                slides: [
+                  {
+                    fileName: `${matchingSubSection.title} - 3-page preview`,
+                    fileUrl: `/course/${courseId}/preview/${previewSubSectionId}`,
+                  },
+                ],
+              },
+            ]
+          : [],
+      }
+    })
+    responseCourse = courseObject
   }
+
+  return {
+    courseDetails: responseCourse,
+    completedSubSections: hasFullAccess
+      ? courseProgress?.completedSubSections || []
+      : [],
+    isTrial: !hasFullAccess,
+    previewSubSectionId: !hasFullAccess ? previewSubSectionId : null,
+  }
+}
+
+export const getSubSectionSlidePreview = async ({
+  courseId,
+  subSectionId,
+  userId,
+}) => {
+  if (
+    !mongoose.isValidObjectId(courseId) ||
+    !mongoose.isValidObjectId(subSectionId)
+  ) {
+    const error = new Error("Invalid course or subsection id")
+    error.statusCode = 400
+    throw error
+  }
+
+  const section = await Section.findOne({
+    course: courseId,
+    subSection: subSectionId,
+  }).select("_id")
+  if (!section) {
+    const error = new Error("Slide subsection not found in this course")
+    error.statusCode = 404
+    throw error
+  }
+
+  const subSection = await SubSection.findById(subSectionId).select(
+    "type slide slides"
+  )
+  if (!subSection || subSection.type !== "slide") {
+    const error = new Error("Only slide subsections can be previewed")
+    error.statusCode = 403
+    throw error
+  }
+
+  const slideFiles = [
+    ...(subSection.slides || []),
+    ...(subSection.slide?.fileUrl ? [subSection.slide] : []),
+  ]
+  if (!slideFiles.length) {
+    const error = new Error("This subsection does not contain any slides")
+    error.statusCode = 404
+    throw error
+  }
+
+  const previewDocument = await PDFDocument.create()
+  let remainingPages = 3
+
+  for (const slideFile of slideFiles) {
+    if (remainingPages === 0) break
+
+    const fileUrl = slideFile.fileUrl
+    const match = typeof fileUrl === "string"
+      ? fileUrl.match(/^\/uploads\/slides\/([^/]+\.pdf)$/i)
+      : null
+    if (!match) {
+      const error = new Error("A slide file cannot be used to generate a preview")
+      error.statusCode = 422
+      throw error
+    }
+
+    const filePath = path.join(
+      serviceDirectory,
+      "..",
+      "uploads",
+      "slides",
+      path.basename(match[1])
+    )
+    const sourceDocument = await PDFDocument.load(await fs.promises.readFile(filePath))
+    const pageCount = Math.min(sourceDocument.getPageCount(), remainingPages)
+    const pages = await previewDocument.copyPages(
+      sourceDocument,
+      Array.from({ length: pageCount }, (_, index) => index)
+    )
+    pages.forEach((page) => previewDocument.addPage(page))
+    remainingPages -= pageCount
+  }
+
+  if (previewDocument.getPageCount() === 0) {
+    const error = new Error("No pages are available in this subsection preview")
+    error.statusCode = 422
+    throw error
+  }
+
+  previewDocument.setTitle("Course trial preview")
+  const previewBytes = await previewDocument.save()
+  return Buffer.from(previewBytes)
 }
 
 export const getSectionDetails = async (sectionId) => {

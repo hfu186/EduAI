@@ -3,6 +3,7 @@ const { GoogleGenerativeAIEmbeddings } = require("@langchain/google-genai");
 const { TaskType } = require("@google/generative-ai");
 const { PineconeStore } = require("@langchain/pinecone");
 const Groq = require("groq-sdk");
+const { hasSubSectionCourseAccess } = require("../../utils/courseAccess");
 
 const EMBEDDING_MODEL = process.env.GEMINI_EMBEDDING_MODEL || "models/gemini-embedding-001";
 // "llama-3.1-8b-instant" is listed as Enterprise-only on Groq (contact-sales
@@ -148,6 +149,19 @@ exports.chatWithSlide = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Missing subSectionId.",
+      });
+    }
+
+    if (
+      !(await hasSubSectionCourseAccess({
+        userId: req.user.id,
+        accountType: req.user.accountType,
+        subSectionId,
+      }))
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Enroll in this course to use the lesson assistant.",
       });
     }
 

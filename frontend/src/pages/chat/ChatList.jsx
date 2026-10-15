@@ -7,6 +7,8 @@ import { useSwipeable } from "react-swipeable";
 import { getMyChats, deleteChat } from "../../services/operations/chatAPI";
 import { BsChatDots, BsSearch, BsTrash } from "react-icons/bs";
 import { clearChatUnread } from "../../slices/messageSlice";
+import { toast } from "react-hot-toast";
+import useAlertDialog from "../../hooks/useAlertDialog";
 const ChatItem = ({
   chat,
   other,
@@ -158,6 +160,7 @@ const ChatList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const confirm = useAlertDialog();
 
   useEffect(() => {
     if (!token) return;
@@ -213,10 +216,14 @@ const ChatList = () => {
   });
 
   const handleDeleteChat = async (chatId) => {
-    const confirmed = window.confirm(
-      t("pages.chat.confirm_delete") ||
-        "Bạn có chắc muốn xóa cuộc trò chuyện này?"
-    );
+    const confirmed = await confirm({
+      title: t("pages.chat.confirm_delete") || "Xóa cuộc trò chuyện?",
+      description:
+        t("pages.chat.confirm_delete") ||
+        "Bạn có chắc muốn xóa cuộc trò chuyện này?",
+      confirmText: t("pages.chat.delete") || "Xóa",
+      isDestructive: true,
+    });
 
     if (!confirmed) return;
 
@@ -225,9 +232,10 @@ const ChatList = () => {
       await deleteChat(chatId, token);
       setChats((prev) => prev.filter((c) => c._id !== chatId));
       dispatch(clearChatUnread(chatId));
+      toast.success(t("pages.chat.deleted") || "Đã xóa cuộc trò chuyện.");
     } catch (error) {
       console.error("Delete chat failed:", error);
-      alert(t("pages.chat.delete_failed") || "Xóa thất bại. Vui lòng thử lại.");
+      toast.error(t("pages.chat.delete_failed") || "Xóa thất bại. Vui lòng thử lại.");
     } finally {
       setDeletingId(null);
     }

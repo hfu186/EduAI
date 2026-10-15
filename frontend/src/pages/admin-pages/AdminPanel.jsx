@@ -247,7 +247,6 @@ export default function AdminAnalytics() {
             />
           </div>
 
-          {/* ── Revenue + Enrollment (2 col) ── */}
           <div style={{
             display: "grid",
 gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",            gap: 20,

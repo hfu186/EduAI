@@ -13,6 +13,7 @@
     deleteCourse,
     getCourseLearningData,
     getFullCourseDetails,      
+    getSubSectionSlidePreview,
     getSectionDetails,         
     getSubSectionDetails,
   } = require("../controllers/course/course");
@@ -35,6 +36,7 @@
   router.post("/createRating", auth, createRating);
   router.post("/updateCourseProgress", auth, updateCourseProgress);
   router.get("/getFullCourseDetails/:courseId", auth, getFullCourseDetails);
+  router.get("/:courseId/preview/:subSectionId", auth, getSubSectionSlidePreview);
   router.get("/getSectionDetails/:sectionId", auth, getSectionDetails);        
   router.get("/getSubSectionDetails/:subsectionId", auth, getSubSectionDetails);
   router.get("/:courseId/learning", auth, getCourseLearningData); 

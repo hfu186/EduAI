@@ -147,6 +147,8 @@ export const getFullCourseDetails = async (req, res) => {
     const data = await courseService.getFullCourseDetails({
       courseId: req.params.courseId,
       userId: req.user.id,
+      accountType: req.user.accountType,
+      previewSubSectionId: req.query.previewSubSectionId,
     })
     res.set({ "Cache-Control": "no-store" })
     return res.status(200).json({ success: true, data })
@@ -158,6 +160,30 @@ export const getFullCourseDetails = async (req, res) => {
         error.statusCode === 404 || error.statusCode === 403
           ? error.message
           : "Failed to fetch course details",
+    })
+  }
+}
+
+export const getSubSectionSlidePreview = async (req, res) => {
+  try {
+    const previewPdf = await courseService.getSubSectionSlidePreview({
+      courseId: req.params.courseId,
+      subSectionId: req.params.subSectionId,
+      userId: req.user.id,
+    })
+    res.set({
+      "Cache-Control": "private, no-store",
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "inline; filename=\"course-preview.pdf\"",
+    })
+    return res.status(200).send(previewPdf)
+  } catch (error) {
+    console.error("GET SUBSECTION SLIDE PREVIEW ERROR:", error)
+    return res.status(errorStatus(error)).json({
+      success: false,
+      message: error.statusCode
+        ? error.message
+        : "Failed to generate slide preview",
     })
   }
 }

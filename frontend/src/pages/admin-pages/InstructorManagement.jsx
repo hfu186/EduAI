@@ -4,6 +4,7 @@
   import { useSelector } from "react-redux";
   import { toast } from "react-hot-toast";
   import { useTranslation } from "react-i18next";
+  import useAlertDialog from "@/hooks/useAlertDialog";
   import {
     HiOutlineDocumentText,
     HiOutlineExternalLink,
@@ -27,6 +28,7 @@
     const [loadingData, setLoadingData] = useState(true);
     const { token } = useSelector((state) => state.auth);
     const { t } = useTranslation();
+    const confirm = useAlertDialog();
 
     const fetchData = async () => {
       setLoadingData(true);
@@ -60,6 +62,19 @@
     };
 
     const handleReview = async (userId, decision) => {
+      const confirmed = await confirm({
+        title:
+          decision === "approved"
+            ? t("pages.admin.instructor_management.approved")
+            : t("pages.admin.instructor_management.rejected"),
+        description: t("pages.admin.user_management.review_confirm", {
+          defaultValue: "Confirm this instructor application decision?",
+        }),
+        confirmText: t("common.confirm", "Confirm"),
+        isDestructive: decision !== "approved",
+      });
+      if (!confirmed) return;
+
       const result = await reviewInstructorRequest(userId, decision, token);
       if (result?.success) {
         toast.success(

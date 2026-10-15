@@ -8,6 +8,7 @@ import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from './reducer/index';
 import { Toaster } from 'react-hot-toast'
+import { AlertDialogProvider } from './hooks/useAlertDialog.jsx'
 
 
     
@@ -20,13 +21,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Provider store={store}>
       <React.StrictMode>
-        <App />
+        <AlertDialogProvider>
+          <App />
+        </AlertDialogProvider>
         <Toaster />
       </React.StrictMode>
     </Provider>
   </BrowserRouter>
 )
-
 
 
 

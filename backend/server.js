@@ -26,16 +26,12 @@ const notificationRoutes = require("./routes/notifications");
 const chatRoutes = require("./routes/chat");
 const messageRoutes = require("./routes/message");
 const highlightRoutes = require("./routes/highlight");
+const slideAssetAccess = require("./middleware/slideAssetAccess");
 
-app.use(
-  "/uploads",
-  (req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-    res.setHeader("Access-Control-Allow-Methods", "GET");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    next();
-  },
-express.static(path.join(__dirname, "uploads")));
+app.use(cors());
+app.use(cookieParser());
+app.use("/uploads/slides", slideAssetAccess);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 console.log("Uploads path:", path.join(__dirname, "uploads"));
 app.use(
   express.json({
@@ -44,8 +40,6 @@ app.use(
     },
   })
 );
-app.use(cookieParser());
-app.use(cors());
 app.use("/api", globalLimiter);
 app.use(
   fileUpload({

@@ -1,19 +1,15 @@
 import { useEffect, useRef, useState } from "react"
 import { FiUpload } from "react-icons/fi"
 import { useDispatch, useSelector } from "react-redux"
-
 import { updateUserProfileImage } from "../../../../services/operations/SettingsAPI"
 import IconBtn from "../../../common/IconBtn"
 import Img from './../../../common/Img';
-
-
 
 export default function ChangeProfilePicture() {
   const { token } = useSelector((state) => state.auth)
   const { user } = useSelector((state) => state.profile)
   const dispatch = useDispatch()
-
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [profileImage, setProfileImage] = useState(null)
   const [previewSource, setPreviewSource] = useState(null)
 
@@ -40,11 +36,13 @@ export default function ChangeProfilePicture() {
     }
   }
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
 
     if (!profileImage) {
       return;
     }
+
+    
 
     const formData = new FormData();
     formData.append("profileImage", profileImage);

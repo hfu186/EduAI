@@ -65,13 +65,13 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscChecklist",
   },
-  {
-    id: 11,
-    name: "instructor_management",
-    path: "/admin/manage-instructors",
-    type: ACCOUNT_TYPE.ADMIN,
-    icon: "VscAccount",
-  },
+  // {
+  //   id: 11,
+  //   name: "instructor_management",
+  //   path: "/admin/manage-instructors",
+  //   type: ACCOUNT_TYPE.ADMIN,
+  //   icon: "VscAccount",
+  // },
   {
     id: 12,
     name: "category_management",
@@ -93,4 +93,11 @@ export const sidebarLinks = [
     type: [ACCOUNT_TYPE.STUDENT, ACCOUNT_TYPE.INSTRUCTOR, ACCOUNT_TYPE.ADMIN],
     icon: "VscComment",
   },
+  {
+    id: 15,
+    name: "quiz_reports",
+    path: "/dashboard/quiz-reports",
+    type: ACCOUNT_TYPE.INSTRUCTOR,
+    icon: "VscError",
+  }
 ];

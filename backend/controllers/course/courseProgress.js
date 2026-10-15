@@ -1,9 +1,15 @@
 const courseProgressService = require("../../services/courseProgress.service");
-
+const enrollmentService = require("../../services/enrollment.service");
 const errorStatus = (error) => error.statusCode || 500;
 
 exports.updateCourseProgress = async (req, res) => {
   try {
+    if ( enrollmentService.isUserEnrolledInCourse(req.user.id, req.body.courseId) === false) {
+      return res.status(403).json({
+        success: false,
+        message: "User is not enrolled in the course",
+      });
+    }
     const result = await courseProgressService.updateCourseProgress({
       courseId: req.body.courseId,
       subsectionId: req.body.subsectionId,

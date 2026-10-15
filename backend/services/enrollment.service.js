@@ -24,6 +24,10 @@ const getEnrollmentCounts = async (courseIds) => {
 
   return new Map(counts.map(({ _id, count }) => [String(_id), count]));
 };
+const isUserEnrolledInCourse = async (userId, courseId) => {
+  const enrollment = await Enrollment.findOne({ userId, courseId });
+  return Boolean(enrollment);
+}
 
 const attachEnrollmentStudents = async (courses) => {
   const isArray = Array.isArray(courses);
@@ -55,4 +59,5 @@ module.exports = {
   attachEnrollmentStudents,
   createEnrollmentIfMissing,
   getEnrollmentCounts,
+  isUserEnrolledInCourse,
 };
