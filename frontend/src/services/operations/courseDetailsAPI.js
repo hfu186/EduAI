@@ -425,12 +425,15 @@ export const deleteCourse = async (data, token) => {
 };
 
 // ================ get Full Details Of Course ================
-export const getFullCourseDetails = async (courseId, token) => {
+export const getFullCourseDetails = async (courseId, token, previewSubSectionId) => {
   let result = null
   try {
+    const query = previewSubSectionId
+      ? `?previewSubSectionId=${encodeURIComponent(previewSubSectionId)}`
+      : ""
     const response = await apiConnector(
       "GET",
-      `${GET_FULL_COURSE_DETAILS}/${courseId}`,
+      `${GET_FULL_COURSE_DETAILS}/${courseId}${query}`,
       null,
       {
         Authorization: `Bearer ${token}`,
@@ -495,4 +498,3 @@ export const enrollFreeCourse = async (courseId, token) => {
     }
   }
 }
-
