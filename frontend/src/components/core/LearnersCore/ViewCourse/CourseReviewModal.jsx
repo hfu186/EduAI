@@ -3,14 +3,12 @@ import { useForm } from "react-hook-form"
 import { RxCross2 } from "react-icons/rx"
 import ReactStars from "react-rating-stars-component"
 import { useSelector } from "react-redux"
-
 import { createRating } from "../../../services/operations/courseDetailsAPI"
 import IconBtn from './../../common/IconBtn';
 import Img from './../../common/Img';
+import { toast } from "react-hot-toast";
 
-
-
-
+// eslint-disable-next-line react/prop-types
 export default function CourseReviewModal({ setReviewModal }) {
   const { user } = useSelector((state) => state.profile)
   const { token } = useSelector((state) => state.auth)
@@ -35,7 +33,9 @@ export default function CourseReviewModal({ setReviewModal }) {
   }
 
   const onSubmit = async (data) => {
-    await createRating(
+  
+
+    const result = await createRating(
       {
         courseId: courseEntireData._id,
         rating: data.courseRating,
@@ -43,7 +43,10 @@ export default function CourseReviewModal({ setReviewModal }) {
       },
       token
     )
-    setReviewModal(false)
+    if (result) {
+      toast.success("Review submitted successfully.")
+      setReviewModal(false)
+    }
   }
 
   return (

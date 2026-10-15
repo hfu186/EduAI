@@ -11,15 +11,19 @@ import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
-export default function PDFViewer({ pdfUrl, subSectionId, token }) {
+export default function PDFViewer({ pdfUrl, subSectionId, token, isTrial = true }) {
   const [numPages, setNumPages] = useState(null);
   const [highlights, setHighlights] = useState([]);
   const [pendingHighlight, setPendingHighlight] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const viewerRef = useRef(null);
+  const pagesToRender = isTrial ? Math.min(numPages || 0, 3) : numPages || 0;
 
   useEffect(() => {
-    if (!subSectionId || !token) return;
+    if (!subSectionId || !token || isTrial) {
+      setHighlights([]);
+      return;
+    }
 
     const fetchHighlights = async () => {
       try {
@@ -39,7 +43,7 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
 
     setPendingHighlight(null);
     fetchHighlights();
-  }, [subSectionId, token]);
+  }, [subSectionId, token, isTrial]);
 
   const getSelectionRects = () => {
     const selection = window.getSelection();
@@ -165,33 +169,38 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
 
   return (
     <div className="bg-richblack-900">
-      <div className="sticky top-0 z-50 flex flex-col gap-3 border-b border-richblack-700 bg-richblack-900 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-        {" "}
-        <div className="flex items-center gap-2 text-sm text-richblack-300">
-          <MdOutlineInfo className="text-lg text-yellow-50" />
-          Select text on the slide, then click Highlight.
+      {isTrial ? (
+        <div className="border-b border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-center text-sm text-yellow-100">
+          Trial preview: first 3 pages only
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={addHighlight}
-            disabled={!pendingHighlight || isSaving}
-            className="inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 text-sm font-bold text-richblack-900 transition-all hover:bg-yellow-25 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <MdHighlight className="text-lg" />
-            {isSaving ? "Saving..." : "Highlight"}
-          </button>
-          <button
-            type="button"
-            onClick={clearHighlights}
-            disabled={highlights.length === 0}
-            className="inline-flex min-h-[40px] items-center gap-2 rounded-lg border border-richblack-600 bg-richblack-800 px-4 py-2 text-sm font-semibold text-richblack-100 transition-all hover:border-pink-200 hover:text-pink-200 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <MdDeleteOutline className="text-lg" />
-            Clear highlights
-          </button>
+      ) : (
+        <div className="sticky top-0 z-50 flex flex-col gap-3 border-b border-richblack-700 bg-richblack-900 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 text-sm text-richblack-300">
+            <MdOutlineInfo className="text-lg text-yellow-50" />
+            Select text on the slide, then click Highlight.
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={addHighlight}
+              disabled={!pendingHighlight || isSaving}
+              className="inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-yellow-50 px-4 py-2 text-sm font-bold text-richblack-900 transition-all hover:bg-yellow-25 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <MdHighlight className="text-lg" />
+              {isSaving ? "Saving..." : "Highlight"}
+            </button>
+            <button
+              type="button"
+              onClick={clearHighlights}
+              disabled={highlights.length === 0}
+              className="inline-flex min-h-[40px] items-center gap-2 rounded-lg border border-richblack-600 bg-richblack-800 px-4 py-2 text-sm font-semibold text-richblack-100 transition-all hover:border-pink-200 hover:text-pink-200 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <MdDeleteOutline className="text-lg" />
+              Clear highlights
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div
         ref={viewerRef}
@@ -200,12 +209,15 @@ export default function PDFViewer({ pdfUrl, subSectionId, token }) {
         className="flex justify-center bg-white p-4"
       >
         <Document
-          file={pdfUrl}
+          file={{
+            url: pdfUrl,
+            httpHeaders: token ? { Authorization: `Bearer ${token}` } : {},
+          }}
           onLoadSuccess={({ numPages }) => setNumPages(numPages)}
           loading="Loading PDF..."
           error="Can't download PDF"
         >
-          {Array.from(new Array(numPages), (_, i) => {
+          {Array.from({ length: pagesToRender }, (_, i) => {
             const pageNumber = i + 1;
             const pageHighlights = highlights.flatMap((highlight) =>
               (highlight.pages || [])

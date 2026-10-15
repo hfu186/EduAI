@@ -1,3 +1,4 @@
+﻿/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import {
   MdPictureAsPdf,
@@ -27,9 +28,10 @@ function CourseSidebar({
   currentItem,
   setCurrentItem,
   setActiveGroup,
+  isTrial = false,
 }) {
   const { completedLectures, totalNoOfLectures } = useSelector(
-    (state) => state.viewCourse
+    (state) => state.viewCourse,
   );
 
   const completedCount = completedLectures?.length || 0;
@@ -51,30 +53,32 @@ function CourseSidebar({
           </h2>
         </div>
 
-        {/* Progress card */}
-        <div className="rounded-2xl border border-richblack-700 bg-richblack-800/60 p-4">
-          <div className="mb-3 flex items-end justify-between">
-            <div>
-              <p className="text-xs text-richblack-400">Progress</p>
-              <p className="mt-0.5 text-2xl font-bold text-yellow-50">
-                {progressPercentage}%
+        {
+          <div className="rounded-2xl border border-richblack-700 bg-richblack-800/60 p-4">
+            <div className="mb-3 flex items-end justify-between">
+              <div>
+                <p className="text-xs text-richblack-400">Progress</p>
+                <p className="mt-0.5 text-2xl font-bold text-yellow-50">
+                  {progressPercentage}%
+                </p>
+              </div>
+
+              <p className="text-xs text-richblack-400">
+                <span className="font-semibold text-richblack-200">
+                  {completedCount}
+                </span>
+                /{totalNoOfLectures}
               </p>
             </div>
-            <p className="text-xs text-richblack-400">
-              <span className="font-semibold text-richblack-200">
-                {completedCount}
-              </span>
-              /{totalNoOfLectures}
-            </p>
-          </div>
 
-          <div className="h-2 w-full overflow-hidden rounded-full bg-richblack-700">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-yellow-100 via-yellow-50 to-[#A6FFCB] transition-all duration-700 ease-out"
-              style={{ width: `${progressPercentage}%` }}
-            />
+            <div className="h-2 w-full overflow-hidden rounded-full bg-richblack-700">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-yellow-100 via-yellow-50 to-[#A6FFCB] transition-all duration-700 ease-out"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
           </div>
-        </div>
+        }
       </div>
 
       {/* List */}
@@ -98,7 +102,7 @@ function CourseSidebar({
             <div className="space-y-1">
               {items.map((item) => {
                 const isCompleted = completedLectures?.some(
-                  (id) => String(id) === String(item._id)
+                  (id) => String(id) === String(item._id),
                 );
                 const isActive = currentItem?._id === item._id;
 

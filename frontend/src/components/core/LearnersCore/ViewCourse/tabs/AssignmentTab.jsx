@@ -17,10 +17,12 @@ import { toast } from "react-hot-toast";
 import { updateCompletedLectures } from "@/slices/viewCourseSlice";
 import { apiConnector } from "@/services/apiConnector";
 import { courseEndpoints } from "@/services/apis";
+import useAlertDialog from "@/hooks/useAlertDialog";
 
 export default function AssignmentTab({ assignment, courseId, subSectionId }) {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const confirm = useAlertDialog();
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -84,6 +86,13 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
         return;
     }
 
+    const confirmed = await confirm({
+      title: submittedAssignment ? "Update assignment submission?" : "Submit assignment?",
+      description: "Continue with this assignment submission?",
+      confirmText: submittedAssignment ? "Update submission" : "Submit",
+    });
+    if (!confirmed) return;
+
     setUploading(true);
     const toastId = toast.loading("Submitting assignment...");
 
@@ -128,8 +137,13 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
         return;
     }
 
-    if (!window.confirm("Are you sure you want to delete this submission?"))
-      return;
+    const confirmed = await confirm({
+      title: "Delete assignment submission?",
+      description: "This submission will be permanently deleted.",
+      confirmText: "Delete",
+      isDestructive: true,
+    });
+    if (!confirmed) return;
 
     setUploading(true);
     const toastId = toast.loading("Deleting submission...");
