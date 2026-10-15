@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FiBell, FiCheck, FiTrash2, FiX } from "react-icons/fi";
+import { toast } from "react-hot-toast";
 
 import {
   getNotifications,
@@ -164,12 +165,14 @@ const NotificationDropdown = () => {
   };
 
   const handleDelete = async (id) => {
+  
     setNotifications((prev) =>
       prev.filter((notification) => notification._id !== id),
     );
 
     try {
       await deleteNotification(token, id);
+      toast.success(t("navbar.notifications.deleted", "Notification deleted."));
     } catch (error) {
       console.error("Failed to delete notification:", error);
       loadNotifications();
@@ -191,6 +194,7 @@ const NotificationDropdown = () => {
       await Promise.all(
         readIds.map((id) => deleteNotification(token, id)),
       );
+      toast.success(t("navbar.notifications.deleted_read", "Read notifications deleted."));
     } catch (error) {
       console.error("Failed to clear read notifications:", error);
       loadNotifications();
