@@ -46,7 +46,7 @@ export default function CoursesTable({ courses, setCourses }) {
   }
 
   return (
-    <>
+    <div>
       <Table className="rounded-2xl border border-richblack-800">
         <Thead>
           <Tr className="flex gap-x-10 border-b border-b-richblack-800 px-6 py-4">
@@ -153,6 +153,6 @@ export default function CoursesTable({ courses, setCourses }) {
       </Table>
 
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
-    </>
+    </div>
   )
 }

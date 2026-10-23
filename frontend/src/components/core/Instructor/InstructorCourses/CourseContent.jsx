@@ -49,7 +49,7 @@ export default function CourseContent() {
   }
 
   return (
-    <div className="text-white">
+    <div className="text-white h-[calc(100vh-5rem)] overflow-y-auto ">
       {/*HEADER: Course Info & Stats */}
       <div className="flex flex-col-reverse gap-y-10 md:flex-row md:justify-between md:items-start bg-richblack-800 p-8 rounded-t-lg border-b border-richblack-700">
         
