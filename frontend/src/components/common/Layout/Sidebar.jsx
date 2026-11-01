@@ -48,11 +48,13 @@ export default function Sidebar() {
 
   return (
     <>
+    <div>
       <div className="sm:hidden text-white absolute left-7 top-3 cursor-pointer " onClick={() => dispatch(setOpenSideMenu(!openSideMenu))}>
         {
           openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />
         }
       </div>
+    </div>
       {
         openSideMenu &&
         <div className="flex min-w-[250px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 ">
@@ -74,7 +76,7 @@ export default function Sidebar() {
             <div className="mt-auto">
 
 
-          <div className="mx-auto mb-6 h-[1px] w-10/12 bg-richblack-700" />
+          <div className="mx-auto mb-6 h-px   w-10/12 bg-richblack-700" />
 
           <div className="flex flex-col">
             <SidebarLink

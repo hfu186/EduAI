@@ -63,8 +63,9 @@ export function updateProfile(token, formData) {
       localStorage.setItem("user", JSON.stringify({ ...response.data.updatedUserDetails, image: userImage }));
       toast.success("Profile Updated Successfully")
     } catch (error) {
-      console.log("UPDATE_PROFILE_API API ERROR............", error)
-      toast.error("Could Not Update Profile")
+       const serverMessage = error?.response?.data?.message
+  console.log("UPDATE_PROFILE_API API ERROR............", error?.response?.data || error)
+  toast.error(serverMessage || "Could Not Update Profile")
     }
     toast.dismiss(toastId)
   }

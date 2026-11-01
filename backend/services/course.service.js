@@ -1,21 +1,19 @@
-import Course from "../models/course.js"
-import Category from "../models/category.js"
-import Section from "../models/section.js"
-import SubSection from "../models/subSection.js"
-import User from "../models/user.js"
-import CourseProgress from "../models/courseProgress.js"
-import Enrollment from "../models/enrollment.js"
-import enrollmentService from "./enrollment.service.js"
-import fs from "fs"
-import path from "path"
-import mongoose from "mongoose"
-import { fileURLToPath } from "url"
-import uploadHelper from "../utils/uploadHelper.js"
-import RatingAndReview from "../models/ratingAndReview.js"
-import { PDFDocument } from "pdf-lib"
-const { attachEnrollmentStudents } = enrollmentService
-const serviceDirectory = path.dirname(fileURLToPath(import.meta.url))
-
+const path = require("path");
+const fs = require("fs");
+const mongoose = require("mongoose");
+const Course = require("../models/course.js");
+const Category = require("../models/category.js");
+const Section = require("../models/section.js");
+const SubSection = require("../models/subSection.js");
+const User = require("../models/user.js");
+const CourseProgress = require("../models/courseProgress.js");
+const Enrollment = require("../models/enrollment.js");
+const { attachEnrollmentStudents } = require("./enrollment.service.js");
+const { uploadHelper } = require("../utils/uploadHelper.js");
+const RatingAndReview = require("../models/ratingAndReview.js");
+const { PDFDocument } = require("pdf-lib");
+const serviceDirectory = __dirname;
+const uploadDirectory = path.resolve(serviceDirectory, "../uploads");
 const parseArrayField = (value) =>
   typeof value === "string" ? JSON.parse(value) : value
 
@@ -48,14 +46,14 @@ const removeTemporaryFile = (file) => {
   })
 }
 
-export const getInstructorCourses = async (instructorId) => {
+exports.getInstructorCourses = async (instructorId) => {
   const courses = await Course.find({ instructor: instructorId })
     .populate("category")
     .sort({ createdAt: -1 })
   return attachEnrollmentStudents(courses)
 }
 
-export const createCourse = async ({
+exports.createCourse = async ({
   courseName,
   courseDescription,
   whatYouWillLearn,
@@ -133,7 +131,7 @@ const updateCourseFields = (course, updates, thumbnail) => {
   }
 }
 
-export const editCourse = async ({ courseId, updates, thumbnail }) => {
+exports.editCourse = async ({ courseId, updates, thumbnail }) => {
   const course = await Course.findById(courseId)
   if (!course) {
     const error = new Error("Course not found")
@@ -147,37 +145,37 @@ export const editCourse = async ({ courseId, updates, thumbnail }) => {
 
   return populateCourse(Course.findById(courseId)).exec()
 }
-export const getAllCourses = async () => {
-    const courses = await Course.find({ status: "Published" })
-        .populate({
-            path: "instructor",
-            select: "firstName lastName email image",
-        })
-        .populate({
-            path: "courseContent",
-            populate: { path: "subSection" },
-        })
-        .populate("category")
-        .sort({ createdAt: -1 })
-        .exec();
+exports.getAllCourses = async () => {
+  const courses = await Course.find({ status: "Published" })
+    .populate({
+      path: "instructor",
+      select: "firstName lastName email image",
+    })
+    .populate({
+      path: "courseContent",
+      populate: { path: "subSection" },
+    })
+    .populate("category")
+    .sort({ createdAt: -1 })
+    .exec();
 
-    const reviews = await RatingAndReview.find({})
-        .populate("user", "firstName lastName email image")
-        .exec();
+  const reviews = await RatingAndReview.find({})
+    .populate("user", "firstName lastName email image")
+    .exec();
 
-    return courses.map((course) => {
-        const courseReviews = reviews.filter(
-            (review) =>
-                review.course.toString() === course._id.toString()
-        );
+  return courses.map((course) => {
+    const courseReviews = reviews.filter(
+      (review) =>
+        review.course.toString() === course._id.toString()
+    );
 
-        return {
-            ...course.toObject(),
-            ratingAndReviews: courseReviews,
-        };
-    });
+    return {
+      ...course.toObject(),
+      ratingAndReviews: courseReviews,
+    };
+  });
 };
-export const getCourseById = async (courseId) => {
+exports.getCourseById = async (courseId) => {
   const courseDetails = await populateCourse(
     Course.findById(courseId)
   ).exec();
@@ -194,7 +192,7 @@ export const getCourseById = async (courseId) => {
     .populate("user", "firstName lastName email image")
     .exec();
 
-  
+
   const courseWithReviews = {
     ...courseDetails.toObject(),
     ratingAndReviews: reviews,
@@ -203,10 +201,10 @@ export const getCourseById = async (courseId) => {
   return attachEnrollmentStudents(courseWithReviews);
 };
 
-export const getCourseLearningData = async (courseId) =>
+exports.getCourseLearningData = async (courseId) =>
   Course.findById(courseId).select("lectures quizzes assignments slides")
 
-export const deleteCourse = async (courseId) => {
+exports.deleteCourse = async (courseId) => {
   const course = await Course.findById(courseId)
   if (!course) {
     const error = new Error("Course not found")
@@ -239,7 +237,7 @@ export const deleteCourse = async (courseId) => {
   await Course.findByIdAndDelete(courseId)
 }
 
-export const updateCourse = async ({ courseId, updates, thumbnail }) => {
+exports.updateCourse = async ({ courseId, updates, thumbnail }) => {
   const course = await Course.findById(courseId)
   if (!course) {
     const error = new Error("Course not found")
@@ -256,7 +254,7 @@ export const updateCourse = async ({ courseId, updates, thumbnail }) => {
   )
 }
 
-export const publishCourse = async ({ courseId, instructorId }) => {
+exports.publishCourse = async ({ courseId, instructorId }) => {
   const course = await Course.findById(courseId).populate({
     path: "courseContent",
     populate: { path: "subSection" },
@@ -281,7 +279,7 @@ export const publishCourse = async ({ courseId, instructorId }) => {
   course.status = "Pending"
   await course.save()
 }
-export const getFullCourseDetails = async ({
+exports.getFullCourseDetails = async ({
   courseId,
   userId,
   accountType,
@@ -352,16 +350,16 @@ export const getFullCourseDetails = async ({
         ...section,
         subSection: matchingSubSection
           ? [
-              {
-                ...matchingSubSection,
-                slides: [
-                  {
-                    fileName: `${matchingSubSection.title} - 3-page preview`,
-                    fileUrl: `/course/${courseId}/preview/${previewSubSectionId}`,
-                  },
-                ],
-              },
-            ]
+            {
+              ...matchingSubSection,
+              slides: [
+                {
+                  fileName: `${matchingSubSection.title} - 3-page preview`,
+                  fileUrl: `/course/${courseId}/preview/${previewSubSectionId}`,
+                },
+              ],
+            },
+          ]
           : [],
       }
     })
@@ -378,7 +376,7 @@ export const getFullCourseDetails = async ({
   }
 }
 
-export const getSubSectionSlidePreview = async ({
+exports.getSubSectionSlidePreview = async ({
   courseId,
   subSectionId,
   userId,
@@ -438,12 +436,11 @@ export const getSubSectionSlidePreview = async ({
     }
 
     const filePath = path.join(
-      serviceDirectory,
-      "..",
-      "uploads",
+      uploadDirectory,
       "slides",
       path.basename(match[1])
-    )
+    );
+
     const sourceDocument = await PDFDocument.load(await fs.promises.readFile(filePath))
     const pageCount = Math.min(sourceDocument.getPageCount(), remainingPages)
     const pages = await previewDocument.copyPages(
@@ -465,7 +462,7 @@ export const getSubSectionSlidePreview = async ({
   return Buffer.from(previewBytes)
 }
 
-export const getSectionDetails = async (sectionId) => {
+exports.getSectionDetails = async (sectionId) => {
   const section = await Section.findById(sectionId).populate("subSection")
   if (!section) {
     const error = new Error("Section not found")
@@ -475,7 +472,7 @@ export const getSectionDetails = async (sectionId) => {
   return section
 }
 
-export const getSubSectionDetails = async (subsectionId) => {
+exports.getSubSectionDetails = async (subsectionId) => {
   const subsection = await SubSection.findById(subsectionId)
   if (!subsection) {
     const error = new Error("Subsection not found")

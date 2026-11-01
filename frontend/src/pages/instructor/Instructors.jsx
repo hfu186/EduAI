@@ -8,11 +8,12 @@ import { createOrGetChat } from "../../services/operations/chatAPI.js";
 import { FaLinkedin, FaEnvelope } from "react-icons/fa";
 import { BiBookOpen } from "react-icons/bi";
 import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
 
 const Instructors = () => {
   const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [chatLoading, setChatLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -33,17 +34,20 @@ const Instructors = () => {
     fetchData();
   }, []);
 
-  const handleMessage = async (e, instructorId) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleMessage = async (instructor) => {
+    if (chatLoading) return;
+    setChatLoading(true);
+    const chat = await createOrGetChat(instructor._id, token);
+    setChatLoading(false);
 
-    const chat = await createOrGetChat(instructorId, token);
-
-    if (chat) {
+    if (chat?._id) {
       navigate(`/chat/${chat._id}`);
+    } else {
+      toast.error(t("pages.instructor_detail.open_conversation_error"));
+      
     }
   };
-
+  
   return (
     <div className="min-h-screen flex flex-col bg-richblack-900 font-inter">
       {/* HERO */}
@@ -80,10 +84,10 @@ const Instructors = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-richblack-700 bg-richblack-800 transition-all duration-200 hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(255,214,10,0.2)]"
+                  className="group flex flex-col overflow-hidden rounded-xl border border-richblack-700 bg-richblack-800 transition-all duration-200 hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(255,214,10,0.2)]"
                 >
                   {/* Image */}
-                  <div className="relative aspect-[4/3] w-full flex-shrink-0 overflow-hidden">
+                  <div className="relative aspect-[3/3] w-full flex-shrink-0 overflow-hidden">
                     <img
                       src={
                         inst.image ||
@@ -131,7 +135,7 @@ const Instructors = () => {
                           title={t("pages.instructors.message_action")}
                           aria-label={t("pages.instructors.message_action")}
                           className="transition-colors hover:text-white"
-                          onClick={(e) => handleMessage(e, inst._id)}
+                          onClick={() => handleMessage(inst)}
                         >
                           <FaEnvelope />
                         </button>

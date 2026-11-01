@@ -538,7 +538,6 @@
       const nextVersion = currentVersion + 1;
       const quizUpdate = {
         $set: {
-          type: "quiz",
           "quiz.source": "ai",
           "quiz.status": "draft",
           "quiz.version": nextVersion,
@@ -579,13 +578,193 @@
       return res.status(200).json({
         success: true,
         data: normalizedQuestions,
-        meta: { total: normalizedQuestions.length, subSectionId },
+        meta: {
+          total: normalizedQuestions.length,
+          subSectionId,
+          version: savedSubSection.quiz.version,
+        },
       });
     } catch (error) {
       console.error("AI_GENERATE_QUIZ_ERROR:", error.message);
       return res.status(500).json({
         success: false,
         message: "An error occurred while generating the quiz.",
+      });
+    }
+  };
+
+  exports.saveAIQuizAttempt = async (req, res) => {
+    try {
+      const { courseId, subSectionId, quizVersion, answers } = req.body;
+      const userId = req.user.id;
+
+      if (
+        !mongoose.isValidObjectId(courseId) ||
+        !mongoose.isValidObjectId(subSectionId) ||
+        !Array.isArray(answers)
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Course, lesson, and quiz answers are required.",
+        });
+      }
+
+      if (
+        !(await hasSubSectionCourseAccess({
+          userId,
+          accountType: req.user.accountType,
+          courseId,
+          subSectionId,
+        }))
+      ) {
+        return res.status(403).json({
+          success: false,
+          message: "Enroll in this course to save quiz results.",
+        });
+      }
+
+      const subSection = await SubSection.findById(subSectionId).select(
+        "quiz.questions quiz.generatedByAI quiz.version"
+      );
+      const questions = subSection?.quiz?.questions || [];
+      if (!subSection?.quiz?.generatedByAI || questions.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Generated AI quiz not found.",
+        });
+      }
+      if (Number(quizVersion) !== Number(subSection.quiz.version)) {
+        return res.status(409).json({
+          success: false,
+          message: "This AI quiz has changed. Generate it again before submitting.",
+        });
+      }
+
+      const normalizedAnswers = answers.map(({ questionIndex, optionIndex }) => ({
+        questionIndex: Number(questionIndex),
+        optionIndex: Number(optionIndex),
+      }));
+      const answersByQuestion = new Map();
+      for (const answer of normalizedAnswers) {
+        if (
+          !Number.isInteger(answer.questionIndex) ||
+          answer.questionIndex < 0 ||
+          answer.questionIndex >= questions.length ||
+          !Number.isInteger(answer.optionIndex) ||
+          answer.optionIndex < 0 ||
+          answer.optionIndex >= questions[answer.questionIndex].options.length ||
+          answersByQuestion.has(answer.questionIndex)
+        ) {
+          return res.status(400).json({
+            success: false,
+            message: "Quiz answers are invalid.",
+          });
+        }
+        answersByQuestion.set(answer.questionIndex, answer.optionIndex);
+      }
+
+      if (answersByQuestion.size !== questions.length) {
+        return res.status(400).json({
+          success: false,
+          message: "Please answer all questions before submitting.",
+        });
+      }
+
+      const correctCount = questions.reduce(
+        (count, question, questionIndex) =>
+          count +
+          (answersByQuestion.get(questionIndex) ===
+          Number(question.correctAnswer)
+            ? 1
+            : 0),
+        0
+      );
+      const attempt = {
+        subSection: subSectionId,
+        questions: questions.map((question) => ({
+          question: question.question,
+          options: [...question.options],
+          correctAnswer: question.correctAnswer,
+        })),
+        quizVersion: subSection.quiz.version,
+        answers: normalizedAnswers,
+        score: Math.round((correctCount / questions.length) * 100),
+        correctCount,
+        totalQuestions: questions.length,
+        submittedAt: new Date(),
+      };
+
+      const courseProgress = await CourseProgress.findOneAndUpdate(
+        { courseId, userId },
+        {
+          $setOnInsert: { completedSubSections: [], quizResults: [] },
+          $push: { aiQuizAttempts: attempt },
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      const savedAttempt =
+        courseProgress.aiQuizAttempts[courseProgress.aiQuizAttempts.length - 1];
+
+      return res.status(200).json({
+        success: true,
+        data: savedAttempt,
+      });
+    } catch (error) {
+      console.error("SAVE_AI_QUIZ_ATTEMPT_ERROR:", error.message);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to save AI quiz attempt.",
+      });
+    }
+  };
+
+  exports.getLatestAIQuizAttempt = async (req, res) => {
+    try {
+      const { courseId, subSectionId } = req.params;
+      const userId = req.user.id;
+
+      if (
+        !mongoose.isValidObjectId(courseId) ||
+        !mongoose.isValidObjectId(subSectionId)
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid course or lesson ID.",
+        });
+      }
+
+      if (
+        !(await hasSubSectionCourseAccess({
+          userId,
+          accountType: req.user.accountType,
+          courseId,
+          subSectionId,
+        }))
+      ) {
+        return res.status(403).json({
+          success: false,
+          message: "Enroll in this course to view quiz results.",
+        });
+      }
+
+      const courseProgress = await CourseProgress.findOne({
+        courseId,
+        userId,
+        "aiQuizAttempts.subSection": subSectionId,
+      }).select("aiQuizAttempts");
+      const attempts = (courseProgress?.aiQuizAttempts || [])
+        .filter((attempt) => String(attempt.subSection) === String(subSectionId))
+        .sort((first, second) => second.submittedAt - first.submittedAt);
+
+      return res.status(200).json({
+        success: true,
+        data: attempts[0] || null,
+      });
+    } catch (error) {
+      console.error("GET_AI_QUIZ_ATTEMPT_ERROR:", error.message);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch AI quiz result.",
       });
     }
   };

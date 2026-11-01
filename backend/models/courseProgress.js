@@ -28,6 +28,35 @@ const courseProgressSchema = new mongoose.Schema({
       submittedAt: Date,
     },
   ],
+  aiQuizAttempts: [
+    {
+      subSection: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SubSection",
+      },
+      questions: [
+        {
+          question: String,
+          options: [String],
+          correctAnswer: Number,
+        },
+      ],
+      quizVersion: Number,
+      answers: [
+        {
+          questionIndex: Number,
+          optionIndex: Number,
+        },
+      ],
+      score: Number,
+      correctCount: Number,
+      totalQuestions: Number,
+      submittedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("CourseProgress", courseProgressSchema);

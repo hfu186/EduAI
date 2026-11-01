@@ -18,6 +18,7 @@ exports.updateProfile = async (req, res) => {
       about = "",
       contactNumber = '',
       firstName,
+      email,
       lastName,
       qualifications = '',
       experience = '',
@@ -36,6 +37,7 @@ exports.updateProfile = async (req, res) => {
         dateOfBirth: null,
         about: null,
         contactNumber: null,
+        email: null,
         qualifications: null,
         experience: null,
         certificates: [],
@@ -47,6 +49,7 @@ exports.updateProfile = async (req, res) => {
 
     userDetails.firstName = firstName;
     userDetails.lastName = lastName;
+    userDetails.email = email;
     await userDetails.save();
 
     profileDetails.gender = gender;

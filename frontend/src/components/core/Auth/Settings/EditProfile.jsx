@@ -1,4 +1,5 @@
-import { useState } from "react"
+/* eslint-disable react/prop-types */
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -11,6 +12,67 @@ import useAlertDialog from "@/hooks/useAlertDialog"
 
 const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"]
 
+function Card({ className = "", children }) {
+  return (
+    <section
+      className={`rounded-2xl border border-richblack-700 bg-richblack-800 ${className}`}
+    >
+      {children}
+    </section>
+  )
+}
+
+function CardHeader({ title }) {
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-richblack-700 px-6 py-4 sm:px-8">
+      <h2 className="text-base font-semibold text-richblack-5">{title}</h2>
+    </div>
+  )
+}
+
+function FormField({ label, htmlFor, error, className = "", children }) {
+  return (
+    <div className={`flex min-w-0 flex-col gap-2 ${className}`}>
+      <label htmlFor={htmlFor} className="lable-style">
+        {label}
+      </label>
+      {children}
+      {error && (
+        <span role="alert" className="-mt-1 text-[12px] text-yellow-100">
+          {error}
+        </span>
+      )}
+    </div>
+  )
+}
+
+function CertificateTile({ src, alt, isNew, onRemove }) {
+  return (
+    <div
+      className={`group relative aspect-[4/3] overflow-hidden rounded-xl border ${
+        isNew ? "border-yellow-50" : "border-richblack-600"
+      }`}
+    >
+      <img src={src} alt={alt} className="h-full w-full object-cover" />
+      {isNew && (
+        <span className="absolute bottom-2 left-2 rounded-md bg-richblack-900/80 px-2 py-0.5 text-[11px] font-medium text-yellow-50">
+          New
+        </span>
+      )}
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`Remove ${alt}`}
+        className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-richblack-900/80 text-pink-200 transition-colors hover:bg-pink-200 hover:text-richblack-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-50"
+      >
+        <RiDeleteBinLine size={14} />
+      </button>
+    </div>
+  )
+}
+
+/* ---------- Page ---------- */
+
 export default function EditProfile() {
   const { user } = useSelector((state) => state.profile)
   const { token } = useSelector((state) => state.auth)
@@ -18,25 +80,47 @@ export default function EditProfile() {
   const dispatch = useDispatch()
   const confirm = useAlertDialog()
 
-  const { register, handleSubmit, formState: { errors } } = useForm()
+  const details = user?.additionalDetails
+  const isInstructor = user?.accountType === "Instructor"
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      firstName: user?.firstName ?? "",
+      lastName: user?.lastName ?? "",
+      email: user?.email ?? "",
+      dateOfBirth: details?.dateOfBirth
+        ? String(details.dateOfBirth).slice(0, 10)
+        : "",
+      gender: details?.gender ?? "",
+      about: details?.about ?? "",
+      qualifications: details?.qualifications ?? "",
+      experience: details?.experience ?? "",
+    },
+  })
+
 
   const [existingCertificates, setExistingCertificates] = useState(
-    user?.additionalDetails?.certificates || []
+    details?.certificates || []
   )
   const [newCertificateFiles, setNewCertificateFiles] = useState([])
   const [newCertificatePreviews, setNewCertificatePreviews] = useState([])
 
-  const isInstructor = user?.accountType === "Instructor"
+  const previewsRef = useRef([])
+  previewsRef.current = newCertificatePreviews
+  useEffect(() => {
+    return () => previewsRef.current.forEach((url) => URL.revokeObjectURL(url))
+  }, [])
 
   const handleCertificateSelect = (e) => {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
-
     setNewCertificateFiles((prev) => [...prev, ...files])
-
     const previews = files.map((file) => URL.createObjectURL(file))
     setNewCertificatePreviews((prev) => [...prev, ...previews])
-
     e.target.value = ""
   }
 
@@ -66,294 +150,238 @@ export default function EditProfile() {
       formData.append("lastName", data.lastName)
       formData.append("dateOfBirth", data.dateOfBirth)
       formData.append("gender", data.gender)
-      formData.append("contactNumber", data.contactNumber)
-      formData.append("about", data.about)
-
+      formData.append("about", data.about || "")
+      formData.append("email", data.email)
       if (isInstructor) {
         formData.append("qualifications", data.qualifications || "")
         formData.append("experience", data.experience || "")
-        formData.append("existingCertificates", JSON.stringify(existingCertificates))
+        formData.append(
+          "existingCertificates",
+          JSON.stringify(existingCertificates)
+        )
         newCertificateFiles.forEach((file) => {
           formData.append("certificateImages", file)
         })
       }
-
-      dispatch(updateProfile(token, formData))
+    await dispatch(updateProfile(token, formData))
+      navigate("/dashboard/my-profile")
     } catch (error) {
       console.log("ERROR MESSAGE - ", error.message)
     }
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit(submitProfileForm)}>
-        {/* Profile Information */}
-        <div className="my-10 flex flex-col gap-y-6 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-6 sm:px-12">
-          <h2 className="text-lg font-semibold text-richblack-5">
-            Profile Information
-          </h2>
+    <form onSubmit={handleSubmit(submitProfileForm)} className="my-10">
+  
+      <div className="my-6 grid gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-1">
+          <CardHeader title="About" />
+          <div className="px-6 py-6 sm:px-8">
+            <FormField label="Introduce yourself" htmlFor="about">
+              <textarea
+                id="about"
+                placeholder="Write a short introduction about yourself..."
+                className="form-style min-h-[200px] resize-none"
+                {...register("about")}
+              />
+            </FormField>
+          </div>
+        </Card>
 
-          <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="firstName" className="lable-style">
-                First Name
-              </label>
+        <Card className="lg:col-span-2">
+          <CardHeader title="Personal details" />
+          <div className="grid grid-cols-1 gap-x-8 gap-y-5 px-6 py-6 sm:grid-cols-2 sm:px-8">
+            <FormField
+              label="First name"
+              htmlFor="firstName"
+              error={errors.firstName && "Please enter your first name."}
+            >
               <input
                 type="text"
-                name="firstName"
                 id="firstName"
                 placeholder="Enter first name"
                 className="form-style"
                 {...register("firstName", { required: true })}
-                defaultValue={user?.firstName}
               />
-              {errors.firstName && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
-                  Please enter your first name.
-                </span>
-              )}
-            </div>
+            </FormField>
 
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="lastName" className="lable-style">
-                Last Name
-              </label>
+            <FormField
+              label="Last name"
+              htmlFor="lastName"
+              error={errors.lastName && "Please enter your last name."}
+            >
               <input
                 type="text"
-                name="lastName"
                 id="lastName"
-                placeholder="Enter first name"
+                placeholder="Enter last name"
                 className="form-style"
                 {...register("lastName", { required: true })}
-                defaultValue={user?.lastName}
               />
-              {errors.lastName && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
-                  Please enter your last name.
-                </span>
-              )}
-            </div>
-          </div>
+            </FormField>
 
-          <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="dateOfBirth" className="lable-style">
-                Date of Birth
-              </label>
+            <FormField
+              label="Email address"
+              htmlFor="email"
+              error={errors.email && "Please enter a valid email address."}
+            >
               <input
-                type="date"
-                name="dateOfBirth"
-                id="dateOfBirth"
+                type="email"
+                id="email"
+                placeholder="Enter email address"
                 className="form-style"
-                {...register("dateOfBirth", {
-                  required: {
-                    value: true,
-                    message: "Please enter your Date of Birth.",
-                  },
-                  max: {
-                    value: new Date().toISOString().split("T")[0],
-                    message: "Date of Birth cannot be in the future.",
-                  },
+                {...register("email", {
+                  required: true,
+                  pattern: /^\S+@\S+\.\S+$/,
                 })}
-                defaultValue={user?.additionalDetails?.dateOfBirth}
               />
-              {errors.dateOfBirth && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
-                  {errors.dateOfBirth.message}
-                </span>
-              )}
-            </div>
+            </FormField>
 
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="gender" className="lable-style">
-                Gender
-              </label>
-              <select
+            <FormField label="Account type" htmlFor="accountType">
+              <input
                 type="text"
-                name="gender"
+                id="accountType"
+                value={user?.accountType ?? ""}
+                disabled
+                readOnly
+                className="form-style cursor-not-allowed capitalize opacity-60"
+              />
+            </FormField>
+
+            <FormField
+              label="Gender"
+              htmlFor="gender"
+              error={errors.gender && "Please select your gender."}
+            >
+              <select
                 id="gender"
                 className="form-style"
                 {...register("gender", { required: true })}
-                defaultValue={user?.additionalDetails?.gender}
               >
-                {genders.map((ele, i) => {
-                  return (
-                    <option key={i} value={ele}>
-                      {ele}
-                    </option>
-                  )
-                })}
+                <option value="" disabled>
+                  Select gender
+                </option>
+                {genders.map((ele) => (
+                  <option key={ele} value={ele}>
+                    {ele}
+                  </option>
+                ))}
               </select>
-              {errors.gender && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
-                  Please enter your Date of Birth.
-                </span>
-              )}
-            </div>
-          </div>
+            </FormField>
 
-          <div className="flex flex-col gap-5 lg:flex-row">
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="contactNumber" className="lable-style">
-                Contact Number
-              </label>
+            <FormField
+              label="Date of birth"
+              htmlFor="dateOfBirth"
+              error={errors.dateOfBirth?.message}
+            >
               <input
-                type="tel"
-                name="contactNumber"
-                id="contactNumber"
-                placeholder="Enter Contact Number"
+                type="date"
+                id="dateOfBirth"
                 className="form-style"
-                {...register("contactNumber", {
-                  required: {
-                    value: true,
-                    message: "Please enter your Contact Number.",
+                {...register("dateOfBirth", {
+                  max: {
+                    value: new Date().toISOString().split("T")[0],
+                    message: "Date of birth cannot be in the future.",
                   },
-                  maxLength: { value: 12, message: "Invalid Contact Number" },
-                  minLength: { value: 10, message: "Invalid Contact Number" },
                 })}
-                defaultValue={user?.additionalDetails?.contactNumber}
               />
-              {errors.contactNumber && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
-                  {errors.contactNumber.message}
-                </span>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-2 lg:w-[48%]">
-              <label htmlFor="about" className="lable-style">
-                About
-              </label>
-              <input
-                type="text"
-                name="about"
-                id="about"
-                placeholder="Enter Bio Details"
-                className="form-style"
-                {...register("about", { required: true })}
-                defaultValue={user?.additionalDetails?.about}
-              />
-              {errors.about && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
-                  Please enter your About.
-                </span>
-              )}
-            </div>
+            </FormField>
           </div>
-        </div>
+        </Card>
+      </div>
 
-        {/* Qualifications & Experience — chỉ hiện với Instructor */}
-        {isInstructor && (
-          <div className="my-10 flex flex-col gap-y-6 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-6 sm:px-12">
-            <h2 className="text-lg font-semibold text-richblack-5">
-              Qualifications & Experience
-            </h2>
+      {/* ===== Instructor only ===== */}
+      {isInstructor && (
+        <Card className="mb-6">
+          <CardHeader title="Qualifications & Experience" />
 
-            <div className="flex flex-col gap-2">
-              <label htmlFor="qualifications" className="lable-style">
-                Qualifications & certifications
-              </label>
+          <div className="grid gap-8 px-6 py-6 sm:grid-cols-2 sm:px-8">
+            <FormField
+              label="Qualifications & certifications"
+              htmlFor="qualifications"
+            >
               <textarea
                 id="qualifications"
                 placeholder="e.g. B.Sc in Computer Science, AWS Certified Solutions Architect..."
-                className="form-style min-h-[100px] resize-none"
+                className="form-style min-h-[120px] resize-none"
                 {...register("qualifications")}
-                defaultValue={user?.additionalDetails?.qualifications}
               />
-            </div>
+            </FormField>
 
-            <div className="flex flex-col gap-2">
-              <label htmlFor="experience" className="lable-style">
-                Teaching experience
-              </label>
+            <FormField label="Teaching experience" htmlFor="experience">
               <textarea
                 id="experience"
                 placeholder="e.g. 5 years teaching web development at XYZ Academy..."
-                className="form-style min-h-[100px] resize-none"
+                className="form-style min-h-[120px] resize-none"
                 {...register("experience")}
-                defaultValue={user?.additionalDetails?.experience}
               />
-            </div>
-
-            {/* Certificate images */}
-            <div className="flex flex-col gap-3">
-              <label className="lable-style">
-                Certificate photos <span className="text-richblack-400 font-normal">(builds trust with students)</span>
-              </label>
-
-              <div className="flex flex-wrap gap-4">
-                {existingCertificates.map((url, index) => (
-                  <div key={`existing-${index}`} className="relative group">
-                    <img
-                      src={url}
-                      alt={`Certificate ${index + 1}`}
-                      className="h-28 w-28 rounded-lg object-cover border border-richblack-600"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeExistingCertificate(index)}
-                      className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center rounded-full bg-pink-200 text-richblack-900 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <RiDeleteBinLine size={12} />
-                    </button>
-                  </div>
-                ))}
-
-                {newCertificatePreviews.map((preview, index) => (
-                  <div key={`new-${index}`} className="relative group">
-                    <img
-                      src={preview}
-                      alt={`New certificate ${index + 1}`}
-                      className="h-28 w-28 rounded-lg object-cover border-2 border-yellow-50"
-                    />
-                    <span className="absolute bottom-1 left-1 rounded bg-richblack-900/80 px-1.5 py-0.5 text-[10px] text-yellow-50">
-                      New
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => removeNewCertificate(index)}
-                      className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center rounded-full bg-pink-200 text-richblack-900 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <RiDeleteBinLine size={12} />
-                    </button>
-                  </div>
-                ))}
-
-                {/* Nút thêm ảnh */}
-                <label
-                  htmlFor="certificateUpload"
-                  className="h-28 w-28 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-richblack-600 text-richblack-400 cursor-pointer hover:border-yellow-50 hover:text-yellow-50 transition-colors"
-                >
-                  <FiUploadCloud size={20} />
-                  <span className="text-xs">Add photo</span>
-                  <input
-                    type="file"
-                    id="certificateUpload"
-                    accept="image/*"
-                    multiple
-                    onChange={handleCertificateSelect}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-              <p className="text-xs text-richblack-400">
-                Upload clear photos of your diplomas or certifications. JPG or PNG.
-              </p>
-            </div>
+            </FormField>
           </div>
-        )}
 
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={() => { navigate("/dashboard/my-profile") }}
-            className="cursor-pointer rounded-md bg-richblack-700 py-2 px-5 font-semibold text-richblack-50"
-          >
-            Cancel
-          </button>
-          <IconBtn type="submit" text="Save" />
-        </div>
+          <div className="border-t border-richblack-700 px-6 py-6 sm:px-8">
+            <div className="mb-4 flex items-baseline justify-between">
+              <h3 className="text-sm text-richblack-400">Certificate photos</h3>
+              <span className="text-xs text-richblack-500">
+                {existingCertificates.length + newCertificatePreviews.length}{" "}
+                uploaded
+              </span>
+            </div>
 
-      </form>
-    </>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              {existingCertificates.map((url, index) => (
+                <CertificateTile
+                  key={`existing-${index}`}
+                  src={url}
+                  alt={`Certificate ${index + 1}`}
+                  onRemove={() => removeExistingCertificate(index)}
+                />
+              ))}
+
+              {newCertificatePreviews.map((preview, index) => (
+                <CertificateTile
+                  key={`new-${index}`}
+                  src={preview}
+                  alt={`New certificate ${index + 1}`}
+                  isNew
+                  onRemove={() => removeNewCertificate(index)}
+                />
+              ))}
+
+              <label
+                htmlFor="certificateUpload"
+                className="flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-richblack-600 text-richblack-400 transition-colors hover:border-yellow-50 hover:text-yellow-50 focus-within:border-yellow-50"
+              >
+                <FiUploadCloud size={22} />
+                <span className="text-xs">Add photo</span>
+                <input
+                  type="file"
+                  id="certificateUpload"
+                  accept="image/*"
+                  multiple
+                  onChange={handleCertificateSelect}
+                  className="sr-only"
+                />
+              </label>
+            </div>
+
+            <p className="mt-3 text-xs text-richblack-400">
+              Upload clear photos of your diplomas or certifications. JPG or
+              PNG.
+            </p>
+          </div>
+        </Card>
+      )}
+
+      {/* ===== Actions ===== */}
+      <div className="sticky bottom-0 z-10 flex justify-end gap-3 rounded-2xl border border-richblack-700 bg-richblack-800/90 px-4 py-3 backdrop-blur">
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard/my-profile")}
+          className="cursor-pointer rounded-lg bg-richblack-700 px-5 py-2 font-semibold text-richblack-50 transition-colors hover:bg-richblack-600"
+        >
+          Cancel
+        </button>
+        <IconBtn type="submit" text="Save changes" />
+      </div>
+    </form>
   )
 }

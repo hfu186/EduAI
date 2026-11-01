@@ -45,6 +45,8 @@ export const createOrGetChat = async (instructorId, token) => {
     return response.data.data;
   } catch (error) {
     console.error("CREATE_OR_GET_CHAT_API ERROR:", error);
+      console.log("Server message:", error.response?.data);
+
     return null;
   }
 };

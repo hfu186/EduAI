@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import mongoose from "mongoose";
-import { payos } from "../../utils/payos.js"; 
+import payos  from "../../utils/payos.js"; 
 import Order from "../../models/order.js"
 import User from "../../models/user.js";
 import Course from "../../models/course.js";

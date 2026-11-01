@@ -47,7 +47,7 @@ export const chatWithAI = async (question, subSectionId, token) => {
   return result;
 };
 export const generateAIQuiz = async (subSectionId, numberOfQuestions = 5, token) => {
-  let result = [];
+  let result = { questions: [], version: null };
   try {
     const response = await apiConnector(
       "POST",
@@ -60,7 +60,10 @@ export const generateAIQuiz = async (subSectionId, numberOfQuestions = 5, token)
       throw new Error(response.data.message);
     }
 
-    result = response.data.data;
+    result = {
+      questions: response.data.data,
+      version: response.data.meta?.version ?? null,
+    };
     toast.success("AI Generated!");
   } catch (error) {
     console.log("GENERATE_AI_QUIZ_API ERROR............", error);

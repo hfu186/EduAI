@@ -206,6 +206,10 @@ quizResults
   Type      : Array
   Required  : false
 
+aiQuizAttempts
+  Type      : Array
+  Required  : false
+
 _id
   Type      : ObjectId
   Required  : false
@@ -277,33 +281,6 @@ status
 
 amount
   Type      : Number
-  Required  : true
-
-createdAt
-  Type      : Date
-  Required  : false
-  Default   : function now() { [native code] }
-
-_id
-  Type      : ObjectId
-  Required  : false
-
-__v
-  Type      : Number
-  Required  : false
-
-
-
-=====================================================
-Collection: otps
-Model: OTP
-=====================================================
-email
-  Type      : String
-  Required  : true
-
-otp
-  Type      : String
   Required  : true
 
 createdAt
@@ -534,11 +511,15 @@ type
 
 slide.fileName
   Type      : String
-  Required  : true
+  Required  : false
 
 slide.fileUrl
   Type      : String
-  Required  : true
+  Required  : false
+
+slides
+  Type      : Array
+  Required  : false
 
 quiz.source
   Type      : String
@@ -691,6 +672,141 @@ studyStreak
   Type      : Number
   Required  : false
   Default   : 0
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+
+updatedAt
+  Type      : Date
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: messages
+Model: Message
+=====================================================
+chat
+  Type      : ObjectId
+  Required  : true
+  Ref       : Chat
+
+sender
+  Type      : ObjectId
+  Required  : true
+  Ref       : User
+
+content
+  Type      : String
+  Required  : false
+  Default   : 
+
+messageType
+  Type      : String
+  Required  : false
+  Default   : text
+
+fileUrl
+  Type      : String
+  Required  : false
+  Default   : null
+
+fileName
+  Type      : String
+  Required  : false
+  Default   : null
+
+isRead
+  Type      : Boolean
+  Required  : false
+  Default   : false
+
+_id
+  Type      : ObjectId
+  Required  : false
+
+createdAt
+  Type      : Date
+  Required  : false
+
+updatedAt
+  Type      : Date
+  Required  : false
+
+__v
+  Type      : Number
+  Required  : false
+
+
+
+=====================================================
+Collection: quizreports
+Model: QuizReport
+=====================================================
+student
+  Type      : ObjectId
+  Required  : false
+  Ref       : User
+
+course
+  Type      : ObjectId
+  Required  : true
+  Ref       : Course
+
+subSection
+  Type      : ObjectId
+  Required  : true
+  Ref       : SubSection
+
+questionIndex
+  Type      : Number
+  Required  : true
+
+question
+  Type      : String
+  Required  : true
+
+options
+  Type      : Array
+  Required  : false
+  Default   : 
+
+correctAnswer
+  Type      : Number
+  Required  : true
+
+issueType
+  Type      : String
+  Required  : true
+
+details
+  Type      : String
+  Required  : false
+  Default   : 
+
+quizVersion
+  Type      : Number
+  Required  : false
+  Default   : 1
+
+generatedByAI
+  Type      : Boolean
+  Required  : false
+  Default   : false
+
+status
+  Type      : String
+  Required  : false
+  Default   : pending
 
 _id
   Type      : ObjectId

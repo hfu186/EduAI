@@ -7,7 +7,7 @@ export default function AddCourse() {
   }, [])
 
   return (
-    <div className="flex w-full items-start gap-x-6">
+    <div className="flex w-full items-start gap-x-6 mt-5">
       {/* Main content */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Header - đồng bộ style với các form */}

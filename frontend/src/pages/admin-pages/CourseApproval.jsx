@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  getAllCourses,
-  approveCourse,
-} from "@/services/operations/adminAPI";
+import { getAllCourses, approveCourse } from "@/services/operations/adminAPI";
 import {
   FaTimes,
   FaEye,
@@ -24,10 +21,9 @@ import {
 import { MdErrorOutline, MdInfoOutline } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import {  formatVND } from "../../utils/formatVND"
-import {  dateFormatter } from "../../utils/dateFormatter"
-import useAlertDialog from "@/hooks/useAlertDialog"
-
+import { formatVND } from "../../utils/formatVND";
+import { dateFormatter } from "../../utils/dateFormatter";
+import useAlertDialog from "@/hooks/useAlertDialog";
 
 export default function CourseApproval() {
   const [courses, setCourses] = useState([]);
@@ -43,8 +39,6 @@ export default function CourseApproval() {
   useEffect(() => {
     fetchCourses();
   }, [token]);
-
- 
 
   const renderSubSectionLink = (sub) => {
     const baseUrl = "http://localhost:5000";
@@ -149,11 +143,12 @@ export default function CourseApproval() {
       return 0;
     return course.courseContent.reduce(
       (acc, section) => acc + (section.subSection?.length || 0),
-      0
+      0,
     );
   };
-  const pendingCount = courses.filter((c) => c.status === "Draft" ||  c.status === "Pending"
-).length;
+  const pendingCount = courses.filter(
+    (c) => c.status === "Draft" || c.status === "Pending",
+  ).length;
 
   return (
     <div className="space-y-8 ">
@@ -228,7 +223,10 @@ export default function CourseApproval() {
                   <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2.5 text-[11px] text-richblack-400">
                     {course.price !== undefined && (
                       <span className="flex items-center gap-1">
-                        <FaMoneyBillWave size={10} className="text-caribbeangreen-300" />
+                        <FaMoneyBillWave
+                          size={10}
+                          className="text-caribbeangreen-300"
+                        />
                         {formatVND(course.price)}
                       </span>
                     )}
@@ -262,7 +260,7 @@ export default function CourseApproval() {
                     onClick={() =>
                       handleStatus(
                         course._id,
-                        course.status === "Draft" ? "Published" : "Draft"
+                        course.status === "Draft" ? "Published" : "Draft",
                       )
                     }
                     className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
@@ -271,7 +269,7 @@ export default function CourseApproval() {
                         : "bg-pink-700 text-white hover:bg-pink-600"
                     }`}
                   >
-                    {course.status === "Draft" ?  "Approve" : "Revoke"}
+                    {course.status === "Draft" ? "Approve" : "Revoke"}
                   </button>
                 </div>
               </div>
@@ -282,8 +280,9 @@ export default function CourseApproval() {
 
       {/* ===================== FULL PREVIEW MODAL ===================== */}
       {selectedCourse && (
-        <div className="fixed inset-0 z-[1000] grid place-items-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="w-full max-w-4xl rounded-3xl border border-richblack-700 bg-richblack-800 shadow-2xl overflow-hidden animate-slideUp max-h-[92vh] flex flex-col">
+        <div className="fixed inset-0 z-[9999] grid place-items-center bg-black/80 backdrop-blur-sm p-4">
+          {" "}
+          <div className="w-full max-w-4xl rounded-3xl border border-richblack-700 bg-richblack-800 shadow-2xl overflow-hidden  max-h-[92vh] flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between p-5 md:p-6 border-b border-richblack-700 bg-richblack-900/60 shrink-0">
               <div>
@@ -566,7 +565,7 @@ export default function CourseApproval() {
                 onClick={() =>
                   handleStatus(
                     selectedCourse._id,
-                    selectedCourse.status === "Draft" ? "Published" : "Draft"
+                    selectedCourse.status === "Draft" ? "Published" : "Draft",
                   )
                 }
                 className={`px-7 py-2.5 rounded-xl font-black transition-all hover:scale-[1.03] text-xs uppercase tracking-widest shadow-lg ${

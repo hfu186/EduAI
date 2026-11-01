@@ -32,7 +32,6 @@ app.use(cors());
 app.use(cookieParser());
 app.use("/uploads/slides", slideAssetAccess);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-console.log("Uploads path:", path.join(__dirname, "uploads"));
 app.use(
   express.json({
     verify: (req, res, buf) => {

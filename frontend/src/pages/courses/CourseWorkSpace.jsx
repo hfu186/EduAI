@@ -33,6 +33,14 @@ function CourseWorkspace() {
   const [lastSlideId, setLastSlideId] = useState(null);
   const [activeGroup, setActiveGroup] = useState(null);
   const [isTrial, setIsTrial] = useState(false);
+  const selectedItemStorageKey = `eduai-course-workspace-item:${courseId}`;
+
+  const selectWorkspaceItem = useCallback((item) => {
+    setCurrentItem(item);
+    if (item?._id) {
+      localStorage.setItem(selectedItemStorageKey, String(item._id));
+    }
+  }, [selectedItemStorageKey]);
 
   const showCertificateModal = useCallback(() => {
     MySwal.fire({
@@ -97,7 +105,21 @@ function CourseWorkspace() {
 
           const groupedContent = { slide: [], assignment: [], quiz: [] };
           details.courseContent?.forEach(sec => sec.subSection?.forEach(sub => {
-            if (groupedContent[sub.type]) groupedContent[sub.type].push({ ...sub, sectionName: sec.sectionName });
+            const hasSlides = sub.slides?.length || sub.slide?.fileUrl;
+            const isSlideAIQuiz = sub.type === "quiz" && sub.quiz?.generatedByAI && hasSlides;
+            const groupType = isSlideAIQuiz ? "slide" : sub.type;
+            if (groupedContent[groupType]) {
+              groupedContent[groupType].push({
+                ...sub,
+                type: groupType,
+                slides: sub.slides?.length
+                  ? sub.slides
+                  : sub.slide?.fileUrl
+                    ? [sub.slide]
+                    : [],
+                sectionName: sec.sectionName,
+              });
+            }
           }));
           setGrouped(groupedContent);
           const previewItem = previewSubSectionId
@@ -105,21 +127,27 @@ function CourseWorkspace() {
                 .flat()
                 .find((item) => String(item._id) === String(previewSubSectionId))
             : null;
-          const first = previewItem || groupedContent.slide?.[0] || groupedContent.quiz?.[0] || null;
+          const storedItemId = localStorage.getItem(selectedItemStorageKey);
+          const storedItem = storedItemId
+            ? Object.values(groupedContent)
+                .flat()
+                .find((item) => String(item._id) === storedItemId)
+            : null;
+          const first = previewItem || storedItem || groupedContent.slide?.[0] || groupedContent.quiz?.[0] || null;
           setCurrentItem(first);
           if (first?.type === "slide") setLastSlideId(first._id);
         }
       } catch (e) { console.error(e); } finally { setLoading(false); }
     };
     fetchCourse();
-  }, [courseId, token, previewSubSectionId, dispatch]);
+  }, [courseId, token, previewSubSectionId, dispatch, selectedItemStorageKey]);
 
-  if (loading) return <div className="grid place-items-center h-screen bg-richblack-900 text-white font-bold italic animate-pulse">Loading Workspace...</div>;
+  if (loading) return <div className="grid place-items-center bg-richblack-900 text-white font-bold italic animate-pulse">Loading Workspace...</div>;
 
   return (
-    <div className="flex h-screen bg-richblack-900 text-richblack-5 overflow-hidden">
+    <div className="flex bg-richblack-900 text-richblack-5 ">
       {!isTrial && lastSlideId && <AIChatbot token={token} subSectionId={lastSlideId} />}
-      <CourseSidebar grouped={grouped} currentItem={currentItem} setCurrentItem={setCurrentItem} setActiveGroup={setActiveGroup} isTrial={isTrial} />
+      <CourseSidebar grouped={grouped} currentItem={currentItem} setCurrentItem={selectWorkspaceItem} setActiveGroup={setActiveGroup} isTrial={isTrial} />
       <div className="flex-1 p-6 overflow-y-auto">
         {currentItem ? (
           <div className="mt-4 mx-auto">

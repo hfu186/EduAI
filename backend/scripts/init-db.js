@@ -13,7 +13,6 @@ const models = [
   require("../models/courseProgress"),
   require("../models/enrollment"),
   require("../models/order"),
-  require("../models/OTP"),
   require("../models/profile"),
   require("../models/quizResult"),
   require("../models/ratingAndReview"),
@@ -21,6 +20,9 @@ const models = [
   require("../models/submission"),
   require("../models/subSection"),
   require("../models/user"),
+  require("../models/message"),
+  require("../models/quizReport"),
+
 ];
 
 async function exportSchemas() {

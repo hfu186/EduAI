@@ -1,24 +1,34 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { MdDeleteOutline, MdHighlight, MdOutlineInfo } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { apiConnector } from "@/services/apiConnector";
 import { courseEndpoints } from "@/services/apis";
-
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
-export default function PDFViewer({ pdfUrl, subSectionId, token, isTrial = true }) {
+export default function PDFViewer({
+  pdfUrl,
+  subSectionId,
+  token,
+  isTrial = true,
+}) {
   const [numPages, setNumPages] = useState(null);
   const [highlights, setHighlights] = useState([]);
   const [pendingHighlight, setPendingHighlight] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const viewerRef = useRef(null);
   const pagesToRender = isTrial ? Math.min(numPages || 0, 3) : numPages || 0;
-
+  const pdfFile = useMemo(
+    () => ({
+      url: pdfUrl,
+      httpHeaders: token ? { Authorization: `Bearer ${token}` } : {},
+    }),
+    [pdfUrl, token],
+  );
   useEffect(() => {
     if (!subSectionId || !token || isTrial) {
       setHighlights([]);
@@ -209,10 +219,7 @@ export default function PDFViewer({ pdfUrl, subSectionId, token, isTrial = true 
         className="flex justify-center bg-white p-4"
       >
         <Document
-          file={{
-            url: pdfUrl,
-            httpHeaders: token ? { Authorization: `Bearer ${token}` } : {},
-          }}
+          file={pdfFile}
           onLoadSuccess={({ numPages }) => setNumPages(numPages)}
           loading="Loading PDF..."
           error="Can't download PDF"

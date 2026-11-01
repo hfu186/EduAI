@@ -11,6 +11,8 @@ import {
 } from "../../services/operations/chatAPI";
 import { clearChatUnread } from "../../slices/messageSlice";
 
+const NAVBAR_HEIGHT = "3.5rem";
+
 const ChatWindow = () => {
   const { chatId } = useParams();
   const navigate = useNavigate();
@@ -25,10 +27,18 @@ const ChatWindow = () => {
   const [typingUser, setTypingUser] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const bottomRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const inputRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, []);
 
   useEffect(() => {
     if (!chatId || !token) return;
@@ -77,9 +87,13 @@ const ChatWindow = () => {
     };
   }, [chatId, dispatch, token, user?._id]);
 
+ 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, typingUser]);
+    const el = messagesContainerRef.current;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }
+  }, [messages, typingUser, loading]);
 
   const otherPerson =
     chat && user
@@ -135,8 +149,11 @@ const ChatWindow = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-[calc(100vh-3.5rem)] bg-richblack-900 flex flex-col">
-        <div className="flex items-center gap-3 p-4 border-b border-richblack-700">
+      <div
+        className="flex w-full flex-col overflow-hidden bg-richblack-900"
+        style={{ height: `calc(100dvh - ${NAVBAR_HEIGHT})` }}
+      >
+        <div className="flex shrink-0 items-center gap-3 p-4 border-b border-richblack-700">
           <div className="w-6 h-4 bg-richblack-700 rounded animate-pulse" />
           <div className="w-10 h-6 rounded-full bg-richblack-700 animate-pulse" />
           <div className="h-4 w-32 bg-richblack-700 rounded animate-pulse" />
@@ -150,7 +167,10 @@ const ChatWindow = () => {
 
   if (!chat) {
     return (
-      <div className="w-full h-[calc(100vh-3.5rem)] bg-richblack-900 flex items-center justify-center">
+      <div
+        className="flex w-full items-center justify-end overflow-hidden bg-richblack-900"
+        style={{ height: `calc(100dvh - ${NAVBAR_HEIGHT})` }}
+      >
         <div className="text-center">
           <p className="text-richblack-300 text-lg mb-4">
             Conversation not found
@@ -167,8 +187,11 @@ const ChatWindow = () => {
   }
 
   return (
-    <div className="w-full h-[calc(90vh-4rem)] bg-richblack-900 flex flex-col overflow-hidden ">
-      <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-richblack-700 bg-richblack-900">
+    <div
+      className="flex w-full h-[calc(100vh-5rem)] flex-col bg-richblack-900 pt-2" 
+    >
+      {/* ===== HEADER ===== */}
+      <div className="shrink-0 flex items-center gap-3 px-4 py-2 border-b border-richblack-700 bg-richblack-900">
         <button
           onClick={() => navigate("/chat")}
           className="p-2 -ml-2 rounded-full hover:bg-richblack-800 transition-colors"
@@ -197,9 +220,12 @@ const ChatWindow = () => {
         </div>
       </div>
 
-      {/* ===== MESSAGES ===== */}
-          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-3">        
-            {messages.length === 0 ? (
+     
+      <div
+        ref={messagesContainerRef}
+        className="flex-1  overflow-y-auto overscroll-contain px-2 py-2 space-y-5"
+      >
+        {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-20 h-20 rounded-full bg-richblack-800 flex items-center justify-center mb-4">
               <span className="text-3xl">💬</span>
@@ -218,7 +244,8 @@ const ChatWindow = () => {
               !isMine &&
               (index === 0 ||
                 String(
-                  messages[index - 1]?.sender?._id || messages[index - 1]?.sender
+                  messages[index - 1]?.sender?._id ||
+                    messages[index - 1]?.sender,
                 ) !== String(m.sender?._id || m.sender));
 
             return (
@@ -271,7 +298,9 @@ const ChatWindow = () => {
                       📎 {m.fileName || "Attachment"}
                     </a>
                   ) : (
-                    <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                    <p className="whitespace-pre-wrap break-words">
+                      {m.content}
+                    </p>
                   )}
 
                   <p
@@ -294,7 +323,7 @@ const ChatWindow = () => {
 
         {/* Typing indicator */}
         {typingUser && (
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-2 ">
             <img
               src={
                 otherPerson?.image ||
@@ -312,12 +341,10 @@ const ChatWindow = () => {
             </div>
           </div>
         )}
-
-        <div ref={bottomRef} />
       </div>
 
       {/* ===== INPUT ===== */}
-      <div className="px-4 py-3 border-t border-richblack-700 bg-richblack-900">
+      <div className="shrink px-4 py-3 border-t border-richblack-700 bg-richblack-900">
         <div className="flex items-center gap-2">
           {/* File attachment button */}
           <input

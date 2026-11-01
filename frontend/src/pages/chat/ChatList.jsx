@@ -264,16 +264,12 @@ const ChatList = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-2.5rem-5rem)] p-2 items-center justify-center">
+    <div className="min-h-[calc(100vh-5rem)] p-2 items-center justify-center">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-richblack-5 tracking-tight">
           {t("pages.chat.messages")}
         </h1>
-        {chats.length > 0 && (
-          <span className="text-sm text-richblack-400 bg-richblack-800 px-3 py-1 rounded-full">
-            {t("pages.chat.conversations", { count: chats.length })}
-          </span>
-        )}
+
       </div>
 
       <div className="relative mb-6">

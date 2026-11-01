@@ -37,7 +37,7 @@ export default function MyCourses() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
+      <div className=" flex justify-center items-center">
         <div className="text-center">
           <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-t-yellow-50 border-richblack-700"></div>
 
@@ -51,7 +51,7 @@ export default function MyCourses() {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex justify-center items-center text-white">
+      <div className=" flex justify-center items-center text-white">
         <p className="text-richblack-300">
           {t("myCourses.loginRequired")}
         </p>

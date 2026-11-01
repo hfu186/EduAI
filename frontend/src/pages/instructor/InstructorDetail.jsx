@@ -89,27 +89,31 @@ const InstructorDetails = () => {
     instructor.additionalDetails?.experience;
 
   const statItems = [
-    {
-      icon: FaUserGraduate,
-      value: instructor.stats?.totalStudents || 0,
-      label: t("pages.instructor_detail.students"),
-    },
-    {
-      icon: FaPlayCircle,
-      value: instructor.stats?.totalCourses || 0,
-      label: t("pages.instructor_detail.courses"),
-    },
-    {
-      icon: MdOutlineRateReview,
-      value: instructor.stats?.totalReviews || 0,
-      label: t("pages.instructor_detail.reviews"),
-    },
-    {
-      icon: FaStar,
-      value: instructor.stats?.averageRating || "0.0",
-      label: t("pages.instructor_detail.rating"),
-    },
-  ];
+  {
+    id: "students",
+    icon: FaUserGraduate,
+    value: instructor.stats?.totalStudents || 0,
+    label: t("pages.instructor_detail.students"),
+  },
+  {
+    id: "courses",
+    icon: FaPlayCircle,
+    value: instructor.stats?.totalCourses || 0,
+    label: t("pages.instructor_detail.courses"),
+  },
+  {
+    id: "reviews",
+    icon: MdOutlineRateReview,
+    value: instructor.stats?.totalReviews || 0,
+    label: t("pages.instructor_detail.reviews"),
+  },
+  {
+    id: "rating",
+    icon: FaStar,
+    value: instructor.stats?.averageRating || "0.0",
+    label: t("pages.instructor_detail.rating"),
+  },
+];
 
   return (
     <div className="bg-richblack-900 min-h-screen flex flex-col font-inter text-white">

@@ -53,6 +53,8 @@ export const courseEndpoints = {
   GET_ASSIGNMENT_SUBMISSIONS_API: BASE_URL + "/submission/assignment-submissions",
   GRADE_ASSIGNMENT_API: BASE_URL + "/submission/grade-submission",
   SUBMIT_QUIZ_API: BASE_URL + "/quiz/submit",
+  SAVE_AI_QUIZ_ATTEMPT_API: BASE_URL + "/quiz/ai-attempt",
+  GET_AI_QUIZ_ATTEMPT_API: BASE_URL + "/quiz/ai-attempt",
   REPORT_AI_QUIZ_ISSUE_API: BASE_URL + "/quiz/report-issue",
   GET_INSTRUCTOR_QUIZ_REPORTS_API: BASE_URL + "/quiz/reports",
   UPDATE_QUIZ_REPORT_STATUS_API: BASE_URL + "/quiz/reports",

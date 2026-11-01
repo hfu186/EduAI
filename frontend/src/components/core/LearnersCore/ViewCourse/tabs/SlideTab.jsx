@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateCompletedLectures } from "@/slices/viewCourseSlice";
 import { apiConnector, axiosInstance } from "@/services/apiConnector";
@@ -19,18 +19,65 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
   const userId = useSelector((state) => state.profile.user?.id);
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiQuiz, setAiQuiz] = useState(null);
+  const [activeQuizVersion, setActiveQuizVersion] = useState(null);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizResult, setQuizResult] = useState(null);
+  const [showAnswerReview, setShowAnswerReview] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [lastAttempt, setLastAttempt] = useState(null);
   const [reportingQuestion, setReportingQuestion] = useState(null);
   const [reportIssueType, setReportIssueType] = useState("incorrect_answer");
   const [reportDetails, setReportDetails] = useState("");
   const [isReporting, setIsReporting] = useState(false);
+  const [isSubmittingQuiz, setIsSubmittingQuiz] = useState(false);
   const [reportedQuestions, setReportedQuestions] = useState([]);
 
   const isAlreadyCompleted = completedLectures.some(
     (id) => String(id) === String(subSectionId),
   );
+
+  useEffect(() => {
+    if (isTrial || !courseId || !subSectionId || !token) return undefined;
+
+    let isActive = true;
+    const fetchLastAttempt = async () => {
+      try {
+        const response = await apiConnector(
+          "GET",
+          `${courseEndpoints.GET_AI_QUIZ_ATTEMPT_API}/${courseId}/${subSectionId}`,
+          null,
+          { Authorization: `Bearer ${token}` },
+        );
+        const attempt = response?.data?.data;
+        if (!isActive || !attempt) return;
+
+        const restoredAnswers = Object.fromEntries(
+          attempt.answers.map(({ questionIndex, optionIndex }) => [
+            questionIndex,
+            optionIndex,
+          ]),
+        );
+        setLastAttempt(attempt);
+        setAiQuiz(attempt.questions);
+        setActiveQuizVersion(attempt.quizVersion);
+        setQuizAnswers(restoredAnswers);
+        setQuizResult({
+          score: attempt.score,
+          correct: attempt.correctCount,
+          total: attempt.totalQuestions,
+        });
+        setShowAnswerReview(true);
+        setShowQuiz(true);
+      } catch (error) {
+        console.error("Could not restore AI quiz attempt:", error);
+      }
+    };
+
+    fetchLastAttempt();
+    return () => {
+      isActive = false;
+    };
+  }, [courseId, subSectionId, token, isTrial]);
 
   const markAsCompleted = async () => {
     if (isTrial || !subSectionId || isAlreadyCompleted || isMarking) return;
@@ -85,13 +132,15 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
     setAiQuiz(null);
     setQuizAnswers({});
     setQuizResult(null);
+    setShowAnswerReview(false);
     setReportingQuestion(null);
     setReportedQuestions([]);
 
     try {
-      const questions = await generateAIQuiz(subSectionId, 10, token);
-      if (questions?.length > 0) {
-        setAiQuiz(questions);
+      const generatedQuiz = await generateAIQuiz(subSectionId, 10, token);
+      if (generatedQuiz?.questions?.length > 0) {
+        setAiQuiz(generatedQuiz.questions);
+        setActiveQuizVersion(generatedQuiz.version);
         setShowQuiz(true);
         setTimeout(() => {
           document
@@ -113,27 +162,58 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
     setQuizAnswers((prev) => ({ ...prev, [qIndex]: optIndex }));
   };
 
-  const handleSubmitQuiz = () => {
-    if (Object.keys(quizAnswers).length < aiQuiz.length) {
+  const handleSubmitQuiz = async () => {
+    if (!aiQuiz?.length || Object.keys(quizAnswers).length < aiQuiz.length) {
       toast.error("Please answer all questions first.");
       return;
     }
 
-    let correct = 0;
-    aiQuiz.forEach((q, i) => {
-      if (quizAnswers[i] === q.correctAnswer) correct++;
-    });
+    if (isSubmittingQuiz) return;
+    setIsSubmittingQuiz(true);
+    try {
+      const response = await apiConnector(
+        "POST",
+        courseEndpoints.SAVE_AI_QUIZ_ATTEMPT_API,
+        {
+          courseId,
+          subSectionId,
+          quizVersion: activeQuizVersion,
+          answers: Object.entries(quizAnswers).map(
+            ([questionIndex, optionIndex]) => ({
+              questionIndex: Number(questionIndex),
+              optionIndex: Number(optionIndex),
+            }),
+          ),
+        },
+        { Authorization: `Bearer ${token}` },
+      );
 
-    setQuizResult({
-      score: Math.round((correct / aiQuiz.length) * 100),
-      correct,
-      total: aiQuiz.length,
-    });
+      if (!response?.data?.success) {
+        throw new Error(response?.data?.message || "Could not save quiz attempt.");
+      }
+
+      const attempt = response.data.data;
+      setLastAttempt(attempt);
+      setQuizResult({
+        score: attempt.score,
+        correct: attempt.correctCount,
+        total: attempt.totalQuestions,
+      });
+      toast.success("Quiz result saved. You can review it after reloading.");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Could not save quiz result.",
+      );
+      console.error("AI quiz submission failed:", error);
+    } finally {
+      setIsSubmittingQuiz(false);
+    }
   };
 
   const handleRetryQuiz = () => {
     setQuizAnswers({});
     setQuizResult(null);
+    setShowAnswerReview(false);
   };
 
   const handleReportIssue = async (question, questionIndex) => {
@@ -178,6 +258,7 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
     setAiQuiz(null);
     setQuizAnswers({});
     setQuizResult(null);
+    setShowAnswerReview(false);
     setReportingQuestion(null);
     setReportedQuestions([]);
   };
@@ -187,7 +268,7 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
     <div
       ref={scrollContainerRef}
       onScroll={handleScroll}
-      className="flex flex-col gap-y-8 pdf-isolate overflow-y-auto max-h-[80vh] custom-scrollbar"
+      className="flex flex-col gap-y-8 pdf-isolate overflow-y-auto  custom-scrollbar"
       style={{ scrollBehavior: "smooth" }}
     >
       {slides.map((section) =>
@@ -327,6 +408,13 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                         )}
                         <div className="flex gap-3 pt-2">
                           <button
+                            type="button"
+                            onClick={() => setShowAnswerReview((visible) => !visible)}
+                            className="rounded-full border border-richblack-500 px-6 py-2 font-bold text-white transition-colors hover:bg-richblack-700"
+                          >
+                            {showAnswerReview ? "Hide review" : "Review answers"}
+                          </button>
+                          <button
                             onClick={handleRetryQuiz}
                             className="bg-yellow-50 text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-all"
                           >
@@ -344,59 +432,57 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                             New Quiz
                           </button>
                         </div>
-                      </div>
-                    ) : (
-                      /* Questions */
-                      <>
-                        {aiQuiz.map((question, qIndex) => (
-                          <div
-                            key={qIndex}
-                            className="bg-richblack-900/60 p-5 rounded-xl border border-richblack-700/50"
-                          >
-                            <p className="text-white font-medium mb-4">
-                              <span className="text-yellow-400 font-bold mr-2">
-                                {qIndex + 1}.
-                              </span>
-                              {question.question}
-                            </p>
-                            <div className="space-y-2">
-                              {question.options.map((option, optIndex) => (
-                                <label
-                                  key={optIndex}
-                                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer border transition-all ${
-                                    quizAnswers[qIndex] === optIndex
-                                      ? "bg-yellow-500/10 border-yellow-400"
-                                      : "border-transparent hover:bg-richblack-700"
-                                  }`}
-                                >
-                                  <input
-                                    type="radio"
-                                    className="hidden"
-                                    onChange={() =>
-                                      handleOptionChange(qIndex, optIndex)
-                                    }
-                                    checked={quizAnswers[qIndex] === optIndex}
-                                  />
-                                  <div
-                                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                      quizAnswers[qIndex] === optIndex
-                                        ? "border-yellow-400"
-                                        : "border-richblack-500"
-                                    }`}
-                                  >
-                                    {quizAnswers[qIndex] === optIndex && (
-                                      <div className="w-2 h-2 rounded-full bg-yellow-400" />
-                                    )}
-                                  </div>
-                                  <span
-                                    className={`text-sm ${quizAnswers[qIndex] === optIndex ? "text-white font-medium" : "text-richblack-200"}`}
-                                  >
-                                    {option}
+                        {showAnswerReview && (
+                          <div className="w-full space-y-5 pt-4 text-left">
+                            <h3 className="text-lg font-bold text-white">
+                              Answer review
+                            </h3>
+                            {aiQuiz.map((question, qIndex) => (
+                              <section
+                                key={qIndex}
+                                className="rounded-xl border border-richblack-700 bg-richblack-900/60 p-5"
+                              >
+                                <p className="mb-4 font-medium text-white">
+                                  <span className="mr-2 font-bold text-yellow-400">
+                                    {qIndex + 1}.
                                   </span>
-                                </label>
-                              ))}
-                            </div>
-                            <div className="mt-4 flex justify-end">
+                                  {question.question}
+                                </p>
+                                <div className="space-y-2">
+                                  {question.options.map((option, optIndex) => {
+                                    const isCorrect =
+                                      optIndex === Number(question.correctAnswer);
+                                    const isSelected =
+                                      quizAnswers[qIndex] === optIndex;
+                                    const optionStyle = isCorrect
+                                      ? "border-caribbeangreen-200 bg-caribbeangreen-200/10 text-caribbeangreen-100"
+                                      : isSelected
+                                        ? "border-pink-300 bg-pink-300/10 text-pink-100"
+                                        : "border-richblack-700 text-richblack-300";
+
+                                    return (
+                                      <div
+                                        key={optIndex}
+                                        className={`flex items-center justify-between gap-3 rounded-lg border px-4 py-3 ${optionStyle}`}
+                                      >
+                                        <span className="text-sm">{option}</span>
+                                        <span className="shrink-0 text-xs font-semibold">
+                                          {isCorrect
+                                            ? "Correct answer"
+                                            : isSelected
+                                              ? "Your answer"
+                                              : ""}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                  {quizAnswers[qIndex] === undefined && (
+                                    <p className="text-sm text-pink-200">
+                                      You did not answer this question.
+                                    </p>
+                                  )}
+                                </div>
+                                  <div className="mt-4 flex justify-end">
                               {reportedQuestions.includes(qIndex) ? (
                                 <span className="text-sm text-caribbeangreen-200">
                                   Issue reported
@@ -477,15 +563,73 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                                 </div>
                               </div>
                             )}
+                              </section>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      /* Questions */
+                      <>
+                        {aiQuiz.map((question, qIndex) => (
+                          <div
+                            key={qIndex}
+                            className="bg-richblack-900/60 p-5 rounded-xl border border-richblack-700/50"
+                          >
+                            <p className="text-white font-medium mb-4">
+                              <span className="text-yellow-400 font-bold mr-2">
+                                {qIndex + 1}.
+                              </span>
+                              {question.question}
+                            </p>
+                            <div className="space-y-2">
+                              {question.options.map((option, optIndex) => (
+                                <label
+                                  key={optIndex}
+                                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer border transition-all ${
+                                    quizAnswers[qIndex] === optIndex
+                                      ? "bg-yellow-500/10 border-yellow-400"
+                                      : "border-transparent hover:bg-richblack-700"
+                                  }`}
+                                >
+                                  <input
+                                    type="radio"
+                                    className="hidden"
+                                    onChange={() =>
+                                      handleOptionChange(qIndex, optIndex)
+                                    }
+                                    checked={quizAnswers[qIndex] === optIndex}
+                                  />
+                                  <div
+                                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                      quizAnswers[qIndex] === optIndex
+                                        ? "border-yellow-400"
+                                        : "border-richblack-500"
+                                    }`}
+                                  >
+                                    {quizAnswers[qIndex] === optIndex && (
+                                      <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                                    )}
+                                  </div>
+                                  <span
+                                    className={`text-sm ${quizAnswers[qIndex] === optIndex ? "text-white font-medium" : "text-richblack-200"}`}
+                                  >
+                                    {option}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
+                          
                           </div>
                         ))}
 
                         <div className="flex justify-center pt-2">
                           <button
                             onClick={handleSubmitQuiz}
-                            className="px-12 py-2.5 rounded-full font-bold bg-yellow-400 text-black hover:scale-105 transition-all"
+                            disabled={isSubmittingQuiz}
+                            className="px-12 py-2.5 rounded-full font-bold bg-yellow-400 text-black hover:scale-105 transition-all disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            Submit Quiz
+                            {isSubmittingQuiz ? "Saving result..." : "Submit Quiz"}
                           </button>
                         </div>
                       </>
@@ -496,6 +640,33 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
             </div>
           );
         }),
+      )}
+      {lastAttempt && !showQuiz && (
+        <button
+          type="button"
+          onClick={() => {
+            setAiQuiz(lastAttempt.questions);
+            setActiveQuizVersion(lastAttempt.quizVersion);
+            setQuizAnswers(
+              Object.fromEntries(
+                lastAttempt.answers.map(({ questionIndex, optionIndex }) => [
+                  questionIndex,
+                  optionIndex,
+                ]),
+              ),
+            );
+            setQuizResult({
+              score: lastAttempt.score,
+              correct: lastAttempt.correctCount,
+              total: lastAttempt.totalQuestions,
+            });
+            setShowAnswerReview(true);
+            setShowQuiz(true);
+          }}
+          className="self-center rounded-full border border-caribbeangreen-200 px-6 py-2 font-semibold text-caribbeangreen-100 hover:bg-caribbeangreen-200/10"
+        >
+          Review last AI quiz
+        </button>
       )}
     </div>
   );

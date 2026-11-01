@@ -30,7 +30,6 @@ const TILE_COLORS = [
   "from-orange-400 to-red-500",
 ];
 
-// Cùng một tên luôn ra cùng một màu
 const colorFor = (name = "") =>
   TILE_COLORS[
     [...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % TILE_COLORS.length
