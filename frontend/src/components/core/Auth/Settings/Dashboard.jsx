@@ -59,7 +59,7 @@ export default function EnrolledCoursesStats() {
   const studyStreak = user?.studyStreak || 0;
 
   return (
-    <div className="pb-10 text-white">
+    <div className="pb-10 text-white h-[calc(100vh-5rem)]">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="mt-10 text-center text-3xl font-bold text-richblack-5 sm:text-left">

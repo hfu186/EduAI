@@ -37,6 +37,18 @@
 
 ## 🚀 Installation and Setup
 
+### Run with Docker
+
+The frontend and backend are built into one application image; MongoDB runs as a separate service.
+
+1. Create `backend/.env` with the backend secrets and service credentials.
+2. From the repository root, run:
+   ```bash
+   docker compose up --build
+   ```
+
+Open `http://localhost:8080`. Set `CLIENT_URL` in the Compose environment to the public application URL when deploying elsewhere.
+
 ### Prerequisites
 * Node.js (v18 or higher)
 * MongoDB Atlas or Local MongoDB instance
@@ -85,4 +97,3 @@
     npm run dev
     ```
     *The application will be accessible at: `http://localhost:5173`*
-

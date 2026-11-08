@@ -1,0 +1,24 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: eduai-mongo
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  eduai:
+    image: eduai
+    container_name: eduai
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - eduai_uploads:/app/uploads
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+  eduai_uploads:

@@ -20,7 +20,7 @@
 
   const { updateCourseProgress } = require("../controllers/course/courseProgress");
   const { showAllCategories, getCategoryPageDetails } = require("../controllers/course/category");
-  const { createRating, getAverageRating, getAllRatingReview } = require("../controllers/course/RatingAndReview");
+  const { createRating, getAverageRating, getAllRatingReview } = require("../controllers/course/ratingAndReview");
 
   router.get("/", getAllCourses);
   router.get("/categories", showAllCategories);

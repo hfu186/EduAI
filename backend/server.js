@@ -61,12 +61,11 @@ app.use("/chatbot", aiServiceLimiter, chatbotRoutes);
 app.use("/admin", adminRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/highlight", highlightRoutes);
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.send("LMS Backend is running");
 });
 
 const server = http.createServer(app);
-
 const io = new Server(server, {
   cors: { origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true },
 });

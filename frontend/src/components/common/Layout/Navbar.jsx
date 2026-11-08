@@ -288,7 +288,7 @@ const Navbar = () => {
 
           {/* Cart (Student) */}
           {user?.accountType === "Student" && (
-            <Link to="/dashboard/cart" className="relative group">
+            <Link to="/cart" className="relative group">
               <div className="flex h-9 w-9 items-center justify-center rounded-full text-richblack-100 group-hover:bg-richblack-800 group-hover:text-yellow-25 transition-all">
                 <AiOutlineShoppingCart className="text-xl" />
               </div>

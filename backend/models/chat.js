@@ -13,4 +13,4 @@ const chatSchema = new mongoose.Schema(
 
 chatSchema.index({ student: 1, instructor: 1 }, { unique: true });
 
-module.exports =   mongoose.models.Chat || mongoose.model("Chat", chatSchema);
+module.exports = mongoose.model("Chat", chatSchema);

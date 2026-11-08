@@ -5,10 +5,11 @@ import { updateCompletedLectures } from "@/slices/viewCourseSlice";
 import { apiConnector, axiosInstance } from "@/services/apiConnector";
 import { courseEndpoints } from "@/services/apis";
 import { generateAIQuiz } from "@/services/operations/courseDetailsAPI";
+import { APP_URL } from "@/utils/appUrl";
 import { toast } from "react-hot-toast";
 import { MdAutoAwesome, MdClose, MdFlag, MdSend } from "react-icons/md";
 import PDFViewer from "./pdfViewer";
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
+const BASE_URL = APP_URL;
 
 const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
   const dispatch = useDispatch();

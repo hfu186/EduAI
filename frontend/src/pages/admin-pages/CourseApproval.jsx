@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllCourses, approveCourse } from "@/services/operations/adminAPI";
+import { APP_URL } from "@/utils/appUrl";
 import {
   FaTimes,
   FaEye,
@@ -41,7 +42,7 @@ export default function CourseApproval() {
   }, [token]);
 
   const renderSubSectionLink = (sub) => {
-    const baseUrl = "http://localhost:5000";
+    const baseUrl = APP_URL;
 
     return (
       <div className="mt-3 space-y-2 border-t border-richblack-700/50 pt-3">

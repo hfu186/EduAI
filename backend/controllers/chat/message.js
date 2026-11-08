@@ -1,5 +1,5 @@
-const Message = require("../../models/Message");
-const Chat = require("../../models/Chat");
+const Message = require("../../models/message");
+const Chat = require("../../models/chat");
 const fs = require("fs");
 const { uploadToCloudinary } = require("../../utils/uploadHelper");
 

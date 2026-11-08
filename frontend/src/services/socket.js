@@ -1,9 +1,10 @@
 import { io } from "socket.io-client";
+import { APP_URL } from "@/utils/appUrl";
 
 let socket = null;
 
 export const initSocket = (token) => {
-  socket = io(import.meta.env.VITE_APP_BASE_URL, {
+  socket = io(APP_URL, {
     auth: { token },
     transports: ["websocket"],
   });

@@ -11,15 +11,22 @@ export default function RenderTotalAmount() {
   const { t } = useTranslation();
 
   const handleBuyCourse = () => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+  console.log("Checkout button clicked");
+  console.log("Token:", token);
+  console.log("Cart:", cart);
 
-    navigate("dashboard/payment", {
-      state: { courses: cart },
-    });
-  };
+  if (!token) {
+    navigate("/login");
+    return;
+  }
+
+  if (!cart || cart.length === 0) {
+    console.log("Cart is empty");
+    return;
+  }
+
+  navigate("/payment");
+};
 
   return (
     <div className="min-w-[280px] rounded-md border border-richblack-700 bg-richblack-800 p-6">
@@ -33,7 +40,7 @@ export default function RenderTotalAmount() {
 
       <IconBtn
         text={t("pages.payment.checkout_button")}
-        onClick={handleBuyCourse}
+        onclick={handleBuyCourse}
         customClasses="w-full justify-center"
       />
     </div>

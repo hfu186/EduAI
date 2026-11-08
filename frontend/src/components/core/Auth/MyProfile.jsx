@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { dateFormatter } from "../../../utils/dateFormatter";
-import IconBtn from "../../common/IconBtn";
 import Img from "./../../common/Img";
 
 
@@ -142,7 +141,7 @@ export default function MyProfile() {
   const dob = details?.dateOfBirth ? dateFormatter(details.dateOfBirth) : null;
 
   return (
-    <>
+    <div className="h-[calc(100vh-5rem)] overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
       <Card className="overflow-hidden mt-4">
         <div
           aria-hidden="true"
@@ -181,7 +180,7 @@ export default function MyProfile() {
       </Card>
 
       {/* ===== Body: About (narrow) + Personal details (wide) ===== */}
-      <div className="my-6 grid gap-6 lg:grid-cols-3">
+      <div className="my-6 grid gap-6 lg:grid-cols-3 ">
         <Card className="lg:col-span-1">
           <CardHeader
             title={t("profile.about.title")}
@@ -340,6 +339,6 @@ export default function MyProfile() {
           />
         </div>
       )}
-    </>
+    </div>
   );
 }

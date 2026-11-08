@@ -87,6 +87,7 @@ function AppRoutes() {
       />
       <Route path="/payment" element={<Payment />} />
       <Route path="/payment/qr" element={<PaymentQR />} />
+      <Route path="/cart" element={<Cart />} />
 
       <Route
         path="verify-email"
@@ -125,7 +126,6 @@ function AppRoutes() {
       <Route path="/chat/:chatId" element={<ChatWindow />} />
         <Route path="dashboard/my-profile" element={<MyProfile />} />
         <Route path="dashboard/settings" element={<Settings />} />
-        <Route path="dashboard/cart" element={<Cart />} />
         <Route path="dashboard/request-instructor" element={<InstructorRequest />} />
 
         {user?.accountType === ACCOUNT_TYPE.STUDENT && (

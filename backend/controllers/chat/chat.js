@@ -1,5 +1,5 @@
-const Chat = require("../../models/Chat");
-const Message = require("../../models/Message");
+const Chat = require("../../models/chat");
+const Message = require("../../models/message");
 const Course = require("../../models/course");
 
 exports.createChat = async (req, res) => {

@@ -179,7 +179,7 @@ function CourseDetails() {
 
   const handleBuyCourse = async () => {
     dispatch(addToCart(courseData));
-    navigate("/payment");
+    navigate("/cart");
   };
 
   const handleAddToCart = () => {

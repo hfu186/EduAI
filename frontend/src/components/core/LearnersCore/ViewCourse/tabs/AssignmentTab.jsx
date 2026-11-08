@@ -18,6 +18,7 @@ import { updateCompletedLectures } from "@/slices/viewCourseSlice";
 import { apiConnector } from "@/services/apiConnector";
 import { courseEndpoints } from "@/services/apis";
 import useAlertDialog from "@/hooks/useAlertDialog";
+import { APP_URL } from "@/utils/appUrl";
 
 export default function AssignmentTab({ assignment, courseId, subSectionId }) {
   const { token } = useSelector((state) => state.auth);
@@ -208,7 +209,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
           {assignment.assignment?.fileUrl && (
             <div className="mt-2">
                 <a 
-                    href={`http://localhost:5000${assignment.assignment.fileUrl}`} 
+                    href={`${APP_URL}${assignment.assignment.fileUrl}`}
                     target="_blank" 
                     rel="noreferrer" 
                     className="inline-flex items-center gap-2 text-blue-200 hover:text-blue-100 transition-colors bg-blue-900/20 px-4 py-2 rounded-lg border border-blue-900"
@@ -242,7 +243,7 @@ export default function AssignmentTab({ assignment, courseId, subSectionId }) {
               
               {canViewAnswer && (
                 <a
-                  href={`http://localhost:5000${assignment.assignment.answerKeyUrl}`}
+                  href={`${APP_URL}${assignment.assignment.answerKeyUrl}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-2.5 bg-caribbeangreen-600/20 text-caribbeangreen-200 border border-caribbeangreen-600 font-bold rounded-lg hover:bg-caribbeangreen-600 hover:text-white transition-all shadow-md flex items-center gap-2 whitespace-nowrap"

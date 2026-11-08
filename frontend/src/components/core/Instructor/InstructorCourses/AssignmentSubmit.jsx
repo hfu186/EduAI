@@ -6,6 +6,7 @@ import { courseEndpoints } from "../../../../services/apis";
 import { toast } from "react-hot-toast";
 import { IoIosArrowBack, IoMdClose } from "react-icons/io";
 import { BiTask } from "react-icons/bi";
+import { APP_URL } from "@/utils/appUrl";
 
 export default function AssignmentSubmissions() {
   const { assignmentId, courseId } = useParams();
@@ -144,7 +145,7 @@ export default function AssignmentSubmissions() {
                   </div>
 
                   <a
-                    href={`http://localhost:5000${sub.fileUrl}`}
+                    href={`${APP_URL}${sub.fileUrl}`}
                     target="_blank"
                     rel="noreferrer"
                     className="text-yellow-50 underline mt-3 block text-sm hover:text-yellow-200"
