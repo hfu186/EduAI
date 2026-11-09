@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllCourses, approveCourse } from "@/services/operations/adminAPI";
 import { APP_URL } from "@/utils/appUrl";
+import { optimizeThumb } from "@/utils/optimizeThumb";
 import {
   FaTimes,
   FaEye,
@@ -24,14 +25,11 @@ import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { formatVND } from "../../utils/formatVND";
 import { dateFormatter } from "../../utils/dateFormatter";
-import useAlertDialog from "@/hooks/useAlertDialog";
 
 export default function CourseApproval() {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const { token } = useSelector((state) => state.auth);
-  const confirm = useAlertDialog();
-
   const fetchCourses = async () => {
     const result = await getAllCourses(token);
     if (result) setCourses(result);
@@ -106,24 +104,25 @@ export default function CourseApproval() {
       </div>
     );
   };
-
   const handleStatus = async (courseId, status) => {
-    const confirmed = await confirm({
-      title: `${status} course?`,
-      description: `Confirm that you want to ${status.toLowerCase()} this course?`,
-      confirmText: status,
-      isDestructive: status.toLowerCase().includes("reject"),
-    });
-    if (!confirmed) return;
+    const prevCourses = courses;
+    setCourses((list) =>
+      list.map((c) => (c._id === courseId ? { ...c, status } : c)),
+    );
+    setSelectedCourse(null);
 
     const toastId = toast.loading("Updating course status...");
-    const success = await approveCourse(courseId, status, token);
-    if (success) {
-      fetchCourses();
-      if (selectedCourse) setSelectedCourse(null);
-      toast.success("Status Updated");
+    try {
+      const success = await approveCourse(courseId, status, token);
+      if (success) {
+        toast.success("Status Updated", { id: toastId });
+      } else {
+        throw new Error("Update failed");
+      }
+    } catch (err) {
+      setCourses(prevCourses);
+      toast.error("Failed to update status", { id: toastId });
     }
-    toast.dismiss(toastId);
   };
 
   const getSubSectionIcon = (type) => {
@@ -183,7 +182,7 @@ export default function CourseApproval() {
               {/* Thumbnail */}
               <div className="relative w-full sm:w-44 h-32 rounded-xl overflow-hidden flex-shrink-0 border border-richblack-700">
                 <img
-                  src={course.thumbnail}
+                  src={optimizeThumb(course.thumbnail, 400)}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   alt={course.courseName}
                 />
@@ -308,7 +307,7 @@ export default function CourseApproval() {
               <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                 <div className="md:col-span-2">
                   <img
-                    src={selectedCourse.thumbnail}
+                    src={optimizeThumb(selectedCourse.thumbnail, 900)}
                     className="w-full aspect-video object-cover rounded-2xl border border-richblack-700 shadow-xl"
                     alt={selectedCourse.courseName}
                   />

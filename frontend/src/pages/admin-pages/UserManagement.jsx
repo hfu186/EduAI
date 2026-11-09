@@ -138,9 +138,8 @@ export default function UserManagement() {
       All: users.length,
       Student: users.filter((u) => u.accountType === "Student").length,
       Instructor: users.filter((u) => u.accountType === "Instructor").length,
-      Admin: users.filter((u) => u.accountType === "Admin").length,
     }),
-    [users]
+    [users],
   );
 
   const filteredUsers = useMemo(() => {
@@ -148,7 +147,8 @@ export default function UserManagement() {
       const matchesSearch = `${user.firstName} ${user.lastName} ${user.email}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
-      const matchesRole = roleFilter === "All" || user.accountType === roleFilter;
+      const matchesRole =
+        roleFilter === "All" || user.accountType === roleFilter;
       return matchesSearch && matchesRole;
     });
   }, [users, searchTerm, roleFilter]);
@@ -157,7 +157,7 @@ export default function UserManagement() {
   const currentPage = Math.min(page, totalPages);
   const pagedUsers = filteredUsers.slice(
     (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
+    currentPage * PAGE_SIZE,
   );
 
   const getInitials = (first, last) =>
@@ -220,7 +220,7 @@ export default function UserManagement() {
       toast.success(
         decision === "approved"
           ? t("pages.admin.instructor_management.approved")
-          : t("pages.admin.instructor_management.rejected")
+          : t("pages.admin.instructor_management.rejected"),
       );
       setSelectedRequest(null);
       fetchRequests();
@@ -237,10 +237,21 @@ export default function UserManagement() {
   }
 
   const stats = [
-    { label: t("pages.admin.user_management.total"), value: countByRole.All, color: "text-richblack-5" },
-    { label: t("pages.admin.user_management.students"), value: countByRole.Student, color: "text-sky-300" },
-    { label: t("pages.admin.user_management.instructors"), value: countByRole.Instructor, color: "text-yellow-300" },
-    { label: t("pages.admin.user_management.admins"), value: countByRole.Admin, color: "text-pink-300" },
+    {
+      label: t("pages.admin.user_management.total"),
+      value: countByRole.All,
+      color: "text-richblack-5",
+    },
+    {
+      label: t("pages.admin.user_management.students"),
+      value: countByRole.Student,
+      color: "text-sky-300",
+    },
+    {
+      label: t("pages.admin.user_management.instructors"),
+      value: countByRole.Instructor,
+      color: "text-yellow-300",
+    },
   ];
 
   return (
@@ -254,7 +265,7 @@ export default function UserManagement() {
         .um-slide-in { animation: um-slide-in .3s cubic-bezier(.2,.8,.2,1) both }
       `}</style>
 
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div className="h-screen mx-auto space-y-6">
         {/* ===== Title + inline stats ===== */}
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -272,7 +283,9 @@ export default function UserManagement() {
                 <p className={`text-xl font-bold leading-none ${s.color}`}>
                   {s.value}
                 </p>
-                <p className="mt-1.5 text-[11px] text-richblack-400">{s.label}</p>
+                <p className="mt-1.5 text-[11px] text-richblack-400">
+                  {s.label}
+                </p>
               </div>
             ))}
           </div>
@@ -286,7 +299,10 @@ export default function UserManagement() {
               {users.length}
             </span>
           </TabButton>
-          <TabButton active={tab === "requests"} onClick={() => setTab("requests")}>
+          <TabButton
+            active={tab === "requests"}
+            onClick={() => setTab("requests")}
+          >
             {t("pages.admin.instructor_management.pending_requests")}
             {requests.length > 0 && (
               <span className="flex items-center gap-1 rounded-full bg-yellow-500 px-2 py-0.5 text-[11px] font-bold text-richblack-900">
@@ -321,7 +337,7 @@ export default function UserManagement() {
               </div>
 
               <div className="inline-flex self-start rounded-xl bg-richblack-900 p-1">
-                {["All", "Student", "Instructor", "Admin"].map((role) => (
+                {["All", "Student", "Instructor"].map((role) => (
                   <button
                     key={role}
                     onClick={() => setRoleFilter(role)}
@@ -346,7 +362,7 @@ export default function UserManagement() {
 
             {/* Rows */}
             {pagedUsers.length === 0 ? (
-              <div className="flex flex-col items-center gap-2 py-16 text-center">
+              <div className=" flex flex-col items-center gap-2 py-16 text-center">
                 <HiOutlineSearch className="text-3xl text-richblack-600" />
                 <p className="text-sm text-richblack-400">No users found</p>
               </div>
@@ -361,10 +377,7 @@ export default function UserManagement() {
                       className="group grid cursor-pointer grid-cols-12 items-center gap-4 border-b border-richblack-700/60 px-5 py-3.5 transition-colors last:border-b-0 hover:bg-richblack-700/30"
                     >
                       <div className="col-span-12 flex min-w-0 items-center gap-3 md:col-span-5">
-                        <Avatar
-                          src={getAvatar(user)}
-                          role={user.accountType}
-                        />
+                        <Avatar src={getAvatar(user)} role={user.accountType} />
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium text-richblack-5">
                             {user.firstName} {user.lastName}
@@ -379,7 +392,9 @@ export default function UserManagement() {
                         <span
                           className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs ${rs.badge}`}
                         >
-                          <span className={`h-1.5 w-1.5 rounded-full ${rs.dot}`} />
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${rs.dot}`}
+                          />
                           {user.accountType}
                         </span>
                       </div>
@@ -387,7 +402,9 @@ export default function UserManagement() {
                       <div className="col-span-6 flex justify-end gap-1.5 md:col-span-4">
                         {user.accountType === "Student" && (
                           <IconButton
-                            title={t("pages.admin.user_management.promote_to_instructor")}
+                            title={t(
+                              "pages.admin.user_management.promote_to_instructor",
+                            )}
                             onClick={(e) => {
                               e.stopPropagation();
                               handlePromoteUser(user._id);
@@ -462,7 +479,10 @@ export default function UserManagement() {
             {requestsLoading ? (
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-44 animate-pulse rounded-2xl bg-richblack-800" />
+                  <div
+                    key={i}
+                    className="h-44 animate-pulse rounded-2xl bg-richblack-800"
+                  />
                 ))}
               </div>
             ) : requests.length === 0 ? (
@@ -508,52 +528,66 @@ export default function UserManagement() {
 
       {/* ===== DRAWER: USER DETAIL ===== */}
       {selectedUser && (
-        <div className="fixed inset-0">
+        <div className="fixed inset-0 z-[1000]" role="dialog" aria-modal="true">
           <div
-            className="um-fade-in absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="um-fade-in absolute inset-0 bg-black/70"
             onClick={() => setSelectedUserId(null)}
           />
-          <aside className="um-slide-in absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-richblack-700 bg-richblack-800 shadow-2xl">
+
+          {/* top-10 + bottom-0 (không dùng h-full) để footer không bị tràn */}
+          <aside className="um-slide-in absolute bottom-0 right-0 top-10 flex w-full max-w-md flex-col border-l border-richblack-700 bg-richblack-800 shadow-2xl">
+            {/* Thanh màu theo role + header */}
             <div
-              className={`relative h-28 flex-shrink-0 bg-gradient-to-br ${
+              className={`h-1.5 shrink-0 bg-gradient-to-r ${
                 roleStyle(selectedUser.accountType).avatar
               }`}
-            >
-             
-            </div>
+            />
 
-            <div className="flex-1 overflow-y-auto px-6 pb-6">
-              <div className="-mt-9 flex items-end justify-between">
-                <div className="rounded-full ring-4 ring-richblack-800">
-                  <Avatar
-                    src={getAvatar(selectedUser)}
-                    role={selectedUser.accountType}
-                    size="xl"
-                  />
-                </div>
+            <div className="flex shrink-0 items-start gap-4 border-b border-richblack-700 p-5">
+              <Avatar
+                key={getAvatar(selectedUser) || selectedUser._id}
+                src={getAvatar(selectedUser)}
+                initials={getInitials(
+                  selectedUser.firstName,
+                  selectedUser.lastName,
+                )}
+                role={selectedUser.accountType}
+                size="xl"
+              />
+              <div className="min-w-0 flex-1">
+                <h3 className="truncate text-lg font-bold text-richblack-5">
+                  {selectedUser.firstName} {selectedUser.lastName}
+                </h3>
+                <p className="mt-1 flex items-center gap-1.5 text-sm text-richblack-300">
+                  <HiOutlineMail className="shrink-0" />
+                  <span className="truncate">{selectedUser.email}</span>
+                </p>
                 <span
-                  className={`mb-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs ${
+                  className={`mt-2 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs ${
                     roleStyle(selectedUser.accountType).badge
                   }`}
                 >
-                  <span className={`h-1.5 w-1.5 rounded-full ${roleStyle(selectedUser.accountType).dot}`} />
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      roleStyle(selectedUser.accountType).dot
+                    }`}
+                  />
                   {selectedUser.accountType}
                 </span>
               </div>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setSelectedUserId(null)}
+                className="rounded-lg p-2 text-richblack-400 transition-colors hover:bg-richblack-700 hover:text-richblack-5"
+              >
+                <HiOutlineX className="text-xl" />
+              </button>
+            </div>
 
-              <p className="mt-4 text-[11px] font-medium uppercase tracking-widest text-richblack-400">
-                {t("pages.admin.user_management.selected_user")}
-              </p>
-              <h3 className="mt-0.5 text-xl font-bold text-richblack-5">
-                {selectedUser.firstName} {selectedUser.lastName}
-              </h3>
-              <p className="mt-1 flex items-center gap-1.5 text-sm text-richblack-300">
-                <HiOutlineMail className="flex-shrink-0" />
-                <span className="truncate">{selectedUser.email}</span>
-              </p>
-
-              {selectedUser.accountType === "Instructor" && (
-                <div className="mt-6 space-y-3 border-t border-richblack-700 pt-6">
+            <div className="flex-1 min-h-screen overflow-y-auto p-5">
+              {selectedUser.accountType === "Instructor" ? (
+                <div className="space-y-3">
                   {instructorDetailLoading ? (
                     <div className="space-y-2">
                       <div className="h-16 animate-pulse rounded-xl bg-richblack-900" />
@@ -568,7 +602,9 @@ export default function UserManagement() {
                         />
                         <StatTile
                           value={instructorDetail.stats?.totalStudents || 0}
-                          label={t("pages.admin.instructor_management.students")}
+                          label={t(
+                            "pages.admin.instructor_management.students",
+                          )}
                         />
                       </div>
                       <InfoCard
@@ -582,54 +618,79 @@ export default function UserManagement() {
                       <InfoCard
                         icon={<HiOutlineAcademicCap />}
                         label="Qualifications"
-                        value={instructorDetail.additionalDetails?.qualifications || "Not provided"}
+                        value={
+                          instructorDetail.additionalDetails?.qualifications ||
+                          "Not provided"
+                        }
                       />
                       <InfoCard
                         icon={<HiOutlineBriefcase />}
                         label="Experience"
-                        value={instructorDetail.additionalDetails?.experience || "Not provided"}
+                        value={
+                          instructorDetail.additionalDetails?.experience ||
+                          "Not provided"
+                        }
                       />
-                      {instructorDetail.additionalDetails?.certificates?.length > 0 && (
+                      {instructorDetail.additionalDetails?.certificates
+                        ?.length > 0 && (
                         <div className="rounded-xl border border-richblack-700 bg-richblack-900 p-4">
-                          <p className="mb-3 text-xs text-richblack-400">Certificate photos</p>
+                          <p className="mb-3 text-xs text-richblack-400">
+                            Certificate photos
+                          </p>
                           <div className="flex flex-wrap gap-2">
-                            {instructorDetail.additionalDetails.certificates.map((url, i) => (
-                              <button
-                                key={i}
-                                type="button"
-                                onClick={() => setPreviewImage(url)}
-                                className="h-16 w-16 overflow-hidden rounded-lg border border-richblack-600 transition-all hover:scale-105 hover:border-yellow-50"
-                              >
-                                <img src={url} alt={`Certificate ${i + 1}`} className="h-full w-full object-cover" />
-                              </button>
-                            ))}
+                            {instructorDetail.additionalDetails.certificates.map(
+                              (url, i) => (
+                                <button
+                                  key={i}
+                                  type="button"
+                                  onClick={() => setPreviewImage(url)}
+                                  className="h-16 w-16 overflow-hidden rounded-lg border border-richblack-600 transition-colors hover:border-yellow-50"
+                                >
+                                  <img
+                                    src={url}
+                                    alt={`Certificate ${i + 1}`}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="h-full w-full object-cover"
+                                  />
+                                </button>
+                              ),
+                            )}
                           </div>
                         </div>
                       )}
                     </>
                   ) : (
                     <p className="text-xs text-richblack-500">
-                      {t("pages.admin.instructor_management.load_profile_error")}
+                      {t(
+                        "pages.admin.instructor_management.load_profile_error",
+                      )}
                     </p>
                   )}
                 </div>
+              ) : (
+                <p className="text-sm text-richblack-400">
+                  No additional details for this account type.
+                </p>
               )}
             </div>
 
-            {/* Sticky footer actions */}
-            <div className="flex flex-shrink-0 gap-3 border-t border-richblack-700 bg-richblack-900/60 p-4">
+            {/* Footer cố định */}
+            <div className="flex shrink-0 gap-3 border-t border-richblack-700 bg-richblack-900/60 p-4">
               {selectedUser.accountType === "Student" && (
                 <button
+                  type="button"
                   onClick={() => handlePromoteUser(selectedUser._id)}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-yellow-50 to-yellow-100 px-4 py-2.5 text-sm font-semibold text-black transition-all hover:-translate-y-0.5"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-yellow-50 px-4 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-yellow-100"
                 >
                   <HiOutlineUserAdd />
                   {t("pages.admin.user_management.promote_to_instructor")}
                 </button>
               )}
               <button
+                type="button"
                 onClick={() => handleDeleteUser(selectedUser._id)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-pink-500/40 bg-pink-500/10 px-4 py-2.5 text-sm font-medium text-pink-300 transition-all hover:bg-pink-600 hover:text-white"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-pink-500/40 bg-pink-500/10 px-4 py-2.5 text-sm font-medium text-pink-300 transition-colors hover:bg-pink-600 hover:text-white"
               >
                 <HiOutlineTrash />
                 {t("pages.admin.user_management.delete_user")}
@@ -654,7 +715,10 @@ export default function UserManagement() {
               <div className="relative flex flex-col items-center border-b border-richblack-700 bg-gradient-to-b from-richblack-700/50 to-richblack-900/40 p-6 text-center md:border-b-0 md:border-r">
                 <Avatar
                   src={selectedRequest.profilePicture}
-                  initials={getInitials(selectedRequest.firstName, selectedRequest.lastName)}
+                  initials={getInitials(
+                    selectedRequest.firstName,
+                    selectedRequest.lastName,
+                  )}
                   role="Instructor"
                   size="xl"
                 />
@@ -671,14 +735,18 @@ export default function UserManagement() {
 
                 <div className="mt-6 flex w-full flex-col gap-2.5 md:mt-auto md:pt-8">
                   <button
-                    onClick={() => handleReview(selectedRequest._id, "approved")}
+                    onClick={() =>
+                      handleReview(selectedRequest._id, "approved")
+                    }
                     className="flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-5 py-2.5 text-sm font-semibold text-richblack-900 shadow-lg shadow-yellow-500/20 transition-all hover:-translate-y-0.5 hover:bg-yellow-400"
                   >
                     <HiOutlineCheck />
                     {t("pages.admin.instructor_management.approve")}
                   </button>
                   <button
-                    onClick={() => handleReview(selectedRequest._id, "rejected")}
+                    onClick={() =>
+                      handleReview(selectedRequest._id, "rejected")
+                    }
                     className="flex items-center justify-center gap-2 rounded-xl border border-richblack-600 px-5 py-2.5 text-sm font-medium text-richblack-300 transition-all hover:border-pink-500/50 hover:bg-pink-500/10 hover:text-pink-200"
                   >
                     <HiOutlineX />
@@ -700,12 +768,17 @@ export default function UserManagement() {
                   <InfoCard
                     icon={<HiOutlineMail />}
                     label={t("profile.personal.email")}
-                    value={selectedRequest.instructorRequestDetails?.email || selectedRequest.email}
+                    value={
+                      selectedRequest.instructorRequestDetails?.email ||
+                      selectedRequest.email
+                    }
                   />
                   <InfoCard
                     icon={<HiOutlinePhone />}
                     label={t("profile.personal.phone")}
-                    value={selectedRequest.instructorRequestDetails?.phone || "N/A"}
+                    value={
+                      selectedRequest.instructorRequestDetails?.phone || "N/A"
+                    }
                   />
                   <div className="sm:col-span-2">
                     <InfoCard
@@ -720,55 +793,70 @@ export default function UserManagement() {
                   <InfoCard
                     icon={<HiOutlineAcademicCap />}
                     label="Qualifications & certifications"
-                    value={selectedRequest.instructorRequestDetails?.qualifications || "Not provided"}
+                    value={
+                      selectedRequest.instructorRequestDetails
+                        ?.qualifications || "Not provided"
+                    }
                   />
                   <InfoCard
                     icon={<HiOutlineBriefcase />}
                     label="Teaching experience"
-                    value={selectedRequest.instructorRequestDetails?.experience || "Not provided"}
+                    value={
+                      selectedRequest.instructorRequestDetails?.experience ||
+                      "Not provided"
+                    }
                   />
 
                   <div className="rounded-xl border border-richblack-700 bg-richblack-900 p-4 sm:col-span-2">
                     <p className="mb-3 flex items-center gap-1.5 text-xs text-richblack-400">
                       <HiOutlineDocumentText /> Verification documents
                     </p>
-                    {selectedRequest.instructorRequestDetails?.documents?.length > 0 ? (
+                    {selectedRequest.instructorRequestDetails?.documents
+                      ?.length > 0 ? (
                       <div className="flex flex-wrap gap-3">
-                        {selectedRequest.instructorRequestDetails.documents.map((doc, index) => {
-                          const isImage = /\.(jpe?g|png|webp|gif)$/i.test(doc.name || doc.url);
-                          return isImage ? (
-                            <button
-                              key={index}
-                              type="button"
-                              onClick={() => setPreviewImage(doc.url)}
-                              className="group relative h-24 w-24 overflow-hidden rounded-xl border border-richblack-600 transition-all hover:border-yellow-50"
-                            >
-                              <img
-                                src={doc.url}
-                                alt={doc.name || `Document ${index + 1}`}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                              />
-                              <span className="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                                <HiOutlineEye className="text-xl text-white" />
-                              </span>
-                            </button>
-                          ) : (
-                            <a
-                              key={index}
-                              href={doc.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="flex items-center gap-2 rounded-xl border border-richblack-600 bg-richblack-800 px-3.5 py-2.5 text-xs text-richblack-200 transition-all hover:border-yellow-50 hover:text-yellow-50"
-                            >
-                              <HiOutlineDocumentText className="flex-shrink-0 text-base" />
-                              <span className="max-w-[140px] truncate">{doc.name || "Document"}</span>
-                              <HiOutlineExternalLink className="flex-shrink-0 opacity-70" />
-                            </a>
-                          );
-                        })}
+                        {selectedRequest.instructorRequestDetails.documents.map(
+                          (doc, index) => {
+                            const isImage = /\.(jpe?g|png|webp|gif)$/i.test(
+                              doc.name || doc.url,
+                            );
+                            return isImage ? (
+                              <button
+                                key={index}
+                                type="button"
+                                onClick={() => setPreviewImage(doc.url)}
+                                className="group relative h-24 w-24 overflow-hidden rounded-xl border border-richblack-600 transition-all hover:border-yellow-50"
+                              >
+                                <img
+                                  src={doc.url}
+                                  alt={doc.name || `Document ${index + 1}`}
+                                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                />
+                                <span className="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                                  <HiOutlineEye className="text-xl text-white" />
+                                </span>
+                              </button>
+                            ) : (
+                              <a
+                                key={index}
+                                href={doc.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-2 rounded-xl border border-richblack-600 bg-richblack-800 px-3.5 py-2.5 text-xs text-richblack-200 transition-all hover:border-yellow-50 hover:text-yellow-50"
+                              >
+                                <HiOutlineDocumentText className="flex-shrink-0 text-base" />
+                                <span className="max-w-[140px] truncate">
+                                  {doc.name || "Document"}
+                                </span>
+                                <HiOutlineExternalLink className="flex-shrink-0 opacity-70" />
+                              </a>
+                            );
+                          },
+                        )}
                       </div>
                     ) : (
-                      <p className="text-sm text-richblack-500">No documents attached</p>
+                      <p className="text-sm text-richblack-500">
+                        No documents attached
+                      </p>
                     )}
                   </div>
                 </div>

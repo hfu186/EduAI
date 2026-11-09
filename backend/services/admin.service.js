@@ -5,7 +5,7 @@ const Enrollment = require("../models/enrollment");
 const enrollmentService = require("./enrollment.service");
 const Profile = require("../models/profile");
 const Orders = require("../models/order");
-const mailSender = require("../utils/mailSender");
+const courseApprovalEmail = require("../mail/templates/courseApproval");
 const { courseStatusTemplate } = require("../mail/templates/reviewCourse");
 const { createNotification } = require("../utils/notification");
 
@@ -39,8 +39,10 @@ const ensureInstructorProfile = async (user, requestDetails) => {
   }
 };
 
-const getAllUsers = async () => User.find({}).populate("additionalDetails");
-
+const getAllUsers = async () => {
+  return User.find({ accountType: { $ne: "Admin" } })
+    .populate("additionalDetails");
+};
 const updateInstructorStatus = async ({ instructorId, status }) => {
   if (!["active", "suspended"].includes(status)) {
     throw createError(400, "Status must be active or suspended");
@@ -147,53 +149,64 @@ const getAllCourses = async () => {
     .sort({ createdAt: -1 });
   return enrollmentService.attachEnrollmentStudents(courses);
 };
-
 const approveCourse = async ({ courseId, status }) => {
   const updatedCourse = await Course.findByIdAndUpdate(
     courseId,
     { status },
     { new: true }
-  ).populate("instructor");
+  )
+    .select("_id courseName instructor status")
+    .populate("instructor", "_id email firstName")
+    .lean();
 
   if (!updatedCourse) {
     throw createError(404, "Course not found");
   }
-
-  if (status === "Published" && updatedCourse?.instructor) {
-    await createNotification({
-      recipient: updatedCourse.instructor._id || updatedCourse.instructor,
-      type: "course_approved",
-      title: "Course approved",
-      message: `Your course "${updatedCourse.courseName}" has been approved by an admin and is now public.`,
-      link: `/course/${updatedCourse._id}`,
-      relatedCourse: updatedCourse._id,
-    });
-  }
-
-  try {
-    const instructorEmail = updatedCourse.instructor.email;
-    const instructorName = updatedCourse.instructor.firstName;
-    const courseName = updatedCourse.courseName;
-
-    const emailTitle =
-      status === "Published"
-        ? `Congratulations! Your course "${courseName}" is now live`
-        : `Update: Your course "${courseName}" has been reverted to draft`;
-
-    await mailSender(
-      instructorEmail,
-      emailTitle,
-      courseStatusTemplate(courseName, instructorName, status)
-    );
-  } catch (mailError) {
-    console.error("Mail sending failed but DB was updated:", mailError.message);
-  }
+  sendApprovalSideEffects(updatedCourse, status).catch((err) =>
+    console.error("Post-approve tasks failed:", err.message)
+  );
 
   return {
     message: `Course status updated to ${status} successfully`,
   };
 };
 
+const sendApprovalSideEffects = async (course, status) => {
+  const instructor = course.instructor;
+  if (!instructor) return;
+  const tasks = [];
+
+  if (status === "Published") {
+    tasks.push(
+      createNotification({
+        recipient: instructor._id,
+        type: "course_approved",
+        title: "Course approved",
+        message: `Your course "${course.courseName}" has been approved by an admin and is now public.`,
+        link: `/course/${course._id}`,
+        relatedCourse: course._id,
+      })
+    );
+  }
+
+  const emailTitle =
+    status === "Published"
+      ? `Congratulations! Your course "${course.courseName}" is now live`
+      : `Update: Your course "${course.courseName}" has been reverted to draft`;
+
+  tasks.push(
+    courseApprovalEmail(
+      instructor.email,
+      emailTitle,
+      courseStatusTemplate(course.courseName, instructor.firstName, status)
+    )
+  );
+
+  const results = await Promise.allSettled(tasks);
+  results.forEach((r) => {
+    if (r.status === "rejected") console.error("Side effect failed:", r.reason?.message);
+  });
+};
 const getInstructorRequests = async () =>
   User.find({ instructorRequestStatus: "pending" })
     .populate("additionalDetails")
