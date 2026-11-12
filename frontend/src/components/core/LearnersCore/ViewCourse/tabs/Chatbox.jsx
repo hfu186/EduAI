@@ -54,18 +54,18 @@ function AIChatbot({ token, subSectionId }) {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-5 left-5 z-50">
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-yellow-50 p-4 rounded-full shadow-lg text-richblack-900 hover:scale-110 transition-all duration-200"
+          className="bg-yellow-50 p-2 rounded-full shadow-lg text-richblack-900 hover:scale-110 transition-all duration-200"
         >
-          <IoChatbubbleEllipses size={28} />
+          <IoChatbubbleEllipses size={25} />
         </button>
       )}
 
       {isOpen && (
-        <div className="bg-richblack-800 border border-richblack-700 w-[350px] h-[500px] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="overflow-y-auto bg-richblack-800 border border-richblack-700 w-[350px] h-[450px] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
           {/* Header */}
           <div className="bg-richblack-700 p-4 flex justify-between items-center border-b border-richblack-600">
             <div className="flex items-center gap-2">

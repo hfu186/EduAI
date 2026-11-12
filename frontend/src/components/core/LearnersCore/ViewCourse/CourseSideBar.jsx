@@ -82,7 +82,7 @@ function CourseSidebar({
       </div>
 
       {/* List */}
-      <div className="custom-scrollbar flex-1 space-y-6 overflow-y-auto px-3 py-5">
+      <div className="custom-scrollbar flex-1 space-y-6  px-3 py-5">
         {Object.entries(grouped || {}).map(([type, items]) => (
           <section key={type} className="space-y-1.5">
             {/* Group header */}

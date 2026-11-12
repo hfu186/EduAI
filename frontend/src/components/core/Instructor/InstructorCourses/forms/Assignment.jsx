@@ -42,8 +42,8 @@ export default function AssignmentForm({
     const file = e.target.files[0]
     if (!file) return
 
-    if (file.size > 10 * 1024 * 1024) {
-      alert("File must be under 10MB.")
+    if (file.size > 20 * 1024 * 1024) {
+      alert("File must be under 20MB.")
       return
     }
 

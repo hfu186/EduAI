@@ -15,12 +15,17 @@ export default function PDFViewer({
   subSectionId,
   token,
   isTrial = true,
+  onReachEnd,
 }) {
   const [numPages, setNumPages] = useState(null);
   const [highlights, setHighlights] = useState([]);
   const [pendingHighlight, setPendingHighlight] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const viewerRef = useRef(null);
+  const [renderedPages, setRenderedPages] = useState(0);
+  const sentinelRef = useRef(null);
+  const onReachEndRef = useRef(onReachEnd);
+  const reachedRef = useRef(false);
   const pagesToRender = isTrial ? Math.min(numPages || 0, 3) : numPages || 0;
   const pdfFile = useMemo(
     () => ({
@@ -29,6 +34,28 @@ export default function PDFViewer({
     }),
     [pdfUrl, token],
   );
+  useEffect(() => {
+    onReachEndRef.current = onReachEnd;
+  });
+  useEffect(() => {
+    setRenderedPages(0);
+    reachedRef.current = false;
+  }, [pdfUrl, subSectionId]);
+
+  const allRendered = pagesToRender > 0 && renderedPages >= pagesToRender;
+
+  useEffect(() => {
+    if (isTrial || !allRendered || !sentinelRef.current) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !reachedRef.current) {
+        reachedRef.current = true;
+        onReachEndRef.current?.();
+      }
+    });
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [allRendered, isTrial]);
   useEffect(() => {
     if (!subSectionId || !token || isTrial) {
       setHighlights([]);
@@ -243,8 +270,11 @@ export default function PDFViewer({
                 data-pdf-page={pageNumber}
                 className="relative mb-4 last:mb-0"
               >
-                <Page pageNumber={pageNumber} width={800} />
-
+                <Page
+                  pageNumber={pageNumber}
+                  width={800}
+                  onRenderSuccess={() => setRenderedPages((n) => n + 1)}
+                />
                 <div className="absolute inset-0 z-10 pointer-events-none">
                   {pageHighlights.map((rect, rectIndex) => (
                     <span
@@ -268,6 +298,7 @@ export default function PDFViewer({
           })}
         </Document>
       </div>
+      <div ref={sentinelRef} className="h-px w-full" aria-hidden="true" />
     </div>
   );
 }

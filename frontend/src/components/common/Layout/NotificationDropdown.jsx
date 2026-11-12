@@ -77,11 +77,13 @@ const NotificationDropdown = () => {
       console.error("Failed to load notifications:", error);
     }
   }, [token]);
-
   useEffect(() => {
-    loadNotifications();
+    if (!token) {
+      setNotifications([]);
+      return;
+    }
 
-    if (!token) return;
+    loadNotifications();
 
     const intervalId = window.setInterval(loadNotifications, 10000);
 
@@ -165,7 +167,6 @@ const NotificationDropdown = () => {
   };
 
   const handleDelete = async (id) => {
-  
     setNotifications((prev) =>
       prev.filter((notification) => notification._id !== id),
     );
@@ -191,25 +192,23 @@ const NotificationDropdown = () => {
     );
 
     try {
-      await Promise.all(
-        readIds.map((id) => deleteNotification(token, id)),
+      await Promise.all(readIds.map((id) => deleteNotification(token, id)));
+      toast.success(
+        t("navbar.notifications.deleted_read", "Read notifications deleted."),
       );
-      toast.success(t("navbar.notifications.deleted_read", "Read notifications deleted."));
     } catch (error) {
       console.error("Failed to clear read notifications:", error);
       loadNotifications();
     }
   };
 
-
-
   return (
-  <div ref={rootRef} className="relative">
-    {/* Notification Button */}
-    <button
-      type="button"
-      onClick={() => setOpen((prev) => !prev)}
-      className={`group relative flex h-10 w-10 items-center justify-center
+    <div ref={rootRef} className="relative">
+      {/* Notification Button */}
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className={`group relative flex h-10 w-10 items-center justify-center
         rounded-xl border transition-all duration-200
         ${
           open
@@ -218,170 +217,156 @@ const NotificationDropdown = () => {
         }
         focus-visible:outline-none focus-visible:ring-2
         focus-visible:ring-[#faee12]/40`}
-      aria-label={t(
-        "navbar.notifications.title",
-        "Notifications"
-      )}
-      aria-expanded={open}
-    >
-      <FiBell
-        size={19}
-        className="transition-transform duration-200 group-hover:scale-105"
-      />
+        aria-label={t("navbar.notifications.title", "Notifications")}
+        aria-expanded={open}
+      >
+        <FiBell
+          size={19}
+          className="transition-transform duration-200 group-hover:scale-105"
+        />
 
-      {unreadCount > 0 && (
-        <span
-          className="absolute -right-1 -top-1 flex min-w-[17px] items-center
+        {unreadCount > 0 && (
+          <span
+            className="absolute -right-1 -top-1 flex min-w-[17px] items-center
             justify-center rounded-full border-2 border-richblack-900
             bg-[#faee12] px-1 text-[9px] font-extrabold
             leading-[15px] text-richblack-900 shadow-[0_0_10px_rgba(250,238,18,0.25)]"
-        >
-          {unreadCount > 99 ? "99+" : unreadCount}
-        </span>
-      )}
-    </button>
+          >
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </span>
+        )}
+      </button>
 
-    {/* Dropdown */}
-    {open && (
-      <div
-        className="absolute right-0 top-full z-50 mt-3 w-[400px]
+      {/* Dropdown */}
+      {open && (
+        <div
+          className="absolute right-0 top-full z-50 mt-3 w-[400px]
        
           overflow-hidden rounded-2xl border border-richblack-700
           bg-richblack-900 shadow-[0_24px_70px_rgba(0,0,0,0.45)]"
-      >
-        {/* Header */}
-        <div className="border-b border-richblack-800 bg-richblack-900">
-          <div className="flex items-center justify-between px-4 py-4">
-            <div className="flex items-center gap-3">
-              <div
-                className="flex h-10 w-10 items-center justify-center
+        >
+          {/* Header */}
+          <div className="border-b border-richblack-800 bg-richblack-900">
+            <div className="flex items-center justify-between px-4 py-4">
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex h-10 w-10 items-center justify-center
                   rounded-xl bg-[#faee12]/10 text-[#faee12]"
-              >
-                <FiBell size={18} />
+                >
+                  <FiBell size={18} />
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-richblack-5">
+                    {t("navbar.notifications.title", "Notifications")}
+                  </h3>
+
+                  <p className="mt-0.5 text-[11px] text-richblack-500">
+                    {unreadCount > 0
+                      ? `${unreadCount} unread`
+                      : "You're all caught up"}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <h3 className="text-sm font-semibold text-richblack-5">
-                  {t(
-                    "navbar.notifications.title",
-                    "Notifications"
-                  )}
-                </h3>
-
-                <p className="mt-0.5 text-[11px] text-richblack-500">
-                  {unreadCount > 0
-                    ? `${unreadCount} unread`
-                    : "You're all caught up"}
-                </p>
-              </div>
-            </div>
-
-            {unreadCount > 0 && (
-              <button
-                type="button"
-                onClick={handleMarkAll}
-                className="flex items-center gap-1.5 rounded-lg
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  onClick={handleMarkAll}
+                  className="flex items-center gap-1.5 rounded-lg
                   px-2.5 py-2 text-[11px] font-semibold
                   text-[#faee12] transition-all duration-200
                   hover:bg-[#faee12]/10"
-              >
-                <FiCheck size={13} />
+                >
+                  <FiCheck size={13} />
 
-                {t(
-                  "navbar.notifications.mark_all",
-                  "Mark all as read"
-                )}
-              </button>
-            )}
-          </div>
+                  {t("navbar.notifications.mark_all", "Mark all as read")}
+                </button>
+              )}
+            </div>
 
-          {/* Tabs */}
-          <div className="px-4 pb-3">
-            <div className="flex rounded-xl bg-richblack-800 p-1 ">
-              <button
-                type="button"
-                onClick={() => setTab("all")}
-                className={`flex flex-1 items-center justify-center gap-2 
+            {/* Tabs */}
+            <div className="px-4 pb-3">
+              <div className="flex rounded-xl bg-richblack-800 p-1 ">
+                <button
+                  type="button"
+                  onClick={() => setTab("all")}
+                  className={`flex flex-1 items-center justify-center gap-2 
                   rounded-lg px-3 py-2 text-xs font-medium
                   transition-all duration-200 ${
                     tab === "all"
                       ? "bg-yellow-50/5 text-[#faee12]"
                       : "text-richblack-500 hover:text-richblack-200"
-                     
                   }`}
-              >
-                {t("navbar.notifications.all", "All")}
+                >
+                  {t("navbar.notifications.all", "All")}
 
-                <span
-                  className={`rounded-full px-1.5 py-0.5 text-[10px]
+                  <span
+                    className={`rounded-full px-1.5 py-0.5 text-[10px]
                     ${
-                      tab === "all" 
+                      tab === "all"
                         ? "bg-yellow-50/5 text-[#faee12]"
                         : "bg-richblack-700 text-richblack-500"
                     }`}
-                >
-                  {notifications.length}
-                </span>
-              </button>
+                  >
+                    {notifications.length}
+                  </span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setTab("unread")}
-                className={`flex flex-1 items-center justify-center gap-2
+                <button
+                  type="button"
+                  onClick={() => setTab("unread")}
+                  className={`flex flex-1 items-center justify-center gap-2
                   rounded-lg px-3 py-2 text-xs font-medium
                   transition-all duration-200 ${
                     tab === "unread"
                       ? "bg-yellow-50/5 text-[#faee12]"
                       : "text-richblack-500 hover:text-richblack-200"
                   }`}
-              >
-                {t("navbar.notifications.unread", "Unread")}
+                >
+                  {t("navbar.notifications.unread", "Unread")}
 
-                {unreadCount > 0 && (
-                  <span
-                    className="rounded-full bg-[#faee12]/10
+                  {unreadCount > 0 && (
+                    <span
+                      className="rounded-full bg-[#faee12]/10
                       px-1.5 py-0.5 text-[10px] font-semibold
                       text-[#faee12]"
-                  >
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
+                    >
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Notification List */}
-        <ul className="max-h-[390px] overflow-y-auto">
-          {visibleNotifications.length > 0 ? (
-            visibleNotifications.map((notification) => {
-              const read = isRead(notification);
+          {/* Notification List */}
+          <ul className="max-h-[390px] overflow-y-auto">
+            {visibleNotifications.length > 0 ? (
+              visibleNotifications.map((notification) => {
+                const read = isRead(notification);
 
-              return (
-                <li
-                  key={notification._id}
-                  className={`group relative border-b
+                return (
+                  <li
+                    key={notification._id}
+                    className={`group relative border-b
                     border-richblack-800/80 transition-all duration-200
                     last:border-b-0 ${
-                      read
-                        ? "bg-richblack-900"
-                        : "bg-[#faee12]/[0.025]"
+                      read ? "bg-richblack-900" : "bg-[#faee12]/[0.025]"
                     }`}
-                >
-                  {/* Unread indicator */}
-                  {!read && (
-                    <span
-                      className="absolute bottom-0 left-0 top-0 w-[3px]"
-                      style={{ backgroundColor: ACCENT }}
-                    />
-                  )}
+                  >
+                    {/* Unread indicator */}
+                    {!read && (
+                      <span
+                        className="absolute bottom-0 left-0 top-0 w-[3px]"
+                        style={{ backgroundColor: ACCENT }}
+                      />
+                    )}
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleNotificationClick(notification)
-                    }
-                    className="flex w-full items-start gap-3
+                    <button
+                      type="button"
+                      onClick={() => handleNotificationClick(notification)}
+                      className="flex w-full items-start gap-3
                       px-4 py-3.5 pr-12 text-left
                       transition-all duration-200
                       hover:bg-richblack-800/80
@@ -389,76 +374,67 @@ const NotificationDropdown = () => {
                       focus-visible:ring-1
                       focus-visible:ring-inset
                       focus-visible:ring-[#faee12]/40"
-                  >
-                    {/* Icon */}
-                    <div
-                      className={`mt-0.5 flex h-9 w-9 shrink-0
+                    >
+                      {/* Icon */}
+                      <div
+                        className={`mt-0.5 flex h-9 w-9 shrink-0
                         items-center justify-center rounded-xl
                         ${
                           read
                             ? "bg-richblack-800 text-richblack-500"
                             : "bg-[#faee12]/10 text-[#faee12]"
                         }`}
-                    >
-                      <FiBell size={15} />
-                    </div>
-
-                    {/* Content */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        {!read && (
-                          <span
-                            className="h-1.5 w-1.5 shrink-0
-                              rounded-full bg-[#faee12]"
-                          />
-                        )}
-
-                        <p
-                          className={`truncate text-sm ${
-                            read
-                              ? "font-medium text-richblack-300"
-                              : "font-semibold text-richblack-5"
-                          }`}
-                        >
-                          {notification.title}
-                        </p>
+                      >
+                        <FiBell size={15} />
                       </div>
 
-                      <p
-                        className={`mt-1.5 line-clamp-2 text-xs
-                          leading-5 ${
-                            read
-                              ? "text-richblack-500"
-                              : "text-richblack-300"
-                          }`}
-                      >
-                        {notification.message}
-                      </p>
+                      {/* Content */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          {!read && (
+                            <span
+                              className="h-1.5 w-1.5 shrink-0
+                              rounded-full bg-[#faee12]"
+                            />
+                          )}
 
-                      {notification.createdAt && (
+                          <p
+                            className={`truncate text-sm ${
+                              read
+                                ? "font-medium text-richblack-300"
+                                : "font-semibold text-richblack-5"
+                            }`}
+                          >
+                            {notification.title}
+                          </p>
+                        </div>
+
                         <p
-                          className={`mt-2 text-[10px] font-medium ${
-                            read
-                              ? "text-richblack-600"
-                              : "text-[#faee12]/80"
+                          className={`mt-1.5 line-clamp-2 text-xs
+                          leading-5 ${
+                            read ? "text-richblack-500" : "text-richblack-300"
                           }`}
                         >
-                          {timeAgo(
-                            notification.createdAt,
-                            i18n.language
-                          )}
+                          {notification.message}
                         </p>
-                      )}
-                    </div>
-                  </button>
 
-                  {/* Delete */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleDelete(notification._id)
-                    }
-                    className="absolute right-3 top-3 flex h-7 w-7
+                        {notification.createdAt && (
+                          <p
+                            className={`mt-2 text-[10px] font-medium ${
+                              read ? "text-richblack-600" : "text-[#faee12]/80"
+                            }`}
+                          >
+                            {timeAgo(notification.createdAt, i18n.language)}
+                          </p>
+                        )}
+                      </div>
+                    </button>
+
+                    {/* Delete */}
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(notification._id)}
+                      className="absolute right-3 top-3 flex h-7 w-7
                       items-center justify-center rounded-lg
                       text-richblack-600 opacity-0
                       transition-all duration-200
@@ -468,89 +444,87 @@ const NotificationDropdown = () => {
                       focus-visible:ring-1
                       focus-visible:ring-red-400/40
                       group-hover:opacity-100"
-                    aria-label={t(
-                      "navbar.notifications.delete",
-                      "Delete notification"
-                    )}
-                    title={t(
-                      "navbar.notifications.delete",
-                      "Delete notification"
-                    )}
-                  >
-                    <FiX size={14} />
-                  </button>
-                </li>
-              );
-            })
-          ) : (
-            /* Empty State */
-            <li className="flex flex-col items-center justify-center
+                      aria-label={t(
+                        "navbar.notifications.delete",
+                        "Delete notification",
+                      )}
+                      title={t(
+                        "navbar.notifications.delete",
+                        "Delete notification",
+                      )}
+                    >
+                      <FiX size={14} />
+                    </button>
+                  </li>
+                );
+              })
+            ) : (
+              /* Empty State */
+              <li
+                className="flex flex-col items-center justify-center
               px-6 py-14 text-center"
-            >
-              <div
-                className="flex h-16 w-16 items-center justify-center
+              >
+                <div
+                  className="flex h-16 w-16 items-center justify-center
                   rounded-2xl border border-richblack-700
                   bg-richblack-800 text-richblack-600"
-              >
-                <FiBell size={25} />
-              </div>
+                >
+                  <FiBell size={25} />
+                </div>
 
-              <p className="mt-4 text-sm font-semibold text-richblack-300">
-                {tab === "unread"
-                  ? t(
-                      "navbar.notifications.empty_unread",
-                      "You're all caught up"
-                    )
-                  : t(
-                      "navbar.notifications.empty",
-                      "No notifications yet"
-                    )}
-              </p>
+                <p className="mt-4 text-sm font-semibold text-richblack-300">
+                  {tab === "unread"
+                    ? t(
+                        "navbar.notifications.empty_unread",
+                        "You're all caught up",
+                      )
+                    : t("navbar.notifications.empty", "No notifications yet")}
+                </p>
 
-              <p className="mt-1.5 max-w-[230px] text-xs
+                <p
+                  className="mt-1.5 max-w-[230px] text-xs
                 leading-5 text-richblack-600"
-              >
-                {t(
-                  "navbar.notifications.empty_description",
-                  "New notifications will appear here."
-                )}
-              </p>
-            </li>
-          )}
-        </ul>
+                >
+                  {t(
+                    "navbar.notifications.empty_description",
+                    "New notifications will appear here.",
+                  )}
+                </p>
+              </li>
+            )}
+          </ul>
 
-        {/* Footer */}
-        {readCount > 0 && (
-          <div
-            className="flex items-center justify-between
+          {/* Footer */}
+          {readCount > 0 && (
+            <div
+              className="flex items-center justify-between
               border-t border-richblack-800
               bg-richblack-900 px-4 py-2.5"
-          >
-            <span className="text-[10px] text-richblack-600">
-              {readCount} read
-            </span>
+            >
+              <span className="text-[10px] text-richblack-600">
+                {readCount} read
+              </span>
 
-            <button
-              type="button"
-              onClick={handleClearRead}
-              className="flex items-center gap-1.5 rounded-lg
+              <button
+                type="button"
+                onClick={handleClearRead}
+                className="flex items-center gap-1.5 rounded-lg
                 px-2.5 py-1.5 text-[11px] font-medium
                 text-richblack-500 transition-all duration-200
                 hover:bg-red-500/10 hover:text-red-400"
-            >
-              <FiTrash2 size={12} />
+              >
+                <FiTrash2 size={12} />
 
-              {t(
-                "navbar.notifications.clear_read",
-                "Clear read notifications"
-              )}
-            </button>
-          </div>
-        )}
-      </div>
-    )}
-  </div>
-
+                {t(
+                  "navbar.notifications.clear_read",
+                  "Clear read notifications",
+                )}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

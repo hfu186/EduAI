@@ -16,8 +16,7 @@ export default function AssignmentSubmissions() {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // State for grading modal
-  const [selectedSubmission, setSelectedSubmission] = useState(null); // Current submission being graded
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [grade, setGrade] = useState("");
   const [feedback, setFeedback] = useState("");
   const [gradingLoading, setGradingLoading] = useState(false);
@@ -32,8 +31,11 @@ export default function AssignmentSubmissions() {
           { Authorization: `Bearer ${token}` },
         );
 
+        console.log("Assignment ID:", assignmentId);
+        console.log("Submission API response:", response.data);
+
         if (response?.data?.success) {
-          setSubmissions(response.data.data);
+          setSubmissions(response.data.data || []);
         }
       } catch (error) {
         console.error("Error fetching submissions:", error);
@@ -73,7 +75,7 @@ export default function AssignmentSubmissions() {
     try {
       const response = await apiConnector(
         "POST",
-          courseEndpoints.GRADE_ASSIGNMENT_API, // Ensure this endpoint is declared.
+        courseEndpoints.GRADE_ASSIGNMENT_API, // Ensure this endpoint is declared.
         {
           submissionId: selectedSubmission._id,
           grade: grade,
@@ -102,12 +104,12 @@ export default function AssignmentSubmissions() {
   };
 
   return (
-    <div className="text-white relative">
+    <div className="mt-4 h-[calc(100vh-6rem)] text-white relative">
       <button
         onClick={() => navigate(`/dashboard/course/${courseId}`)}
-        className="flex items-center gap-x-2 text-richblack-300 mb-6 hover:text-white transition-colors"
+        className="flex items-center gap-x-2 text-richblack-300 mb-6 hover:text-yellow-200 transition-colors"
       >
-        <IoIosArrowBack /> Back to course details
+        <IoIosArrowBack /> <span>Back</span>
       </button>
 
       <h1 className="text-2xl font-bold mb-6">Grade Assignments</h1>
@@ -153,7 +155,8 @@ export default function AssignmentSubmissions() {
                     📄 View submission: {sub.fileName}
                   </a>
                   <p className="text-xs text-richblack-400 mt-1">
-                    Submitted at: {new Date(sub.submittedAt).toLocaleString("en-US")}
+                    Submitted at:{" "}
+                    {new Date(sub.submittedAt).toLocaleString("en-US")}
                   </p>
                 </div>
 

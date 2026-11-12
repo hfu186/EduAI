@@ -5,11 +5,9 @@ import { updateCompletedLectures } from "@/slices/viewCourseSlice";
 import { apiConnector, axiosInstance } from "@/services/apiConnector";
 import { courseEndpoints } from "@/services/apis";
 import { generateAIQuiz } from "@/services/operations/courseDetailsAPI";
-import { APP_URL } from "@/utils/appUrl";
 import { toast } from "react-hot-toast";
 import { MdAutoAwesome, MdClose, MdFlag, MdSend } from "react-icons/md";
 import PDFViewer from "./pdfViewer";
-const BASE_URL = APP_URL;
 
 const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
   const dispatch = useDispatch();
@@ -115,15 +113,10 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Could not download this slide.");
+      toast.error(
+        error.response?.data?.message || "Could not download this slide.",
+      );
       console.error("Slide download failed:", error);
-    }
-  };
-
-  const handleScroll = (event) => {
-    const { scrollTop, scrollHeight, clientHeight } = event.target;
-    if (scrollTop + clientHeight >= scrollHeight - 50) {
-      markAsCompleted();
     }
   };
 
@@ -190,7 +183,9 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
       );
 
       if (!response?.data?.success) {
-        throw new Error(response?.data?.message || "Could not save quiz attempt.");
+        throw new Error(
+          response?.data?.message || "Could not save quiz attempt.",
+        );
       }
 
       const attempt = response.data.data;
@@ -268,7 +263,6 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
   return (
     <div
       ref={scrollContainerRef}
-      onScroll={handleScroll}
       className="flex flex-col gap-y-8 pdf-isolate overflow-y-auto  custom-scrollbar"
       style={{ scrollBehavior: "smooth" }}
     >
@@ -276,12 +270,26 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
         section.slides?.map((slideFile, index) => {
           if (!slideFile?.fileUrl) return null;
 
-          const slideFileUrl = isTrial
+        //   const slideFileUrl = isTrial
+        //   ? `/course/${courseId}/preview/${subSectionId}`
+        //   : slideFile.fileUrl;
+
+        // const fullFileUrl = slideFileUrl.startsWith("http")
+        //   ? slideFileUrl
+        //   : `${slideFileUrl.startsWith("/api/")
+        //       ? ""
+        //       : ""
+        //     }${encodeURI(
+        //       slideFileUrl.startsWith("/")
+        //         ? slideFileUrl
+        //         : `/${slideFileUrl}`
+        //     )}`;
+   const slideFileUrl = isTrial
             ? `/course/${courseId}/preview/${subSectionId}`
             : slideFile.fileUrl;
           const fullFileUrl = slideFileUrl.startsWith("http")
             ? slideFileUrl
-            : `${BASE_URL}${encodeURI(
+            : `${"http://localhost:5000"}${encodeURI(
                 slideFileUrl.startsWith("/")
                   ? slideFileUrl
                   : `/${slideFileUrl}`,
@@ -307,6 +315,7 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                   subSectionId={subSectionId}
                   token={token}
                   isTrial={isTrial}
+                  onReachEnd={markAsCompleted}
                 />
               </div>
 
@@ -314,7 +323,8 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
               <div className="mt-6 p-6 bg-richblack-800 rounded-2xl border border-richblack-700">
                 {isTrial ? (
                   <p className="text-center text-sm text-yellow-100">
-                    Trial preview is limited to the first 3 pages of this subsection.
+                    Trial preview is limited to the first 3 pages of this
+                    subsection.
                   </p>
                 ) : (
                   <>
@@ -322,31 +332,33 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                       Please read the entire document to mark it as completed.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => downloadSlide(fullFileUrl, slideFile.fileName)}
-                    className="bg-yellow-50 text-black px-6 py-2 rounded-md font-extrabold hover:scale-105 transition-all inline-block shadow-[0_4px_14px_0_rgba(255,214,10,0.39)]"
-                  >
-                    Download PDF
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          downloadSlide(fullFileUrl, slideFile.fileName)
+                        }
+                        className="bg-yellow-50 text-black px-6 py-2 rounded-md font-extrabold hover:scale-105 transition-all inline-block shadow-[0_4px_14px_0_rgba(255,214,10,0.39)]"
+                      >
+                        Download PDF
+                      </button>
 
-                  <button
-                    onClick={handleGenerateAIQuiz}
-                    disabled={isGenerating}
-                    className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-caribbeangreen-600 text-white px-6 py-2 rounded-md font-bold hover:scale-105 transition-all disabled:opacity-50 shadow-lg"
-                  >
-                    <MdAutoAwesome
-                      size={18}
-                      className={
-                        isGenerating
-                          ? "animate-spin"
-                          : "group-hover:rotate-12 transition-transform"
-                      }
-                    />
-                    {isGenerating
-                      ? "AI is generating..."
-                      : "Practice with AI Quiz"}
-                  </button>
+                      <button
+                        onClick={handleGenerateAIQuiz}
+                        disabled={isGenerating}
+                        className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 to-caribbeangreen-600 text-white px-6 py-2 rounded-md font-bold hover:scale-105 transition-all disabled:opacity-50 shadow-lg"
+                      >
+                        <MdAutoAwesome
+                          size={18}
+                          className={
+                            isGenerating
+                              ? "animate-spin"
+                              : "group-hover:rotate-12 transition-transform"
+                          }
+                        />
+                        {isGenerating
+                          ? "AI is generating..."
+                          : "Practice with AI Quiz"}
+                      </button>
                     </div>
                   </>
                 )}
@@ -410,10 +422,14 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                         <div className="flex gap-3 pt-2">
                           <button
                             type="button"
-                            onClick={() => setShowAnswerReview((visible) => !visible)}
+                            onClick={() =>
+                              setShowAnswerReview((visible) => !visible)
+                            }
                             className="rounded-full border border-richblack-500 px-6 py-2 font-bold text-white transition-colors hover:bg-richblack-700"
                           >
-                            {showAnswerReview ? "Hide review" : "Review answers"}
+                            {showAnswerReview
+                              ? "Hide review"
+                              : "Review answers"}
                           </button>
                           <button
                             onClick={handleRetryQuiz}
@@ -452,7 +468,8 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                                 <div className="space-y-2">
                                   {question.options.map((option, optIndex) => {
                                     const isCorrect =
-                                      optIndex === Number(question.correctAnswer);
+                                      optIndex ===
+                                      Number(question.correctAnswer);
                                     const isSelected =
                                       quizAnswers[qIndex] === optIndex;
                                     const optionStyle = isCorrect
@@ -466,7 +483,9 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                                         key={optIndex}
                                         className={`flex items-center justify-between gap-3 rounded-lg border px-4 py-3 ${optionStyle}`}
                                       >
-                                        <span className="text-sm">{option}</span>
+                                        <span className="text-sm">
+                                          {option}
+                                        </span>
                                         <span className="shrink-0 text-xs font-semibold">
                                           {isCorrect
                                             ? "Correct answer"
@@ -483,87 +502,91 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                                     </p>
                                   )}
                                 </div>
-                                  <div className="mt-4 flex justify-end">
-                              {reportedQuestions.includes(qIndex) ? (
-                                <span className="text-sm text-caribbeangreen-200">
-                                  Issue reported
-                                </span>
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setReportingQuestion(qIndex);
-                                    setReportIssueType("incorrect_answer");
-                                    setReportDetails("");
-                                  }}
-                                  className="inline-flex items-center gap-2 text-sm text-richblack-300 hover:text-yellow-50"
-                                >
-                                  <MdFlag size={16} />
-                                  Report an issue
-                                </button>
-                              )}
-                            </div>
-                            {reportingQuestion === qIndex && (
-                              <div className="mt-4 space-y-3 rounded-lg border border-richblack-600 bg-richblack-800 p-4">
-                                <label className="block text-sm text-richblack-200">
-                                  What is wrong with this question?
-                                  <select
-                                    value={reportIssueType}
-                                    onChange={(event) =>
-                                      setReportIssueType(event.target.value)
-                                    }
-                                    className="mt-2 w-full rounded-md border border-richblack-600 bg-richblack-900 px-3 py-2 text-white"
-                                  >
-                                    <option value="incorrect_answer">
-                                      The marked answer is incorrect
-                                    </option>
-                                    <option value="unclear_question">
-                                      The question is unclear
-                                    </option>
-                                    <option value="incorrect_options">
-                                      The answer options are incorrect
-                                    </option>
-                                    <option value="other">Other issue</option>
-                                  </select>
-                                </label>
-                                <label className="block text-sm text-richblack-200">
-                                  Additional details (optional)
-                                  <textarea
-                                    value={reportDetails}
-                                    onChange={(event) =>
-                                      setReportDetails(event.target.value)
-                                    }
-                                    maxLength={1000}
-                                    rows={3}
-                                    className="mt-2 w-full resize-y rounded-md border border-richblack-600 bg-richblack-900 px-3 py-2 text-white"
-                                    placeholder="Tell us what should be corrected..."
-                                  />
-                                </label>
-                                <div className="flex justify-end gap-3">
-                                  <button
-                                    type="button"
-                                    onClick={() => setReportingQuestion(null)}
-                                    disabled={isReporting}
-                                    className="rounded-md px-3 py-2 text-sm text-richblack-200 hover:text-white disabled:opacity-50"
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleReportIssue(question, qIndex)
-                                    }
-                                    disabled={isReporting}
-                                    className="inline-flex items-center gap-2 rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
-                                  >
-                                    <MdSend size={16} />
-                                    {isReporting
-                                      ? "Sending..."
-                                      : "Submit report"}
-                                  </button>
+                                <div className="mt-4 flex justify-end">
+                                  {reportedQuestions.includes(qIndex) ? (
+                                    <span className="text-sm text-caribbeangreen-200">
+                                      Issue reported
+                                    </span>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setReportingQuestion(qIndex);
+                                        setReportIssueType("incorrect_answer");
+                                        setReportDetails("");
+                                      }}
+                                      className="inline-flex items-center gap-2 text-sm text-richblack-300 hover:text-yellow-50"
+                                    >
+                                      <MdFlag size={16} />
+                                      Report an issue
+                                    </button>
+                                  )}
                                 </div>
-                              </div>
-                            )}
+                                {reportingQuestion === qIndex && (
+                                  <div className="mt-4 space-y-3 rounded-lg border border-richblack-600 bg-richblack-800 p-4">
+                                    <label className="block text-sm text-richblack-200">
+                                      What is wrong with this question?
+                                      <select
+                                        value={reportIssueType}
+                                        onChange={(event) =>
+                                          setReportIssueType(event.target.value)
+                                        }
+                                        className="mt-2 w-full rounded-md border border-richblack-600 bg-richblack-900 px-3 py-2 text-white"
+                                      >
+                                        <option value="incorrect_answer">
+                                          The marked answer is incorrect
+                                        </option>
+                                        <option value="unclear_question">
+                                          The question is unclear
+                                        </option>
+                                        <option value="incorrect_options">
+                                          The answer options are incorrect
+                                        </option>
+                                        <option value="other">
+                                          Other issue
+                                        </option>
+                                      </select>
+                                    </label>
+                                    <label className="block text-sm text-richblack-200">
+                                      Additional details (optional)
+                                      <textarea
+                                        value={reportDetails}
+                                        onChange={(event) =>
+                                          setReportDetails(event.target.value)
+                                        }
+                                        maxLength={1000}
+                                        rows={3}
+                                        className="mt-2 w-full resize-y rounded-md border border-richblack-600 bg-richblack-900 px-3 py-2 text-white"
+                                        placeholder="Tell us what should be corrected..."
+                                      />
+                                    </label>
+                                    <div className="flex justify-end gap-3">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          setReportingQuestion(null)
+                                        }
+                                        disabled={isReporting}
+                                        className="rounded-md px-3 py-2 text-sm text-richblack-200 hover:text-white disabled:opacity-50"
+                                      >
+                                        Cancel
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleReportIssue(question, qIndex)
+                                        }
+                                        disabled={isReporting}
+                                        className="inline-flex items-center gap-2 rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
+                                      >
+                                        <MdSend size={16} />
+                                        {isReporting
+                                          ? "Sending..."
+                                          : "Submit report"}
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
                               </section>
                             ))}
                           </div>
@@ -620,7 +643,6 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                                 </label>
                               ))}
                             </div>
-                          
                           </div>
                         ))}
 
@@ -630,7 +652,9 @@ const SlideTab = ({ slides = [], courseId, subSectionId, isTrial = false }) => {
                             disabled={isSubmittingQuiz}
                             className="px-12 py-2.5 rounded-full font-bold bg-yellow-400 text-black hover:scale-105 transition-all disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            {isSubmittingQuiz ? "Saving result..." : "Submit Quiz"}
+                            {isSubmittingQuiz
+                              ? "Saving result..."
+                              : "Submit Quiz"}
                           </button>
                         </div>
                       </>

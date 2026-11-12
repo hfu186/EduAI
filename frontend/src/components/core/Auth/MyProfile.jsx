@@ -141,7 +141,7 @@ export default function MyProfile() {
   const dob = details?.dateOfBirth ? dateFormatter(details.dateOfBirth) : null;
 
   return (
-    <div className="h-[calc(100vh-5rem)] overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
+    <div className="overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
       <Card className="overflow-hidden mt-4">
         <div
           aria-hidden="true"

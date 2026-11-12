@@ -35,7 +35,7 @@ export default function SlideForm({
       return
     }
 
-    if (file.size > 20 * 1024 * 1024) {
+    if (file.size > 25 * 1024 * 1024) {
       alert("Slide file must be under 20MB.")
       return
     }
