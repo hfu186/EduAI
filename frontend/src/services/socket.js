@@ -1,13 +1,13 @@
 import { io } from "socket.io-client";
-
+import { APP_URL } from "../utils/appUrl";
 let socket = null;
 
 export const initSocket = (token) => {
-  socket = io(import.meta.env.APP_URL, {
-    auth: { token },
-    transports: ["websocket"],
-  });
-  return socket;
+    socket = io(APP_URL, {
+        auth: { token },
+        transports: ["websocket"],
+    });
+    return socket;
 };
 
 export const getSocket = () => socket;
