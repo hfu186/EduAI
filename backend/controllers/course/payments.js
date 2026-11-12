@@ -163,9 +163,7 @@ const enrollStudents = async (courses, userId) => {
 
   for (const courseId of courses) {
     const enrolledCourse = await Course.findById(courseId);
-
     if (!enrolledCourse) throw new Error("Course not found");
-
     const [createdEnrollment] = await Promise.all([
       enrollmentService.createEnrollmentIfMissing(userId, courseId),
       CourseProgress.updateOne(
@@ -176,10 +174,9 @@ const enrollStudents = async (courses, userId) => {
     ]);
 
     if (createdEnrollment) {
-      await mailSender(
+      await courseEnrollmentEmail(
         student.email,
         `Successfully Enrolled into ${enrolledCourse.courseName}`,
-        courseEnrollmentEmail(enrolledCourse.courseName, student.firstName)
       );
     }
   }
@@ -227,10 +224,9 @@ export const enrollFreeCourse = async (req, res) => {
     if (createdEnrollment) {
       try {
         const student = await User.findById(userId).select("email firstName")
-        await mailSender(
+        await courseEnrollmentEmail(
           student.email,
           `Successfully Enrolled into ${course.courseName}`,
-          courseEnrollmentEmail(course.courseName, student.firstName)
         )
       } catch (mailError) {
         console.error("Enrollment email failed:", mailError)

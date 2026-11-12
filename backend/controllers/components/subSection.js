@@ -1,27 +1,4 @@
-const Section = require("../../models/section");
-const Course = require("../../models/course");
 const subSectionService = require("../../services/subSection.service");
-const CourseProgress = require("../../models/courseProgress");
-const fs = require("fs");
-const path = require("path");
-const { processSlideForAI } = require("../../services/chatbot.service");
-const { createNotification } = require("../../utils/notification");
-const parseJsonSafe = (data) => {
-  if (typeof data !== "string") return data;
-  try {
-    return JSON.parse(data);
-  } catch {
-    return null;
-  }
-};
-
-const { ensureDirectoryExists, saveUploadedFiles } = require("../../utils/uploadHelper");
-
-// const isContentLocked = async (subSectionId) => {
-//   return CourseProgress.exists({
-//     completedSubSections: subSectionId,
-//   });
-// };
 exports.createSubSection = async (req, res) => {
   try {
     const result =

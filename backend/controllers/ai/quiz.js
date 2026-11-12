@@ -7,12 +7,13 @@
   const { createNotification } = require("../../utils/notification");
   const { hasSubSectionCourseAccess } = require("../../utils/courseAccess");
   const mongoose = require("mongoose");
-  const {
-    TOP_K_RESULTS,
-    retrieveContext,
-    generateQuizJSON,
-    answerWithRAG,
-  } = require("../../services/ai.service");
+const {
+  TOP_K_RESULTS,
+  retrieveContext,
+  answerWithRAG,
+} = require("../../services/chatbot.service");
+
+const { generateQuizJSON } = require("../../services/quiz.service");
 
   const PASS_THRESHOLD = 80;
 
