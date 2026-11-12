@@ -97,7 +97,7 @@ exports.createCourse = async ({
     level: level || "Beginner",
     instructions: parseArrayField(instructions),
     thumbnail: uploadHelper.getFileBase64(thumbnail),
-    status,
+    status: status || "Draft",
   })
 
   await User.findByIdAndUpdate(
@@ -115,21 +115,33 @@ exports.createCourse = async ({
   return newCourse
 }
 
+
 const updateCourseFields = (course, updates, thumbnail) => {
   if (thumbnail) {
     course.thumbnail = uploadHelper.getFileBase64(thumbnail)
   }
 
-  for (const key in updates) {
-    if (!Object.hasOwn(updates, key)) continue
+  const allowedFields = [
+    "courseName",
+    "courseDescription",
+    "whatYouWillLearn",
+    "price",
+    "category",
+    "tag",
+    "instructions",
+  ]
+
+  for (const key of allowedFields) {
+    if (updates[key] === undefined) continue
 
     if (key === "tag" || key === "instructions") {
       course[key] = parseArrayField(updates[key])
-    } else if (key !== "thumbnailImage" && key !== "courseId") {
+    } else {
       course[key] = updates[key]
     }
   }
 }
+
 
 exports.editCourse = async ({ courseId, updates, thumbnail }) => {
   const course = await Course.findById(courseId)
@@ -254,10 +266,11 @@ exports.updateCourse = async ({ courseId, updates, thumbnail }) => {
   )
 }
 
+
 exports.publishCourse = async ({ courseId, instructorId }) => {
-  const course = await Course.findById(courseId).populate({
-    path: "courseContent",
-    populate: { path: "subSection" },
+  const course = await Course.findOne({
+    _id: courseId,
+    instructor: instructorId,
   })
 
   if (!course) {
@@ -265,20 +278,22 @@ exports.publishCourse = async ({ courseId, instructorId }) => {
     error.statusCode = 404
     throw error
   }
-  if (course.instructor.toString() !== instructorId) {
-    const error = new Error("Forbidden")
-    error.statusCode = 403
-    throw error
-  }
-  if (!course.courseContent.length) {
-    const error = new Error("Add at least one section")
-    error.statusCode = 400
-    throw error
+
+  if (course.status === "Published") {
+    course.status = "Published"
+    await course.save()
+
+    return course
   }
 
   course.status = "Pending"
+
   await course.save()
+
+  return course
 }
+
+
 exports.getFullCourseDetails = async ({
   courseId,
   userId,

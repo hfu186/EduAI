@@ -4,7 +4,7 @@ const Course = require("../models/course");
 const CourseProgress = require("../models/courseProgress");
 const path = require("path");
 
-const { processSlideForAI } = require("./chatbot.service");
+const { processSlideForAI } = require("./ai.service");
 const {
   ensureDirectoryExists,
   saveUploadedFiles,
