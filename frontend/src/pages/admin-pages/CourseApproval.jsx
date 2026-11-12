@@ -260,16 +260,16 @@ export default function CourseApproval() {
                     onClick={() =>
                       handleStatus(
                         course._id,
-                        course.status === "Draft" ? "Published" : "Draft",
+                        course.status === "Pending" ? "Published" : "Pending",
                       )
                     }
                     className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      course.status === "Draft" || course.status === "Pending"
+                      course.status === "Pending"
                         ? "bg-caribbeangreen-200 text-black shadow-md hover:bg-caribbeangreen-100"
                         : "bg-pink-700 text-white hover:bg-pink-600"
                     }`}
                   >
-                    {course.status === "Draft" ? "Approve" : "Revoke"}
+                    {course.status === "Pending" ? "Approve" : "Revoke"}
                   </button>
                 </div>
               </div>

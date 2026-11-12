@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import confetti from "canvas-confetti";
 import Swal from "sweetalert2";
-import withReactContent from 'sweetalert2-react-content'; 
+import withReactContent from "sweetalert2-react-content";
 import { getFullCourseDetails } from "@/services/operations/courseDetailsAPI";
-import { setCompletedLectures, setTotalNoOfLectures } from "@/slices/viewCourseSlice";
+import {
+  setCompletedLectures,
+  setTotalNoOfLectures,
+} from "@/slices/viewCourseSlice";
 import CourseSidebar from "@/components/core/LearnersCore/ViewCourse/CourseSideBar";
 import SlideTab from "@/components/core/LearnersCore/ViewCourse/tabs/SlideTab";
 import QuizTab from "@/components/core/LearnersCore/ViewCourse/tabs/QuizTab";
@@ -24,8 +27,11 @@ function CourseWorkspace() {
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.profile);
-  const { completedLectures, totalNoOfLectures } = useSelector((state) => state.viewCourse);
-
+  const { completedLectures, totalNoOfLectures } = useSelector(
+    (state) => state.viewCourse,
+  );
+  const [courseReady, setCourseReady] = useState(false);
+  const prevCompletedRef = useRef(null);
   const [courseData, setCourseData] = useState(null);
   const [grouped, setGrouped] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
@@ -35,17 +41,23 @@ function CourseWorkspace() {
   const [isTrial, setIsTrial] = useState(false);
   const selectedItemStorageKey = `eduai-course-workspace-item:${courseId}`;
 
-  const selectWorkspaceItem = useCallback((item) => {
-    setCurrentItem(item);
-    if (item?._id) {
-      localStorage.setItem(selectedItemStorageKey, String(item._id));
-    }
-  }, [selectedItemStorageKey]);
+  const selectWorkspaceItem = useCallback(
+    (item) => {
+      setCurrentItem(item);
+      if (item?.type === "slide") {
+        setLastSlideId(item._id);
+      }
+      if (item?._id) {
+        localStorage.setItem(selectedItemStorageKey, String(item._id));
+      }
+    },
+    [selectedItemStorageKey],
+  );
 
   const showCertificateModal = useCallback(() => {
     MySwal.fire({
       html: (
-        <CertificateTemplate 
+        <CertificateTemplate
           userName={`${user?.firstName} ${user?.lastName}`}
           courseName={courseData?.courseName}
           certCode={`CERT-${courseId.substring(0, 8).toUpperCase()}`}
@@ -55,24 +67,51 @@ function CourseWorkspace() {
       showConfirmButton: false,
       showCloseButton: true,
       background: "transparent",
-      width: 'auto',
+      width: "auto",
       customClass: {
-        popup: 'bg-transparent shadow-none border-none'
-      }
+        popup: "bg-transparent shadow-none border-none",
+      },
     });
   }, [user, courseData, courseId]);
 
   const fireConfetti = useCallback(() => {
     const end = Date.now() + 4 * 1000;
     (function frame() {
-      confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ["#FFD60A", "#1FA2FF"] });
-      confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ["#FFD60A", "#1FA2FF"] });
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ["#FFD60A", "#1FA2FF"],
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ["#FFD60A", "#1FA2FF"],
+      });
       if (Date.now() < end) requestAnimationFrame(frame);
-    }());
+    })();
   }, []);
 
   useEffect(() => {
-    if (totalNoOfLectures > 0 && completedLectures.length === totalNoOfLectures) {
+    setCourseReady(false);
+    prevCompletedRef.current = null;
+    dispatch(setCompletedLectures([]));
+    dispatch(setTotalNoOfLectures(0));
+  }, [courseId, dispatch]);
+
+  useEffect(() => {
+    if (!courseReady || isTrial || totalNoOfLectures === 0) return;
+
+    const done = completedLectures.length;
+    const prev = prevCompletedRef.current;
+    prevCompletedRef.current = done;
+
+    if (prev === null) return;
+
+    if (prev < totalNoOfLectures && done === totalNoOfLectures) {
       fireConfetti();
       Swal.fire({
         title: "🎉 Excellent!",
@@ -87,45 +126,70 @@ function CourseWorkspace() {
         if (result.isConfirmed) showCertificateModal();
       });
     }
-  }, [completedLectures.length, totalNoOfLectures, fireConfetti, showCertificateModal]);
+  }, [
+    courseReady,
+    isTrial,
+    completedLectures.length,
+    totalNoOfLectures,
+    fireConfetti,
+    showCertificateModal,
+  ]);
 
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await getFullCourseDetails(courseId, token, previewSubSectionId);
+        const response = await getFullCourseDetails(
+          courseId,
+          token,
+          previewSubSectionId,
+        );
         if (response?.success) {
           const details = response.data?.courseDetails;
           setIsTrial(Boolean(response.data?.isTrial));
           setCourseData(details);
           const total = response.data?.isTrial
             ? 0
-            : details.courseContent?.reduce((acc, sec) => acc + (sec.subSection?.length || 0), 0) || 0;
+            : details.courseContent?.reduce(
+                (acc, sec) => acc + (sec.subSection?.length || 0),
+                0,
+              ) || 0;
           dispatch(setTotalNoOfLectures(total));
-          dispatch(setCompletedLectures(response.data?.isTrial ? [] : response.data?.completedSubSections || []));
-
+          dispatch(
+            setCompletedLectures(
+              response.data?.isTrial
+                ? []
+                : response.data?.completedSubSections || [],
+            ),
+          );
+          setCourseReady(true);
           const groupedContent = { slide: [], assignment: [], quiz: [] };
-          details.courseContent?.forEach(sec => sec.subSection?.forEach(sub => {
-            const hasSlides = sub.slides?.length || sub.slide?.fileUrl;
-            const isSlideAIQuiz = sub.type === "quiz" && sub.quiz?.generatedByAI && hasSlides;
-            const groupType = isSlideAIQuiz ? "slide" : sub.type;
-            if (groupedContent[groupType]) {
-              groupedContent[groupType].push({
-                ...sub,
-                type: groupType,
-                slides: sub.slides?.length
-                  ? sub.slides
-                  : sub.slide?.fileUrl
-                    ? [sub.slide]
-                    : [],
-                sectionName: sec.sectionName,
-              });
-            }
-          }));
+          details.courseContent?.forEach((sec) =>
+            sec.subSection?.forEach((sub) => {
+              const hasSlides = sub.slides?.length || sub.slide?.fileUrl;
+              const isSlideAIQuiz =
+                sub.type === "quiz" && sub.quiz?.generatedByAI && hasSlides;
+              const groupType = isSlideAIQuiz ? "slide" : sub.type;
+              if (groupedContent[groupType]) {
+                groupedContent[groupType].push({
+                  ...sub,
+                  type: groupType,
+                  slides: sub.slides?.length
+                    ? sub.slides
+                    : sub.slide?.fileUrl
+                      ? [sub.slide]
+                      : [],
+                  sectionName: sec.sectionName,
+                });
+              }
+            }),
+          );
           setGrouped(groupedContent);
           const previewItem = previewSubSectionId
             ? Object.values(groupedContent)
                 .flat()
-                .find((item) => String(item._id) === String(previewSubSectionId))
+                .find(
+                  (item) => String(item._id) === String(previewSubSectionId),
+                )
             : null;
           const storedItemId = localStorage.getItem(selectedItemStorageKey);
           const storedItem = storedItemId
@@ -133,38 +197,85 @@ function CourseWorkspace() {
                 .flat()
                 .find((item) => String(item._id) === storedItemId)
             : null;
-          const first = previewItem || storedItem || groupedContent.slide?.[0] || groupedContent.quiz?.[0] || null;
+          const first =
+            previewItem ||
+            storedItem ||
+            groupedContent.slide?.[0] ||
+            groupedContent.quiz?.[0] ||
+            null;
           setCurrentItem(first);
           if (first?.type === "slide") setLastSlideId(first._id);
         }
-      } catch (e) { console.error(e); } finally { setLoading(false); }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchCourse();
   }, [courseId, token, previewSubSectionId, dispatch, selectedItemStorageKey]);
 
-  if (loading) return <div className="grid place-items-center bg-richblack-900 text-white font-bold italic animate-pulse">Loading Workspace...</div>;
+  if (loading)
+    return (
+      <div className="grid place-items-center bg-richblack-900 text-white font-bold italic animate-pulse">
+        Loading Workspace...
+      </div>
+    );
 
   return (
     <div className="flex bg-richblack-900 text-richblack-5 ">
-      {!isTrial && lastSlideId && <AIChatbot token={token} subSectionId={lastSlideId} />}
-      <CourseSidebar grouped={grouped} currentItem={currentItem} setCurrentItem={selectWorkspaceItem} setActiveGroup={setActiveGroup} isTrial={isTrial} />
+      {!isTrial && lastSlideId && (
+        <AIChatbot token={token} subSectionId={lastSlideId} />
+      )}
+      <CourseSidebar
+        grouped={grouped}
+        currentItem={currentItem}
+        setCurrentItem={selectWorkspaceItem}
+        setActiveGroup={setActiveGroup}
+        isTrial={isTrial}
+      />
       <div className="flex-1 p-6 overflow-y-auto">
         {currentItem ? (
           <div className="mt-4 mx-auto">
             {isTrial && (
               <div className="mb-5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
-                Trial preview: the first 3 pages of this subsection are available. Enroll to access all course materials.
+                Trial preview: the first 3 pages of this subsection are
+                available. Enroll to access all course materials.
               </div>
             )}
             <div className="mb-6 border-b border-richblack-700 pb-4">
-              <p className="text-yellow-50 text-xs font-bold uppercase tracking-widest">{currentItem.sectionName}</p>
+              <p className="text-yellow-50 text-xs font-bold uppercase tracking-widest">
+                {currentItem.sectionName}
+              </p>
             </div>
-            {currentItem.type === "slide" && <SlideTab slides={[currentItem]} courseId={courseId} subSectionId={currentItem._id} isTrial={isTrial} />}
-            {currentItem.type === "assignment" && <AssignmentTab assignment={currentItem} courseId={courseId} subSectionId={currentItem._id} />}
-            {currentItem.type === "quiz" && <QuizTab quizData={currentItem.quiz} courseId={courseId} subSectionId={currentItem._id} slideSubSectionId={lastSlideId} />}
+            {currentItem.type === "slide" && (
+              <SlideTab
+                slides={[currentItem]}
+                courseId={courseId}
+                subSectionId={currentItem._id}
+                isTrial={isTrial}
+              />
+            )}
+            {currentItem.type === "assignment" && (
+              <AssignmentTab
+                assignment={currentItem}
+                courseId={courseId}
+                subSectionId={currentItem._id}
+              />
+            )}
+            {currentItem.type === "quiz" && (
+              <QuizTab
+                quizData={currentItem.quiz}
+                courseId={courseId}
+                subSectionId={currentItem._id}
+                slideSubSectionId={lastSlideId}
+              />
+            )}
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full text-richblack-500">No content selected</div>
+          <div className="flex items-center justify-center h-full text-richblack-500">
+            No content selected
+          </div>
         )}
       </div>
     </div>
