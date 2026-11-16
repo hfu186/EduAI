@@ -47,7 +47,7 @@ const removeTemporaryFile = (file) => {
 }
 
 exports.getInstructorCourses = async (instructorId) => {
-  const courses = await Course.find({ instructor: instructorId })
+  const courses = await Course.find({ instructor: instructorId})
     .populate("category")
     .sort({ createdAt: -1 })
   return attachEnrollmentStudents(courses)

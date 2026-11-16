@@ -1,6 +1,6 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
-require("dotenv").config();
 const fileUpload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -87,14 +87,18 @@ io.use((socket, next) => {
 });
 
 require("./utils/chatSocket.js")(io);
-
 const PORT = process.env.PORT || 5000;
 
 (async () => {
-  await connectDB();
-  cloudinaryConnect();
+  try {
+    await connectDB();
+    cloudinaryConnect();
 
-  server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+    server.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error);
+    process.exit(1);
+  }
 })();

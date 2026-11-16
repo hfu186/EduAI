@@ -99,8 +99,6 @@ const retrieveContext = async ({
 };
 
 
-// ─── Eval (chỉ dùng khi EVAL_MODE=true) ─────────────────────────────────────
-
 const chunkHash = (text = "") =>
   crypto
     .createHash("sha1")

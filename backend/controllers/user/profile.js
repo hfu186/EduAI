@@ -530,16 +530,14 @@ exports.getInstructorPublicProfile = async (req, res) => {
       });
     }
 
-    // Get instructor courses
     const instructCourses = await Course.find({
       instructor: instructorId,
+      status: { $in: ["Published"] }
     });
 
-    // Attach enrolled students
     const enrolledCourses =
       await enrollmentService.attachEnrollmentStudents(instructCourses);
 
-    // Get course IDs
     const courseIds = enrolledCourses.map(course => course._id);
 
     // Fetch all reviews belonging to these courses

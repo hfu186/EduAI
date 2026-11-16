@@ -1,8 +1,12 @@
-const retryWithBackoff = async (
-  fn,
-  retries = 3,
-  initialDelay = 1000
-) => {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const retryWithBackoff = async (fn, optionsOrRetries = {}, legacyDelay) => {
+  const options =
+    typeof optionsOrRetries === "number"
+      ? { retries: optionsOrRetries, initialDelay: legacyDelay }
+      : optionsOrRetries;
+
+  const { retries = 3, initialDelay = 1000, label = "ai" } = options;
   let lastError = null;
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -12,37 +16,20 @@ const retryWithBackoff = async (
       lastError =
         error instanceof Error
           ? error
-          : new Error(
-              typeof error === "string"
-                ? error
-                : "Unknown AI request error"
-            );
+          : new Error(typeof error === "string" ? error : "Unknown AI request error");
 
-      console.error(
-        `[AI RETRY] Attempt ${attempt + 1}/${retries}`
-      );
-
-      console.error("[AI RETRY] Error:", {
+      console.error(`[RETRY:${label}] Attempt ${attempt + 1}/${retries}:`, {
         message: lastError.message,
         name: lastError.name,
         status: lastError.status,
         code: lastError.code,
-        type: lastError.type,
       });
 
-      if (attempt === retries - 1) {
-        throw lastError;
-      }
+      if (attempt === retries - 1) throw lastError;
 
       const delay = initialDelay * Math.pow(2, attempt);
-
-      console.log(
-        `AI request failed. Retrying in ${delay}ms...`
-      );
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, delay)
-      );
+      console.log(`[RETRY:${label}] Retrying in ${delay}ms...`);
+      await sleep(delay);
     }
   }
 

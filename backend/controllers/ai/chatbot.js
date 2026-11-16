@@ -1,54 +1,35 @@
+const crypto = require("crypto");
 const { Pinecone } = require("@pinecone-database/pinecone");
 const { PineconeStore } = require("@langchain/pinecone");
 const Groq = require("groq-sdk");
 const { hasSubSectionCourseAccess } = require("../../utils/courseAccess");
 const { createEmbeddings, TaskType } = require("../../config/embeddings");
+
 const CHAT_MODEL = process.env.GROQ_CHAT_MODEL || "openai/gpt-oss-20b";
 const TOP_K_RESULTS = 5;
+const MIN_SCORE = Number(process.env.RAG_MIN_SCORE ?? 0.3);
 
-const l2Normalize = (vector) => {
-  const norm = Math.sqrt(vector.reduce((sum, x) => sum + x * x, 0));
-  return norm === 0 ? vector : vector.map((x) => x / norm);
+let groqClient = null;
+let pineconeIndex = null;
+
+const getGroqClient = () => {
+  if (!groqClient) groqClient = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  return groqClient;
 };
 
-const truncateToDimension = (vector, dimensions) => {
-  if (!dimensions || vector.length <= dimensions) return vector;
-  return l2Normalize(vector.slice(0, dimensions));
+const getPineconeIndex = () => {
+  if (!pineconeIndex) {
+    const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
+    pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX);
+  }
+  return pineconeIndex;
 };
 
-class DimensionTruncatedEmbeddings {
-  constructor(baseEmbeddings, dimensions) {
-    this.base = baseEmbeddings;
-    this.dimensions = dimensions;
-  }
-
-  async embedDocuments(texts) {
-    const vectors = await this.base.embedDocuments(texts);
-    return vectors.map((v) => truncateToDimension(v, this.dimensions));
-  }
-
-  async embedQuery(text) {
-    const vector = await this.base.embedQuery(text);
-    return truncateToDimension(vector, this.dimensions);
-  }
-}
-
-
-
-const createGroqClient = () => new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-const getVectorStore = async (embeddings, namespace) => {
-  const pinecone = new Pinecone({
-    apiKey: process.env.PINECONE_API_KEY,
-  });
-
-  const index = pinecone.Index(process.env.PINECONE_INDEX);
-
-  return PineconeStore.fromExistingIndex(embeddings, {
-    pineconeIndex: index,
+const getVectorStore = (embeddings, namespace) =>
+  PineconeStore.fromExistingIndex(embeddings, {
+    pineconeIndex: getPineconeIndex(),
     namespace,
   });
-};
 
 const buildSystemPrompt = (context) => `
 You are an intelligent, friendly, and enthusiastic learning assistant.
@@ -80,7 +61,7 @@ const sanitizeText = (text = "") =>
     .trim();
 
 const chunkHash = (text = "") =>
-  require("crypto")
+  crypto
     .createHash("sha1")
     .update(
       String(text)
@@ -91,7 +72,9 @@ const chunkHash = (text = "") =>
     .digest("hex")
     .slice(0, 8);
 
-const getChunkId = (doc) => `c_${chunkHash(doc?.pageContent ?? doc?.metadata?.text ?? "")}`;
+const getChunkId = (doc) =>
+  doc?.metadata?.chunkId ??
+  `c_${chunkHash(doc?.pageContent ?? doc?.metadata?.text ?? "")}`;
 
 const buildContextFromResults = (results) => {
   if (!results?.length) return "No lesson content available.";
@@ -105,9 +88,7 @@ const buildContextFromResults = (results) => {
 };
 
 const generateGroqAnswer = async (question, context) => {
-  const groq = createGroqClient();
-
-  const response = await groq.chat.completions.create({
+  const response = await getGroqClient().chat.completions.create({
     model: CHAT_MODEL,
     temperature: 0.3,
     messages: [
@@ -117,11 +98,7 @@ const generateGroqAnswer = async (question, context) => {
   });
 
   const answer = response?.choices?.[0]?.message?.content;
-
-  if (!answer) {
-    throw new Error("Empty response from Groq");
-  }
-
+  if (!answer) throw new Error("Empty response from Groq");
   return answer;
 };
 
@@ -157,46 +134,43 @@ exports.chatWithSlide = async (req, res) => {
     }
 
     const safeQuestion = sanitizeText(String(question));
-    const embeddings = createEmbeddings(
-      TaskType.RETRIEVAL_QUERY
-    ); 
+    const embeddings = createEmbeddings(TaskType.RETRIEVAL_QUERY);
     const vectorStore = await getVectorStore(
       embeddings,
       subSectionId.toString()
     );
 
     const startedAt = Date.now();
-    let searchResults = [];
-    let scores = [];
-
+    let scored;
     try {
-      const scored = await vectorStore.similaritySearchWithScore(
+      scored = await vectorStore.similaritySearchWithScore(
         safeQuestion,
         TOP_K_RESULTS
       );
-      searchResults = scored.map(([doc]) => doc);
-      scores = scored.map(([, score]) => score);
     } catch (error) {
-      console.warn("Similarity search failed:", error.message);
+      console.error("SIMILARITY_SEARCH_ERROR:", error.message);
+      return res.status(503).json({
+        success: false,
+        message:
+          "The lesson assistant is temporarily unavailable. Please try again later.",
+      });
     }
 
+    const relevant = scored.filter(([, score]) => score >= MIN_SCORE);
+    const searchResults = relevant.map(([doc]) => doc);
+    const scores = relevant.map(([, score]) => score);
     const retrievalMs = Date.now() - startedAt;
     const context = buildContextFromResults(searchResults);
-
     const answer = await generateGroqAnswer(safeQuestion, context);
     const latencyMs = Date.now() - startedAt;
-
-    const payload = {
-      success: true,
-      answer,
-    };
-
+    const payload = { success: true, answer };
     if (process.env.EVAL_MODE === "true") {
       payload.eval = {
-        retrieved_chunks: searchResults
-          .map((doc) => getChunkId(doc))
-          .join("|"),
+        retrieved_chunks: searchResults.map((doc) => getChunkId(doc)).join("|"),
         scores,
+        contexts: searchResults.map((doc) => sanitizeText(doc?.pageContent ?? "")), 
+  metadata: searchResults.map((doc) => doc?.metadata ?? {}),      
+        all_scores: scored.map(([, score]) => score), 
         previews: searchResults.map((doc) =>
           sanitizeText(doc?.pageContent ?? "").slice(0, 120)
         ),
@@ -207,12 +181,12 @@ exports.chatWithSlide = async (req, res) => {
     }
 
     return res.status(200).json(payload);
-
   } catch (error) {
     console.error("CHAT_WITH_SLIDE_ERROR:", error.message);
     return res.status(500).json({
       success: false,
-      message: "An error occurred while processing the question. Please try again later.",
+      message:
+        "An error occurred while processing the question. Please try again later.",
     });
   }
 };
